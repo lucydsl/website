@@ -1,0 +1,17 @@
+{
+  "name": "lucy-site",
+  "main": "index.md",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "eleventy --serve",
+    "build": "eleventy"
+  },
+  "devDependencies": {
+    "@11ty/eleventy": "^0.11.1",
+    "@11ty/eleventy-plugin-syntaxhighlight": "^3.1.0",
+    "@lucy/prism": "^1.0.0",
+    "markdown-it": "^12.0.4",
+    "markdown-it-toc-and-anchor": "^4.2.0"
+  }
+}

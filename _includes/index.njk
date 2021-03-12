@@ -1,0 +1,100 @@
+---
+title: Lucy
+---
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{ title }}</title>
+<base href="{{ page.url | baseUrl }}">
+<link rel="stylesheet" href="styles/main.css">
+<link rel="stylesheet" href="styles/dracula-prism.css">
+
+<link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
+<link rel="manifest" href="images/site.webmanifest">
+
+<body class="home">
+
+<nav class="site-nav">
+  <ul>
+    <li>
+      <a href="./install.html">Install</a>
+    </li>
+    <li>
+      <a href="#">Docs</a>
+    </li>
+    <li>
+      <a href="https://github.com/matthewp/liblucy">GitHub</a>
+    </li>
+  </ul>
+</nav>
+
+<div class="hero container">
+  <header class="description">
+    <h1 class="title">🧛🏻‍♀️ Lucy <span class="subtitle">language</span></h1>
+    <h2 class="subtitle">A concise language for describing <a href="https://brilliant.org/wiki/finite-state-machines/">Finite State Machines</a>.</h2>
+
+    <dl>
+      <dt>Expressive</dt>
+      <dd>Complex sets of events, guards, actions, and destination states can be expressed in a single line. Nesting machines gives you a hierarchical machine.</dd>
+      <dt>Complete</dt>
+      <dd>Lucy compiles to <a href="https://xstate.js.org/docs/">XState</a>, the best-in-class JavaScript library for <abbr title="Finite State Machines">FSMs</abbr> and StateCharts. Lucy supports all of its core features, meaning you get the full power of StartCharts by using Lucy.</dd>
+      <dt>Fast</dt>
+      <dd>Lucy is written in C and compiled to <a href="https://webassembly.org/">WebAssembly</a> for easy use in JavaScript projects. The wasm backend is <strong>15x</strong> faster than the previous JavaScript based compiler.</dd>
+    </dl>
+  </header>
+
+  <section class="example">
+    <h1>toggle.lucy</h1>
+
+    {% highlight "lucy" %}
+state enabled {
+  toggle => disabled
+}
+
+initial state disabled {
+  toggle => enabled
+}
+    {% endhighlight %}
+
+    <h1>out.js</h1>
+    {% highlight "js" %}
+import { Machine } from 'xstate';
+
+export default Machine({
+  initial: 'disabled',
+  states: {
+    enabled: {
+      on: {
+        toggle: 'disabled'
+      }
+    },
+    disabled: {
+      on: {
+        toggle: 'enabled'
+      }
+    }
+  }
+});
+    {% endhighlight %}
+  <section>
+</div>
+
+<main>
+  <div class="content container">
+    {{ content | safe }}
+  </div>
+</main>
+
+<footer>
+<div class='outer-scratch'>
+  <div class="inner-scratch">
+    <div class="footer-content">
+      <p>Made with 🎃&nbsp;&nbsp;by <a href="https://twitter.com/matthewcp">@matthewcp</a></p>
+    </div>
+  </div>
+</div>
+  
+</footer>

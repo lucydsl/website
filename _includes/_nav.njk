@@ -1,0 +1,24 @@
+<nav class="container">
+  <ul>
+    {%- for post in collections.page -%}
+      <li{% if page.url == post.url %} class="active"{% endif %}>
+        {% if page.url == post.url %}
+          {% if post.data.shortTitle %}
+            {{ post.data.shortTitle }}
+          {% else %}
+            {{ post.data.title }}
+          {% endif %}
+        {% else %}
+        <a href="{{ post.url | bareUrl }}">
+          {% if post.data.shortTitle %}
+            {{ post.data.shortTitle }}
+          {% else %}
+            {{ post.data.title }}
+          {% endif %}
+        </a>
+        {% endif %}
+      </li>
+    {%- endfor -%}
+    <li><a href="https://github.com/matthewp/lucy">GitHub</a></li>
+  </ul>
+</nav>
