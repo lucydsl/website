@@ -8,10 +8,8 @@ html, body {
 }
 
 body {
-  /*font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol;*/
-  /*font-family: 'Montserrat', 'ProximaNova-Bold', 'Helvetica Neue', Arial, sans-serif;*/
-  font-family: "Segoe UI Web (West European)","Segoe UI",-apple-system,BlinkMacSystemFont,Roboto,"Helvetica Neue",sans-serif;
-  font-size: 14px;
+  font-family: 'Lato', sans-serif;
+  font-size: 16px;
   line-height: 1.5;
 
   --link-color: #8be9fd;
@@ -19,67 +17,16 @@ body {
   --color-purple: #9580ff;
   --color-white: #f2f2f2;
 
-  background: #282A36;
-  color: #f2f2f2;
+  --color-primary: var(--color-white);
+
+  --background-primary: #282A36;
+  --background-secondary: #393A59;
+
+  background: var(--background-primary);
+  color: var(--color-primary);
 }
 
-/* Homepage suff */
-.hero {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-column-gap: 1.5rem;
-  margin-top: 2rem;
-  margin-bottom: 3rem;
-}
 
-.hero .title {
-  font-size: 4rem;
-  font-weight: 500;
-  margin: 0;
-}
-
-.hero .title .subtitle {
-  font-size: .6em;
-  color: var(--color-purple);
-  font-weight: 400;
-}
-
-.hero .description > .subtitle {
-  font-size: 1.3rem;
-  font-weight: 300;
-  margin: 0;
-}
-
-.hero .description > dl {
-  margin-top: 2rem;
-}
-
-.hero .description > dl > dt {
-  color: var(--color-purple);
-  font-size: 1.3em;
-  margin-bottom: .5rem;
-  margin-top: 1rem;
-}
-
-.hero .description > dl > dd {
-  margin: 0;
-}
-
-.hero a, .hero a:visited {
-  color: var(--link-color);
-}
-
-.example h1 {
-  font-weight: 300;
-  text-decoration: overline;
-  text-align: end;
-  margin-bottom: 0;
-}
-
-pre[class^="language-"] {
-  border: 2px solid #393A59;
-}
-/* End homepage stuff */
 
 /* Site nav */
 .site-nav {
@@ -103,6 +50,10 @@ pre[class^="language-"] {
   height: 100%;
 }
 
+.site-nav > ul li.active {
+  border-bottom: 2px solid var(--color-purple);
+}
+
 .site-nav > ul a {
   color: var(--color-white);
   text-decoration: none;
@@ -117,49 +68,6 @@ pre[class^="language-"] {
   background: rgb(189, 147, 249, .4);
 }
 /* end site nav */
-
-/* Nav stuff */
-/*
-body.no-title > nav {
-  margin-top: 2rem;
-}
-
-body > nav {
-  margin-bottom: 2.5rem;
-}
-
-body > nav > ul {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-  text-align: center;
-}
-
-body > nav > ul li {
-  display: inline-flex;
-  align-items: center;
-}
-
-body > nav > ul li.active {
-  font-weight: 500;
-}
-
-body > nav > ul li:after {
-  content: "\25CF";
-  margin: 0 .7em;
-  font-size: 10px;
-}
-
-body > nav > ul li:last-child:after {
-  content: "";
-}
-
-body > nav > ul a {
-  color: var(--link-color);
-  text-decoration: none;
-}
-*/
-/* End nav */
 
 .container {
   margin-left: auto;
@@ -213,6 +121,11 @@ body > nav > ul a {
   border-radius: 3px;
   margin: 0;
   padding: .2em .4em;
+  font-size: 90%;
+}
+
+pre[class^="language-"] {
+  border: 2px solid #393A59;
   font-size: 90%;
 }
 

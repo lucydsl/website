@@ -1,0 +1,51 @@
+.hero {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-column-gap: 1.5rem;
+  margin-top: 2rem;
+  margin-bottom: 3rem;
+}
+
+.hero .title {
+  font-size: 4rem;
+  font-weight: 500;
+  margin: 0;
+}
+
+.hero .title .subtitle {
+  font-size: .6em;
+  color: var(--color-purple);
+  font-weight: 400;
+}
+
+.hero .description > .subtitle {
+  font-size: 1.3rem;
+  font-weight: 300;
+  margin: 0;
+}
+
+.hero .description > dl {
+  margin-top: 2rem;
+}
+
+.hero .description > dl > dt {
+  color: var(--color-purple);
+  font-size: 1.3em;
+  margin-bottom: .5rem;
+  margin-top: 1rem;
+}
+
+.hero .description > dl > dd {
+  margin: 0;
+}
+
+.hero a, .hero a:visited {
+  color: var(--link-color);
+}
+
+.example h1 {
+  font-weight: 300;
+  text-decoration: overline;
+  text-align: end;
+  margin-bottom: 0;
+}

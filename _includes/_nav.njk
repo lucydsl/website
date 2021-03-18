@@ -1,24 +1,13 @@
-<nav class="container">
+<nav class="site-nav">
   <ul>
-    {%- for post in collections.page -%}
-      <li{% if page.url == post.url %} class="active"{% endif %}>
-        {% if page.url == post.url %}
-          {% if post.data.shortTitle %}
-            {{ post.data.shortTitle }}
-          {% else %}
-            {{ post.data.title }}
-          {% endif %}
-        {% else %}
-        <a href="{{ post.url | bareUrl }}">
-          {% if post.data.shortTitle %}
-            {{ post.data.shortTitle }}
-          {% else %}
-            {{ post.data.title }}
-          {% endif %}
-        </a>
-        {% endif %}
-      </li>
-    {%- endfor -%}
-    <li><a href="https://github.com/matthewp/lucy">GitHub</a></li>
+    <li{% if page.url == "/install/" %} class="active"{% endif %}>
+      <a href="install/">Install</a>
+    </li>
+    <li{% if page.url == "/docs/language/" %} class="active"{% endif %}>
+      <a href="docs/language/">Docs</a>
+    </li>
+    <li>
+      <a href="https://github.com/matthewp/liblucy">GitHub</a>
+    </li>
   </ul>
 </nav>

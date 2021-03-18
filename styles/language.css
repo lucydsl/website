@@ -1,0 +1,36 @@
+
+.language-contents {
+  display: grid;
+  grid-template-columns: 1fr 4fr;
+}
+
+.language-contents > aside {
+  padding: 2rem 1rem;
+  background: var(--background-secondary);
+}
+
+.language-contents > aside h1 {
+  font-weight: 600;
+  text-align: center;
+}
+
+.language-contents > aside ul {
+  list-style-type: circle;
+  margin: 0;
+  padding-inline: 1.5em;
+}
+
+.language-contents > aside .section-title {
+  font-size: 1.2em;
+  display: inline-block;
+  margin-block: .2rem;
+}
+
+.language-contents > aside :where(.section-title, .section-title:visited) {
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+.language-contents main {
+  padding: 1rem 4rem;
+}

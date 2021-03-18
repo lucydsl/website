@@ -2,7 +2,6 @@
 layout: page.njk
 title: Babel Plugin XState
 tags: page
-permalink: babel-plugin-xstate.html
 ---
 
 A [Babel plugin](https://babeljs.io/docs/en/plugins/) that compiles Lucy machines into [XState](https://xstate.js.org/docs/), for zero-overhead production usage.

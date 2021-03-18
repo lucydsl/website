@@ -7,30 +7,16 @@ title: Lucy
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{{ title }}</title>
 <base href="{{ page.url | baseUrl }}">
-<link rel="stylesheet" href="styles/main.css">
-<link rel="stylesheet" href="styles/dracula-prism.css">
 
+<link rel="stylesheet" href="styles/home.css">
+{% include "_base-styles.njk" %}
 <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
 <link rel="manifest" href="images/site.webmanifest">
 
 <body class="home">
-
-<nav class="site-nav">
-  <ul>
-    <li>
-      <a href="./install.html">Install</a>
-    </li>
-    <li>
-      <a href="#">Docs</a>
-    </li>
-    <li>
-      <a href="https://github.com/matthewp/liblucy">GitHub</a>
-    </li>
-  </ul>
-</nav>
-
+{% include "_nav.njk" %}
 <div class="hero container">
   <header class="description">
     <h1 class="title">🧛🏻‍♀️ Lucy <span class="subtitle">language</span></h1>

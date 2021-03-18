@@ -1,0 +1,48 @@
+---
+---
+<!doctype html>
+<html lang="en">
+<title>Language Overview</title>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{ title }}</title>
+<base href="{{ page.url | baseUrl }}">
+{% include "_base-styles.njk" %}
+<link rel="stylesheet" href="styles/language.css">
+{% include "_icons.njk" %}
+
+{% include "_nav.njk" %}
+<div class="language-contents">
+  <aside>
+    <h1>Features</h1>
+
+    <ul>
+      {% for section in sections | cleanupLanguageSections %}
+      <li>
+        {% if section.title %}
+          <a href="#{{ subsection | lower }}" class="section-title">{{ section.title }}</a>
+
+          <ul>
+            {% for subsection in section.items %}
+            <li>
+            <a href="#{{ subsection | lower }}" class="section-title">
+              {{ subsection }}
+            </a>
+            </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <a href="#{{ section | lower }}" class="section-title">
+            {{ section }}
+          </a>
+        {% endif %}
+      </li>
+      {% endfor %}
+    </ul>
+  </aside>
+
+  <main>
+    {{ content | safe }}
+  </main>
+</div>

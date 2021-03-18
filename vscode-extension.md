@@ -2,7 +2,6 @@
 layout: page.njk
 title: VSCode Extension
 tags: page
-permalink: vscode-extension.html
 ---
 
 Syntax highlighting and code completion for [Lucy](./).
