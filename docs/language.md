@@ -132,3 +132,20 @@ Delays can be specified using either:
   ```
 
   Above the `wait` state transitions to `start` after a delay of __2 seconds__.
+
+
+* __Function__: a function imported from JavaScript can be used to specify a dynamic delay. This is useful when the context of the state machine is needed to determine the length of the delay. The function must return an integer.
+
+  ```lucy
+  import { lightDelay, yellowLightDelay } from './util'
+
+  state green {
+    delay lightDelay => yellow
+  }
+
+  state yellow {
+    delay yellowLightDelay => red
+  }
+
+  final state red {}
+  ```
