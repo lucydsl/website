@@ -75,7 +75,7 @@ An __immediate__ transition is one that occurs immediately upon entering a state
 In Lucy an immediate is specified by using the `=>` token *without* an event name, like so:
 
 ```lucy
-import { addUserToContext } from './util';
+use './util' { addUserToContext }
 
 action setUser = addUserToContext
 
@@ -96,7 +96,7 @@ A delay transitions out of state after a given timeframe.
 
 ```lucy
 initial state loading {
-  delay 2s => idle
+  delay(2s) => idle
 }
 
 state idle {
@@ -112,7 +112,7 @@ Delays can be specified using either:
 
   ```lucy
   initial state loading {
-    delay 200 => idle
+    delay(200) => idle
   }
   ```
 
@@ -125,7 +125,7 @@ Delays can be specified using either:
 
   ```lucy
   initial state wait {
-    delay 2s => start
+    delay(2s) => start
   }
 
   state start {}
@@ -137,14 +137,14 @@ Delays can be specified using either:
 * __Function__: a function imported from JavaScript can be used to specify a dynamic delay. This is useful when the context of the state machine is needed to determine the length of the delay. The function must return an integer.
 
   ```lucy
-  import { lightDelay, yellowLightDelay } from './util'
+  use './util' { lightDelay }
 
   state green {
-    delay lightDelay => yellow
+    delay(lightDelay) => yellow
   }
 
   state yellow {
-    delay yellowLightDelay => red
+    delay(yellowLightDelay) => red
   }
 
   final state red {}
