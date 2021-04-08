@@ -10,6 +10,7 @@ sections:
     - Event
     - Immediate
     - Delay
+  - Actors
 ---
 
 # The Lucy Language Guide
@@ -149,3 +150,55 @@ Delays can be specified using either:
 
   final state red {}
   ```
+
+## Actors
+
+Actors allow you to create new machines and keep a reference to them within your own machine, through an [assign reference](#assign). You can send messages to the new machine, and they can send messages back to you.
+
+Spawning a machine is a little like using [invoke](#invoke) on a machine. Unlike with __invoke__, a spawned machine does not block your current machine from transitioning.
+
+### Spawning
+
+To create an actor within your machine, use the __spawn__ function call. Spawn *can only* be used within an assign expression. This is how you save a reference to the spawned machine.
+
+```lucy
+machine todoItem {
+  state idle {}
+}
+
+machine app {
+  state idle {
+    new => assign(todo, spawn(todoItem))
+  }
+}
+```
+
+### Sending messages to actors
+
+Once you've spawned a machine you can send messages to it using the __send__ action. The first argument is the referenced actor, the second is an event to send.
+
+```lucy
+use './api' { deleteTodo }
+
+machine todoItem {
+  state idle {
+    delete => deleting
+  }
+  state deleting {
+    invoke deleteTodo {
+      done => deleted
+    }
+  }
+  final state deleted {}
+}
+
+machine app {
+  state idle {
+    new => assign(todo, spawn(todoItem))
+
+    delete => send(todo, delete)
+  }
+}
+```
+
+Here during the `delete` event of our app we use the send action to tell our referenced `todo` actor to receive the `delete` event.
