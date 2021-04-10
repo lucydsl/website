@@ -21,12 +21,12 @@
       {% for section in sections | cleanupLanguageSections %}
       <li>
         {% if section.title %}
-          <a href="#{{ subsection | lower }}" class="section-title">{{ section.title }}</a>
+          <a href="{{ section.title | hashLink(page.url) }}" class="section-title">{{ section.title }}</a>
 
           <ul>
             {% for subsection in section.items %}
             <li>
-            <a href="#{{ subsection | lower }}" class="section-title">
+            <a href="{{ subsection | hashLink(page.url) }}" class="section-title">
               {{ subsection }}
             </a>
             </li>

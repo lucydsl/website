@@ -2,7 +2,7 @@ const path = require('path');
 const pluginSyntaxHighlight = require("@11ty/eleventy-plugin-syntaxhighlight");
 const lucyPrism = require('@lucy/prism');
 const markdownIt = require('markdown-it');
-const markdownItTocAndAnchor = require('markdown-it-toc-and-anchor').default;
+const markdownItTocAndAnchor = require('./markdownit-toc.js').default;
 
 const PROD_SITE = 'https://example.com';
 
@@ -20,10 +20,10 @@ module.exports = function(eleventyConfig) {
 
   eleventyConfig.setLibrary('md', markdownIt({
     html: true
-  })/*.use(markdownItTocAndAnchor, {
+  }).use(markdownItTocAndAnchor, {
     anchorClassName: 'heading-anchor',
     tocClassName: 'toc'
-  })*/);
+  }));
 
   eleventyConfig.addFilter('bareUrl', url => {
     return url.substr(1);
@@ -55,5 +55,9 @@ module.exports = function(eleventyConfig) {
 
   eleventyConfig.addFilter('debugger', value => {
     debugger;
+  });
+
+  eleventyConfig.addFilter('hashLink', (title, pageUrl) => {
+    return pageUrl.substr(1) + '#' + title.toLowerCase().replace(/ /g, '-');
   });
 };

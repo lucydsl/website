@@ -10,6 +10,7 @@ sections:
     - Event
     - Immediate
     - Delay
+    - Special events
   - Actors
 ---
 
@@ -66,6 +67,32 @@ state idle {
 
 state loadingUser {
   // ...  
+}
+```
+
+#### on(event)
+
+Using `click =>` is how you will almost always define transitions in Lucy. It's worth noting that it's a shorthand for the following syntax:
+
+```lucy
+state idle {
+  on(click) => loadingUser
+}
+```
+
+This can *rarely* be useful. For example, `delay` is a keyword in Lucy so this will result in a compilation error:
+
+```lucy
+state idle {
+  delay => loadingUser
+}
+```
+
+However if you use the on() function you can have events named delay:
+
+```lucy
+state idle {
+  on(delay) => loadingUser
 }
 ```
 
@@ -151,6 +178,43 @@ Delays can be specified using either:
   final state red {}
   ```
 
+### Special events
+
+Additionally Lucy has the concept of 2 special events, `@entry` and `@exit`. The `@` symbol denotes a builtin event type, similar in concept of local variables in Ruby.
+
+#### @entry
+
+The `@entry` event occurs when first entering a state. It provides a way to perform [actions](#actions) without exiting the state.
+
+```lucy
+use './util' { log }
+
+state first {
+  click => second
+}
+
+state second {
+  @entry => action(log)
+
+  // We remain in the `second` state
+}
+```
+
+#### @exit
+
+The `@exit` event occurs when exiting a state. It provides a way to peform [actions](#actions) within needing an intermediate state.
+
+```lucy
+use './util' { log }
+
+state first {
+  click => second
+  @exit => action(log)
+}
+
+final state second {}
+```
+
 ## Actors
 
 Actors allow you to create new machines and keep a reference to them within your own machine, through an [assign reference](#assign). You can send messages to the new machine, and they can send messages back to you.
@@ -195,10 +259,39 @@ machine todoItem {
 machine app {
   state idle {
     new => assign(todo, spawn(todoItem))
-
     delete => send(todo, delete)
   }
 }
 ```
 
 Here during the `delete` event of our app we use the send action to tell our referenced `todo` actor to receive the `delete` event.
+
+### Sending messages to the parent
+
+Likewise, an actor can send messages back to their parent using the special `parent` keyword with `send`:
+
+```lucy
+use './api' { deleteTodo, updateUI }
+
+machine todoItem {
+  state idle {
+    delete => deleting
+  }
+  state deleting {
+    invoke deleteTodo {
+      done => deleted
+    }
+  }
+  final state deleted {
+    enter => send(parent, deletedTodo)
+  }
+}
+
+machine app {
+  state idle {
+    new => assign(todo, spawn(todoItem))
+    delete => send(todo, delete)
+    deleted => action(updateUI)
+  }
+}
+```
