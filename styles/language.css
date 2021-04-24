@@ -1,12 +1,12 @@
 
 .language-contents {
   display: grid;
-  grid-template-columns: 1fr 4fr;
 }
 
 .language-contents > aside {
   padding: 2rem 1rem;
   background: var(--background-secondary);
+  display: none;
 }
 
 .language-contents > aside h1 {
@@ -33,4 +33,14 @@
 
 .language-contents main {
   padding: 1rem 4rem;
+}
+
+@media only screen and (min-width: 601px) {
+  .language-contents aside {
+    display: block;
+  }
+
+  .language-contents {
+    grid-template-columns: 1fr 4fr;
+  }
 }
