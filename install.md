@@ -85,7 +85,7 @@ And in your config:
 __vite.config.mjs__
 
 ```js
-import lucy from '../../rollup-plugin-lucy.mjs';
+import lucy from '@lucy/rollup-plugin';
 
 export default {
   plugins: [
