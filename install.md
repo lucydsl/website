@@ -44,3 +44,52 @@ module.exports = {
   ]
 };
 ```
+
+### Rollup
+
+[Rollup](https://rollupjs.org/) users can use the [@lucy/rollup-plugin](https://www.npmjs.com/package/@lucy/rollup-plugin) package to load `.lucy` files. Install the plugin:
+
+```shell
+npm install @lucy/rollup-plugin --save-dev
+```
+
+And use it in your Rollup config:
+
+__rollup.config.mjs__
+
+```js
+import lucy from '@lucy/rollup-plugin';
+
+export default ({
+  input: 'entry.js',
+  plugins: [lucy()],
+  output: [{
+    file: 'bundle.js',
+    format: 'es'
+  }]
+});
+```
+
+### Vite
+
+[Vite](https://vitejs.dev/) supports Rollup plugins out of the box, so you can use the [@lucy/rollup-plugin](https://www.npmjs.com/package/@lucy/rollup-plugin) package in a Vite project.
+
+Install:
+
+```shell
+npm install @lucy/rollup-plugin --save-dev
+```
+
+And in your config:
+
+__vite.config.mjs__
+
+```js
+import lucy from '../../rollup-plugin-lucy.mjs';
+
+export default {
+  plugins: [
+    lucy()
+  ]
+}
+```
