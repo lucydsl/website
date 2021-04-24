@@ -10,6 +10,7 @@ module.exports = function(eleventyConfig) {
   eleventyConfig.setTemplateFormats(['md', 'njk']);
   eleventyConfig.addPassthroughCopy('styles');
   eleventyConfig.addPassthroughCopy('images');
+  eleventyConfig.addPassthroughCopy('install.sh');
 
   eleventyConfig.addPlugin(pluginSyntaxHighlight, {
     init({ Prism }) {
