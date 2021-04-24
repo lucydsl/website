@@ -68,10 +68,15 @@ export default Machine({
   <section>
 </div>
 
-<main>
-  <div class="content container">
-    
-  </div>
-</main>
+<section class="install container">
+  <h1>Install</h1>
+
+  <p>See the <a href="install/">install page</a> for detailed instructions on the various ways you can use Lucy, such as with popular JavaScript build tools.</p>
+  <p>To use the command-line compiler install with:</p>
+
+   {% highlight "shell" %}
+curl -sSf https://lucylang.org/install.sh | bash
+   {% endhighlight %}
+</section>
 
 {% include "_footer.njk" %}

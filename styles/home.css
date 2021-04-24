@@ -51,3 +51,14 @@
   text-align: end;
   margin-bottom: 0;
 }
+
+.install {
+  margin-top: 4rem;
+}
+
+.install h1 {
+  font-size: 4rem;
+  color: var(--color-purple);
+  text-align: center;
+  margin: 0;
+}
