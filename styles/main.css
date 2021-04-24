@@ -140,6 +140,13 @@ pre[class^="language-"] {
   font-size: 90%;
 }
 
+:not(pre) > code {
+  background: var(--color-dark, #181A22);
+  font-size: 80%;
+  padding: .2rem .4rem;
+  font-family:'Courier New', Courier, monospace;
+}
+
 body > footer {
   height: 200px;
   position: relative;
