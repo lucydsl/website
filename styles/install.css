@@ -1,8 +1,12 @@
-.install .title h1 {
+.install h1 {
   font-size: 5rem;
   margin: .2rem;
 }
 
 .install h2 {
   color: var(--color-purple);
+}
+
+.heading-anchor {
+  display: none;
 }
