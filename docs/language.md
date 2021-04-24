@@ -11,6 +11,7 @@ sections:
     - Immediate
     - Delay
     - Special events
+  - Invoke
   - Actors
 ---
 
@@ -213,6 +214,56 @@ state first {
 }
 
 final state second {}
+```
+
+## Invoke
+
+The keyword `invoke` is used to call external code and wait until it is complete. This could be a [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) or a Machine. If it is a machine, the `done` event will be sent when the machine reaches its [final state](docs/language/#final-state).
+
+Invoking promises:
+
+__utils.js__
+
+```js
+export function getUsers() {
+  return fetch('/users');
+}
+```
+
+__machine.lucy__
+
+```lucy
+use './utils.js' { getUsers }
+
+state idle {
+  invoke getUsers {
+    done => assign(users)
+  }
+}
+```
+
+Invoking other machines:
+
+```lucy
+machine light {
+  initial state green {
+    delay(30s) => yellow
+  }
+
+  state yellow {
+    delay(10s) => red
+  }
+
+  final state red {}
+}
+
+machine main {
+  idle {
+    invoke light {
+      done => idle
+    }
+  }
+}
 ```
 
 ## Actors

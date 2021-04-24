@@ -33,7 +33,7 @@
             {% endfor %}
           </ul>
         {% else %}
-          <a href="#{{ section | lower }}" class="section-title">
+          <a href="{{ section | hashLink(page.url) }}" class="section-title">
             {{ section }}
           </a>
         {% endif %}
