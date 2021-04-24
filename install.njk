@@ -1,0 +1,23 @@
+---
+title: Install
+---
+<!doctype html>
+<html lang="en">
+<title>{{ title }}</title>
+<base href="{{ page.url | baseUrl }}">
+<link rel="stylesheet" href="styles/install.css">
+{% include "_base-styles.njk" %}
+
+<body class="install">
+{% include "_nav.njk" %}
+
+<section class="container font-3">
+  <header class="title">
+    <h1>Install Lucy</h1>
+  </header>
+
+  <p>The following are currently supported methods of installing <strong>Lucy</strong>.</p>
+
+  <h2>Installer</h2>
+  <pre class="language-bash"><code class="language-bash">curl -sSf https://lucylang.org/install.sh | bash</code></pre>
+</section>

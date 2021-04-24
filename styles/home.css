@@ -19,7 +19,7 @@
 }
 
 .hero .description > .subtitle {
-  font-size: 1.3rem;
+  font-size: 1.4rem;
   font-weight: 300;
   margin: 0;
 }
@@ -30,13 +30,15 @@
 
 .hero .description > dl > dt {
   color: var(--color-purple);
-  font-size: 1.3em;
+  font-size: 1.5rem;
   margin-bottom: .5rem;
   margin-top: 1rem;
 }
 
 .hero .description > dl > dd {
   margin: 0;
+  font-size: 1.2rem;
+  font-weight: 300;
 }
 
 .hero a, .hero a:visited {

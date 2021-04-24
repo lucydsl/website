@@ -7,7 +7,7 @@ const markdownItTocAndAnchor = require('./markdownit-toc.js').default;
 const PROD_SITE = 'https://example.com';
 
 module.exports = function(eleventyConfig) {
-  eleventyConfig.setTemplateFormats(['md']);
+  eleventyConfig.setTemplateFormats(['md', 'njk']);
   eleventyConfig.addPassthroughCopy('styles');
   eleventyConfig.addPassthroughCopy('images');
 
