@@ -3,8 +3,8 @@
     <li{% if page.url == "/install/" %} class="active"{% endif %}>
       <a href="install/">Install</a>
     </li>
-    <li{% if page.url == "/docs/language/" %} class="active"{% endif %}>
-      <a href="docs/language/">Docs</a>
+    <li{% if page.url.startsWith('/docs') %} class="active"{% endif %}>
+      <a href="docs/">Docs</a>
     </li>
     <li>
       <a href="https://github.com/matthewp/liblucy">GitHub</a>

@@ -166,6 +166,21 @@ body > footer a {
   align-items: center;
 }
 
+/* Page styles */
+body.page h1 {
+  font-size: 5rem;
+  margin: .2rem;
+}
+
+body.page h2 {
+  color: var(--color-purple);
+}
+
+.no-anchor-link .heading-anchor {
+  display: none;
+}
+/* End page styles */
+
 /* Extra small devices (phones, 600px and down) */
 @media only screen and (max-width: 600px) {
   .container {
