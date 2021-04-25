@@ -11,6 +11,9 @@ sections:
     - Immediate
     - Delay
     - Special events
+  - Actions:
+    - Assign
+  - Guards
   - Invoke
   - Actors
 ---
@@ -214,6 +217,125 @@ state first {
 }
 
 final state second {}
+```
+
+## Actions
+
+An __action__ is a way to perform a side-effect either during a transition or during entry/exit of a state. Actions can be used to (among other things):
+
+* Do logging.
+* Add a value to the machine's data using `assign`.
+* Spawn new actor machines.
+* Send messages to actors.
+
+Actions can be named at the top level of a machine using the `action` keyword. You can also use `action` as a function inside of a transition or entry/exit.
+
+### Named actions
+
+Name actions start with keyword `action`, then a name for the action, followed by an equal sign and an external reference.
+
+Named actions are useful when you think you might want to reuse the action, or to give the action a more descriptive name.
+
+```lucy
+use './util' { log }
+
+action logTransition = log
+
+state ping {
+  ping => logTransition => pong
+}
+
+state pong {
+  ping => ping
+}
+```
+
+### Inline actions
+
+Inline actions are used by calling the `action` keyword as a function, followed by the external value (a JavaScript function).
+
+```lucy
+use './util' { log }
+
+state ping {
+  ping => action(log) => pong
+}
+
+state pong {
+  ping => ping
+}
+```
+
+### Assign
+
+An __assign__ is a special kind of action that assigns a *value* to the machine's data (in XState this is called the [context](https://xstate.js.org/docs/guides/context.html)).
+
+#### Named actions
+
+Since an assign is a form of an action, you can create a named action for the assign using the `action` assignment form:
+
+```lucy
+use './util' { loadUsers, pluckUser }
+
+action addLoadedUser = assign(user, pluckUser)
+
+state idle {
+  enter => addLoadedUser => loaded
+}
+
+state loaded {}
+```
+
+Here we are assigning the __user__ property to the machine's data. `pluckUser` is being used as a reducer. It takes in the event coming from `enter`, which might contain data such as a list of users, and returns something that is assigned to `user`.
+
+#### Inline assigns
+
+Like normal actions, an `assign` can also be used inline in a transition. You can use it this way to avoid having to name an action.
+
+```lucy
+use './util' { loadUsers, pluckUser }
+
+state idle {
+  enter => assign(user, pluckUser) => loaded
+}
+
+state loaded {}
+```
+
+## Guards
+
+A __guard__ is used to interrupt a transition, giving you a chance to dynamically decide if the transition should occur or be rejected.
+
+Like with actions, you can either created named guards, or use guards inline during an event.
+
+### Named guards
+
+A named guard is created using the `guard` keyword, followed by an imported JavaScript value (a function) that will be called to determine if the transition should proceed.
+
+```lucy
+use './util' { validCreditCard }
+
+guard isValidCard = validCreditCard
+
+state idle {
+  enter => isValidCard => purchasing
+}
+
+state purchasing {}
+```
+
+### Inline guards
+
+A guard can also be called like a function, inline inside of the transition. The argument is the external JavaScript function used to dynamically determine if the transition should proceed.
+
+```lucy
+use './util' { validCreditCard }
+
+state idle {
+  enter => guard(validCreditCard) => purchasing
+}
+
+state purchasing {}
 ```
 
 ## Invoke
