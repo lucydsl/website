@@ -45,9 +45,9 @@ machine toggleMachine {
 This translates to JavaScript where this machine is exported by its name:
 
 ```js
-import { Machine } from 'xstate';
+import { createMachine } from 'xstate';
 
-export const toggleMachine = Machine({
+export const toggleMachine = createMachine({
   states: {
     on: {
       on: {
@@ -96,9 +96,9 @@ state idle {}
 __out.js__
 
 ```js
-import { Machine } from 'xstate';
+import { createMachine } from 'xstate';
 
-export default Machine({
+export default createMachine({
   states: {
     idle: {
 
