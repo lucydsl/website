@@ -47,7 +47,7 @@ h2 {
   display: grid;
   justify-content: flex-end;
   align-items: center;
-  padding: 0 4rem;
+  padding: 0;
 }
 
 .site-nav > ul {
@@ -68,7 +68,7 @@ h2 {
 .site-nav > ul a {
   color: var(--color-white);
   text-decoration: none;
-  font-size: 1.15rem;
+  font-size: .8rem;
   height: 100%;
   display: inline-flex;
   align-items: center;
@@ -168,7 +168,7 @@ body > footer a {
 
 /* Page styles */
 body.page h1 {
-  font-size: 5rem;
+  font-size: 3rem;
   margin: .2rem;
 }
 
@@ -195,12 +195,26 @@ body.page h2 {
   .site-nav ul {
     padding: 0;
   }
-} 
+}
+
+@media only screen and (min-width: 420px) {
+  .site-nav > ul a {
+    font-size: 1.15rem;
+  }
+}
 
 /* Small devices (portrait tablets and large phones, 600px and up) */
 @media only screen and (min-width: 600px) {
   .container {
     max-width: 544px;
+  }
+
+  .site-nav {
+    padding: 0 4rem;
+  }
+
+  body.page h1 {
+    font-size: 5rem;
   }
 } 
 
