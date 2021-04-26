@@ -499,7 +499,7 @@ machine light {
 }
 
 machine main {
-  idle {
+  state idle {
     invoke light {
       done => idle
     }
