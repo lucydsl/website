@@ -3,9 +3,11 @@ layout: language.njk
 title: Language Overview
 tags: page
 sections:
+  - Machine
   - State:
     - Initial state
     - Final state
+    - Nested state
   - Transitions:
     - Event
     - Immediate
@@ -19,6 +21,91 @@ sections:
 ---
 
 # The Lucy Language Guide
+
+## Machine
+
+In Lucy a __machine__ can be defined 2 different ways. 
+
+### Named machines
+
+The first way to define a machine is by using the `machine` keyword followed by a name.
+
+```lucy
+machine toggleMachine {
+  state on {
+    toggle => off
+  }
+
+  state off {
+    toggle => on
+  }
+}
+```
+
+This translates to JavaScript where this machine is exported by its name:
+
+```js
+import { Machine } from 'xstate';
+
+export const toggleMachine = Machine({
+  states: {
+    on: {
+      on: {
+        toggle: 'off'
+      }
+    },
+    off: {
+      on: {
+        toggle: 'on'
+      }
+    }
+  }
+});
+```
+
+The biggest benefit to naming a machine is when you want to have multiple machines in the same Lucy module. Each will be exported, but you can also use them internally like so:
+
+```lucy
+machine walk {
+  initial state walk {
+    delay(10s) => stop
+  }
+
+  final state stop {}
+}
+
+machine stoplight {
+  state red {
+    invoke walk {
+      done => green
+    }
+  }
+
+  state green {}
+}
+```
+
+### Implicit machines
+
+A Lucy file can have top-level states, in which case there is an implicit machine. The `machine` keyword is not needed in this case, and a single machine is exported (as the default JavaScript) export.
+
+```lucy
+state idle {}
+```
+
+__out.js__
+
+```js
+import { Machine } from 'xstate';
+
+export default Machine({
+  states: {
+    idle: {
+
+    }
+  }
+});
+```
 
 ## State
 
@@ -53,6 +140,38 @@ initial state loading {
 
 final state broken {
 
+}
+```
+
+### Nested state
+
+You can define nested states by defining a new machine inside any given state.
+
+```lucy
+machine light {
+  initial state green {
+    timer => yellow
+  }
+
+  state yellow {
+    timer => red
+  }
+
+  state red {
+    timer => green
+
+    machine pedestrian {
+      initial state walk {
+        countdown => wait
+      }
+
+      state wait {
+        countdown => stop
+      }
+
+      final state stop {}
+    }
+  }
 }
 ```
 
