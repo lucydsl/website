@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-# This is the bootstrap Unix installer served by `https://get.volta.sh`.
+# This is the bootstrap Unix installer served by `https://lucylang.org/install.sh`.
 # Its responsibility is to query the system to determine what OS (and in the
 # case of Linux, what OpenSSL version) the system has, fetch and install the
-# appropriate build of Volta, and modify the user's profile.
+# appropriate build of Lucy, and modify the user's profile.
 
 get_latest_release() {
   curl --silent "https://api.github.com/repos/matthewp/liblucy/releases/latest" | # Get latest release from GitHub api
@@ -40,8 +40,7 @@ FLAGS:
 OPTIONS:
         --dev                   Compile and install Lucy locally, using the dev target
         --release               Compile and install Lucy locally, using the release target
-        --skip-setup            Do not run 'volta setup' to modify startup scripts
-        --version <version>     Install a specific release version of Volta
+        --version <version>     Install a specific release version of Lucy
 END_USAGE
 }
 
@@ -68,7 +67,7 @@ eprintf() {
 }
 
 bold() {
-  command printf '\033[1m%s\033[0m' "$1"
+  command printf '\033[1m%s\033[0m' "$1" 1>&2
 }
 
 # check for issue with VOLTA_HOME
@@ -88,9 +87,9 @@ upgrade_is_ok() {
   local install_dir="$2"
   local is_dev_install="$3"
 
-  # check for Lucy in both the old location and the new 0.7.0 location
-  local lucy_bin="$install_dir/lc"
-  if [ ! -x "$volta_bin" ]; then
+  # check for Lucy in both the old location and the new 0.2.0 location
+  local lucy_bin="$install_dir/bin/lucyc"
+  if [ ! -x "$lucy_bin" ]; then
     lucy_bin="$install_dir/bin/lc"
   fi
 
@@ -116,7 +115,18 @@ upgrade_is_ok() {
       eprintf "Version $will_install_version already installed"
       return 1
     fi
-    # in the future, check $prev_version for incompatible upgrades
+
+    # Check $prev_version for incompatible upgrades
+
+    if [[ "$prev_version" =~ ^([0-9]+\.[0-9]+) ]]; then
+      local major_minor="${BASH_REMATCH[1]}"
+      case "$major_minor" in
+        0.1)
+          command printf '%s' "Upgrading from 0.1. Removing " 1>&2; bold "lc"; eprintf " binary"
+          rm -f "$lucy_bin"
+          ;;
+      esac
+    fi
   fi
   return 0
 }
@@ -254,7 +264,7 @@ install_profile() {
       fi
     fi
 
-    version=`$install_dir/bin/lc --version` || (
+    version=`$install_dir/bin/lucyc --version` || (
       printf "$red> Lucy was installed, but doesn't seem to be working :(.$reset\n"
       exit 1;
     )
@@ -298,7 +308,7 @@ install_version() {
         install_profile
         info 'Finished' "setup. User profile updated."
       else
-        "$install_dir"/bin/lc --version &>/dev/null # creates the default shims
+        "$install_dir"/bin/lucyc --version &>/dev/null # creates the default shims
         info 'Finished' "installation. No changes were made to user profile settings."
       fi
   fi

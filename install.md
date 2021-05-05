@@ -12,10 +12,10 @@ The following are currently supported methods of installing __Lucy__.
 curl -sSf https://lucylang.org/install.sh | bash
 ```
 
-This will install the `lc` binary to your `$HOME/.lucy` folder. Open a new terminal and run:
+This will install the `lucyc` binary to your `$HOME/.lucy` folder. Open a new terminal and run:
 
 ```bash
-lc --help
+lucyc --help
 ```
 
 ## Build Tools

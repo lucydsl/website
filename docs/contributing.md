@@ -7,13 +7,13 @@ layout: page.njk
 
 If you want to fix a bug or implement a feature in the Lucy compiler, that should be done in the [liblucy](https://github.com/matthewp/liblucy) project.
 
-Most development can be done using the `lc` CLI. You can build just this binary using `make bin/lc`. Below is instructions on building liblucy.
+Most development can be done using the `lucyc` CLI. You can build just this binary using `make bin/lucyc`. Below is instructions on building liblucy.
 
 ## Building liblucy
 
 liblucy has 2 compilation targets:
 
-* The CLI, `lc` (Lucy compiler) which is a native binary.
+* The CLI, `lucyc` (Lucy compiler) which is a native binary.
 * Wasm, which has development and release versions. These can be loaded and used in Node.js, Deno, or in the browser.
 
 > Note that building on Windows is not currently possible. We would love someone to contribute this!
@@ -30,10 +30,10 @@ liblucy has 2 compilation targets:
 You can build just the CLI by running:
 
 ```shell
-make bin/lc
+make bin/lucyc
 ```
 
-The `lc` command will be in `bin/lc`.
+The `lucyc` command will be in `bin/lucyc`.
 
 ### Building wasm
 
