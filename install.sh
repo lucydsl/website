@@ -6,13 +6,13 @@
 # appropriate build of Lucy, and modify the user's profile.
 
 get_latest_release() {
-  curl --silent "https://api.github.com/repos/matthewp/liblucy/releases/latest" | # Get latest release from GitHub api
+  curl --silent "https://api.github.com/repositories/338590340/releases/latest" | # Get latest release from GitHub api
     grep '"tag_name":' |                                            # Get tag line
     sed -E 's/.*"v([^"]+)".*/\1/'                                   # Pluck JSON value
 }
 
 release_url() {
-  echo "https://github.com/matthewp/liblucy/releases"
+  echo "https://github.com/lucydsl/liblucy/releases"
 }
 
 download_release_from_repo() {
