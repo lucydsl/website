@@ -3,6 +3,9 @@ layout: language.njk
 title: Language Overview
 tags: page
 sections:
+  - References:
+    - Variables
+    - Symbols
   - Machine
   - State:
     - Initial state
@@ -21,6 +24,54 @@ sections:
 ---
 
 # The Lucy Language Guide
+
+## References
+
+In Lucy there are a few ways to reference other things in a Lucy programs.
+
+An __identifier__ is any sort of named item that can be referenced elsewhere. Lucy has the `use` statement for importing other machine, guards and actions.
+
+Some examples of identifiers:
+
+* An use reference: `use './util' { log }`
+* A named machine `machine one {}`
+
+Additionally there are a couple of special types of references in Lucy programs.
+
+### Variables
+
+An [action](#action) or a [guard](#guard) can be given a name, in which case they are an immutable __variable__.
+
+```lucy
+use './util' { log }
+
+action logTransition = log
+```
+
+### Symbols
+
+__Symbols__ are an important part of Lucy programs, they allow you to refer to an item that will be passed in when a machine is created. For example:
+
+```lucy
+state idle {
+  pay => guard(:hasFunds) => purchase
+}
+```
+
+Here `:hasFunds` refers to a function that is passed in on the JavaScript side. A `symbol` can be used anywhere a normal reference can be used.
+
+```js
+import createMachine from './register.lucy';
+
+const machine = createMachine({
+  context: {
+    funds: 10
+  },
+  guards: {
+    hasFunds: (context) => context.funds > 20
+  }
+});
+```
 
 ## Machine
 
@@ -42,25 +93,27 @@ machine toggleMachine {
 }
 ```
 
-This translates to JavaScript where this machine is exported by its name:
+This translates to JavaScript where a function is exported that creates the machine:
 
 ```js
 import { createMachine } from 'xstate';
 
-export const toggleMachine = createMachine({
-  states: {
-    on: {
+export function toggleMachine() {
+  return createMachine({
+    states: {
       on: {
-        toggle: 'off'
-      }
-    },
-    off: {
-      on: {
-        toggle: 'on'
+        on: {
+          toggle: 'off'
+        }
+      },
+      off: {
+        on: {
+          toggle: 'on'
+        }
       }
     }
-  }
-});
+  });
+}
 ```
 
 The biggest benefit to naming a machine is when you want to have multiple machines in the same Lucy module. Each will be exported, but you can also use them internally like so:
@@ -76,7 +129,7 @@ machine walk {
 
 machine stoplight {
   state red {
-    invoke walk {
+    invoke(walk) {
       done => green
     }
   }
@@ -98,13 +151,15 @@ __out.js__
 ```js
 import { createMachine } from 'xstate';
 
-export default createMachine({
-  states: {
-    idle: {
+export default function() {
+  return createMachine({
+    states: {
+      idle: {
 
+      }
     }
-  }
-});
+  });
+}
 ```
 
 ## State
@@ -226,9 +281,7 @@ An __immediate__ transition is one that occurs immediately upon entering a state
 In Lucy an immediate is specified by using the `=>` token *without* an event name, like so:
 
 ```lucy
-use './util' { addUserToContext }
-
-action setUser = addUserToContext
+action setUser = :addUserToContext
 
 state loading {
   complete => assignData
@@ -285,17 +338,15 @@ Delays can be specified using either:
   Above the `wait` state transitions to `start` after a delay of __2 seconds__.
 
 
-* __Function__: a function imported from JavaScript can be used to specify a dynamic delay. This is useful when the context of the state machine is needed to determine the length of the delay. The function must return an integer.
+* __Function__: a function imported from JavaScript or provided via a symbol can be used to specify a dynamic delay. This is useful when the context of the state machine is needed to determine the length of the delay. The function must return an integer.
 
   ```lucy
-  use './util' { lightDelay }
-
   state green {
-    delay(lightDelay) => yellow
+    delay(:lightDelay) => yellow
   }
 
   state yellow {
-    delay(yellowLightDelay) => red
+    delay(:yellowLightDelay) => red
   }
 
   final state red {}
@@ -310,14 +361,12 @@ Additionally Lucy has the concept of 2 special events, `@entry` and `@exit`. The
 The `@entry` event occurs when first entering a state. It provides a way to perform [actions](#actions) without exiting the state.
 
 ```lucy
-use './util' { log }
-
 state first {
   click => second
 }
 
 state second {
-  @entry => action(log)
+  @entry => action(:log)
 
   // We remain in the `second` state
 }
@@ -328,11 +377,9 @@ state second {
 The `@exit` event occurs when exiting a state. It provides a way to peform [actions](#actions) within needing an intermediate state.
 
 ```lucy
-use './util' { log }
-
 state first {
   click => second
-  @exit => action(log)
+  @exit => action(:log)
 }
 
 final state second {}
@@ -351,14 +398,12 @@ Actions can be named at the top level of a machine using the `action` keyword. Y
 
 ### Named actions
 
-Name actions start with keyword `action`, then a name for the action, followed by an equal sign and an external reference.
+Name actions start with keyword `action`, then a name for the action, followed by an equal sign and a reference (such as a symbol).
 
 Named actions are useful when you think you might want to reuse the action, or to give the action a more descriptive name.
 
 ```lucy
-use './util' { log }
-
-action logTransition = log
+action logTransition = :log
 
 state ping {
   ping => logTransition => pong
@@ -371,13 +416,11 @@ state pong {
 
 ### Inline actions
 
-Inline actions are used by calling the `action` keyword as a function, followed by the external value (a JavaScript function).
+Inline actions are used by calling the `action` keyword as a function, followed by the reference.
 
 ```lucy
-use './util' { log }
-
 state ping {
-  ping => action(log) => pong
+  ping => action(:log) => pong
 }
 
 state pong {
@@ -394,9 +437,7 @@ An __assign__ is a special kind of action that assigns a *value* to the machine'
 Since an assign is a form of an action, you can create a named action for the assign using the `action` assignment form:
 
 ```lucy
-use './util' { loadUsers, pluckUser }
-
-action addLoadedUser = assign(user, pluckUser)
+action addLoadedUser = assign(user, :pluckUser)
 
 state idle {
   enter => addLoadedUser => loaded
@@ -412,10 +453,8 @@ Here we are assigning the __user__ property to the machine's data. `pluckUser` i
 Like normal actions, an `assign` can also be used inline in a transition. You can use it this way to avoid having to name an action.
 
 ```lucy
-use './util' { loadUsers, pluckUser }
-
 state idle {
-  enter => assign(user, pluckUser) => loaded
+  enter => assign(user, :pluckUser) => loaded
 }
 
 state loaded {}
@@ -429,12 +468,10 @@ Like with actions, you can either created named guards, or use guards inline dur
 
 ### Named guards
 
-A named guard is created using the `guard` keyword, followed by an imported JavaScript value (a function) that will be called to determine if the transition should proceed.
+A named guard is created using the `guard` keyword, followed by a reference that will be called to determine if the transition should proceed.
 
 ```lucy
-use './util' { validCreditCard }
-
-guard isValidCard = validCreditCard
+guard isValidCard = :validCreditCard
 
 state idle {
   enter => isValidCard => purchasing
@@ -445,13 +482,11 @@ state purchasing {}
 
 ### Inline guards
 
-A guard can also be called like a function, inline inside of the transition. The argument is the external JavaScript function used to dynamically determine if the transition should proceed.
+A guard can also be called like a function, inline inside of the transition. The argument is the reference used to dynamically determine if the transition should proceed.
 
 ```lucy
-use './util' { validCreditCard }
-
 state idle {
-  enter => guard(validCreditCard) => purchasing
+  enter => guard(:validCreditCard) => purchasing
 }
 
 state purchasing {}
@@ -474,10 +509,8 @@ export function getUsers() {
 __machine.lucy__
 
 ```lucy
-use './utils.js' { getUsers }
-
 state idle {
-  invoke getUsers {
+  invoke(:getUsers) {
     done => assign(users)
   }
 }
@@ -500,7 +533,7 @@ machine light {
 
 machine main {
   state idle {
-    invoke light {
+    invoke(light) {
       done => idle
     }
   }
@@ -534,14 +567,12 @@ machine app {
 Once you've spawned a machine you can send messages to it using the __send__ action. The first argument is the referenced actor, the second is an event to send.
 
 ```lucy
-use './api' { deleteTodo }
-
 machine todoItem {
   state idle {
     delete => deleting
   }
   state deleting {
-    invoke deleteTodo {
+    invoke(:deleteTodo) {
       done => deleted
     }
   }
@@ -563,14 +594,12 @@ Here during the `delete` event of our app we use the send action to tell our ref
 Likewise, an actor can send messages back to their parent using the special `parent` keyword with `send`:
 
 ```lucy
-use './api' { deleteTodo, updateUI }
-
 machine todoItem {
   state idle {
     delete => deleting
   }
   state deleting {
-    invoke deleteTodo {
+    invoke(:deleteTodo) {
       done => deleted
     }
   }
@@ -583,7 +612,7 @@ machine app {
   state idle {
     new => assign(todo, spawn(todoItem))
     delete => send(todo, delete)
-    deleted => action(updateUI)
+    deleted => action(:updateUI)
   }
 }
 ```
