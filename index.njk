@@ -25,10 +25,10 @@ title: Lucy | A DSL for Finite State Machines
     <dl>
       <dt>Expressive</dt>
       <dd>Complex sets of events, guards, actions, and destination states can be expressed in a single line. Nesting machines gives you a hierarchical machine.</dd>
-      <dt>Complete</dt>
-      <dd>Lucy compiles to <a href="https://xstate.js.org/docs/">XState</a>, the best-in-class JavaScript library for <abbr title="Finite State Machines">FSMs</abbr> and statecharts. Lucy supports all of its core features, meaning you get the full power of statecharts by using Lucy.</dd>
+      <dt>Plain JavaScript</dt>
+      <dd>Lucy compiles each machine to a small, readable JavaScript module with no dependencies and no runtime library. What runs is a handful of ordinary functions, so the code you ship is tiny and stack traces stay shallow.</dd>
       <dt>Fast</dt>
-      <dd>Lucy is written in C and compiled to <a href="https://webassembly.org/">WebAssembly</a> for easy use in JavaScript projects. The wasm backend is <strong>15x</strong> faster than the previous JavaScript based compiler.</dd>
+      <dd>Lucy is written in C, so compiling is quick: <code>lucyc</code> is a native command-line compiler, and the same compiler is built to <a href="https://webassembly.org/">WebAssembly</a> for easy use in JavaScript projects. At run time, sending an event is a lookup and a function call.</dd>
     </dl>
   </header>
 
@@ -47,24 +47,51 @@ initial state disabled {
 
     <h1>out.js</h1>
     {% highlight "js" %}
-import { createMachine } from 'xstate';
-
-export default function() {
-  return createMachine({
-    initial: 'disabled',
-    states: {
-      enabled: {
-        on: {
-          toggle: 'disabled'
-        }
-      },
-      disabled: {
-        on: {
-          toggle: 'enabled'
-        }
+export default function createMachine({ context = {} } = {}) {
+  const listeners = new Set();
+  const states = {
+    enabled: {
+      toggle() {
+        machine.state = 'disabled';
+      }
+    },
+    disabled: {
+      toggle() {
+        machine.state = 'enabled';
       }
     }
-  });
+  };
+  function notify() {
+    for(const listener of listeners) {
+      listener(machine);
+    }
+  }
+  const machine = {
+    state: 'disabled',
+    context,
+    send(event) {
+      if(typeof event === 'string') {
+        event = { type: event };
+      }
+      const handler = states[machine.state][event.type];
+      if(handler) {
+        handler(event);
+        notify();
+      }
+    },
+    subscribe(listener) {
+      listeners.add(listener);
+      return () => listeners.delete(listener);
+    },
+    start() {
+      notify();
+      return machine;
+    },
+    stop() {
+      listeners.clear();
+    }
+  };
+  return machine;
 }
     {% endhighlight %}
   <section>
@@ -77,7 +104,7 @@ export default function() {
   <p>To use the command-line compiler install with:</p>
 
    {% highlight "shell" %}
-curl -sSf https://lucylang.org/install.sh | bash
+curl -sSf https://lucy.spooky.click/install.sh | bash
    {% endhighlight %}
 </section>
 

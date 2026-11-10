@@ -57,16 +57,16 @@ state yellow {
 }
 ```
 
-If no __initial__ state is provided the runtime will usually use the first state declared. Defining your initial state is still good practice for readability.
+If no __initial__ state is provided the machine starts in the first state declared. Defining your initial state is still good practice for readability.
 
-Conversely a machine can have a __final__ state, which is a state in which the machine cannot transition out of.
+Conversely a machine can have a __final__ state, which is a state in which the machine cannot transition out of. When a machine enters a final state its `done` property becomes `true`.
 
 Not all machines need a final state. The stoplight example does not, because we want the stoplight to continue indefinitely. Machines with final states are usually those with a limited lifespan.
 
 This example is a washing machine, which starts, washes, and finishes.
 
 ```lucy
-action beep
+action beep = :beep
 
 initial state off {
   start => wash
@@ -85,27 +85,31 @@ state dry {
 }
 
 final state clean {
-  => beep
+  @entry => beep
 }
 ```
 
 ## Nested state
 
-States can contain their own states. This allows better grouping of states within your application. Just as with top-level states, nested states can be marked as __initial__ and __final__.
+States can contain their own states, by putting a machine inside the state. This allows better grouping of states within your application. Just as with top-level states, nested states can be marked as __initial__ and __final__.
 
 ```lucy
 state lunch {
-  initial state cook {
-    done => eating
-  }
+  machine meal {
+    initial state cook {
+      done => eat
+    }
 
-  state eat {
-    done => loadDiswasher
-  }
+    state eat {
+      done => loadDishwasher
+    }
 
-  final state loadDiswasher {}
+    final state loadDishwasher {}
+  }
 }
 ```
+
+While the machine is in a nested state its `state` is a dotted path, such as `'lunch.cook'`.
 
 # Transitions
 
@@ -116,7 +120,7 @@ In Lucy you can define a transition between states. The fat-arrow (`=>`) symbol 
 * __actions__: Side-effects that run during the transition.
 * __states__: The desired state at the end of the transition.
 
-The ordering of these steps is determined by the runtime, but most of the time the ordering should be: `event => action or guard => state`.
+Write them in the order `event => guards and actions => state`. Whatever order they're written in, the guards are checked first, and if one fails the transition isn't taken. Then the actions run, in the order they're written, and finally the machine moves to the new state.
 
 Many transitions don't contain actions or guards, and are simply a mapping of events to states. For example this toggle machine:
 
@@ -126,7 +130,7 @@ initial state disabled {
 }
 
 state enabled {
-  toggle => disable
+  toggle => disabled
 }
 ```
 
@@ -155,16 +159,16 @@ In the above example the `breakfast` state immediate transitions to `working`.
 Immediate transitions are good for modeling states that only exist for side-effects, such as assigning to the context. The following machine is used to display an error message when a form contains an error, and to clear the error when not.
 
 ```lucy
-action clearError
-action updateSubmissionError
-action thankUser
+action clearError = :clearError
+action updateSubmissionError = :updateSubmissionError
+action thankUser = :thankUser
 
-guard hasError
-guard canSubmit
+guard hasError = :hasError
+guard canSubmit = :canSubmit
 
 initial state form {
   keyup => input
-  submit => complete
+  submit => validate
 }
 
 state input {
@@ -178,7 +182,7 @@ state validate {
 }
 
 final state complete {
-  => thankUser
+  @entry => thankUser
 }
 ```
 
@@ -186,86 +190,119 @@ This machine allows you to fill out a login form. When the user `submit`s the fo
 
 Whenever the user starts typing again the error message is cleared out and isn't shown until the form is submitted again.
 
-When the user submits the form and the `canSubmit` guard passes, it moves to the `complete` state where it immediately runs the `thankUser` action.
+When the user submits the form and the `canSubmit` guard passes, it moves to the `complete` state, whose `@entry` runs the `thankUser` action.
 
 # Context
 
 Finite state machines allow modeling known states, but real applications contain data such as from user input that must be placed outside of the states. Statecharts include [extended state](https://en.wikipedia.org/wiki/UML_state_machine#Extended_states) as an answer for this.
 
-In Lucy extended state is modeled as __context__. An initial context value can be declared for a machine, and assignment actions can modify the context.
+In Lucy extended state is modeled as __context__, a plain object. The initial context is passed in from JavaScript when the machine is created, and [assign](language-overview/#assign) actions can modify the context.
+
+__name.lucy__
+
+```lucy
+state form {
+  // Transitions here might modify the context
+}
+```
+
+__app.js__
 
 ```js
-import { machine } from '@lucy/xstate';
+import createMachine from './name.js';
 
-const nameMachine = machine`
-  context ${ { name: 'world' } }
+const nameMachine = createMachine({
+  context: { name: 'world' }
+});
 
-  state form {
-    // Transitions here might modify the context  
-  }
-`;
+nameMachine.start();
+console.log(nameMachine.context.name); // world
 ```
+
+Here `name.js` is `name.lucy` compiled with `lucyc` (see the [install page](install/) for other ways).
 
 # Actions
 
-An __action__ is a side-effect taken within a transition. The following is an action that logs whenever the `increment` event is sent through the machine:
+An __action__ is a side-effect taken within a transition. The following is an action that logs whenever the `inc` event is sent through the machine:
+
+__counter.lucy__
+
+```lucy
+initial state counter {
+  inc => action(:logIncrement)
+}
+```
+
+The `:logIncrement` symbol is passed in the `actions` option when the machine is created. Actions are called with the context and the event:
 
 ```js
-import { machine } from '@lucy/xstate';
+import createMachine from './counter.js';
 
-const counterMachine = machine`
-  action logIncrement = ${() => console.log('Incremented')}
-
-  initial state counter {
-    inc => logIncrement
+const counterMachine = createMachine({
+  actions: {
+    logIncrement: (context, event) => console.log('Incremented')
   }
-`;
+}).start();
+
+counterMachine.send('inc'); // Incremented
 ```
 
 ## Assign
 
 The __assign__ keyword is used within an action to assign a __context__ value as part of an action. This is useful to keep [extended state](https://en.wikipedia.org/wiki/UML_state_machine#Extended_states).
 
-The above counter machine is missing keeping the count. The following adds an `incrementCount` action with an assignment.
+The above counter machine is missing keeping the count. The following adds an assignment after the log.
 
-```js
-import { machine } from '@lucy/xstate';
+__counter.lucy__
 
-const counterMachine = machine`
-  context ${ { count: 0 } }
-
-  action logIncrement = ${() => console.log('Incremented')}
-
-  action incrementCount = assign count ${({ count }) => count + 1}
-
-  initial state counter {
-    inc => logIncrement => incrementCount
-  }
-`;
+```lucy
+initial state counter {
+  inc => action(:logIncrement) => assign(count, :increment)
+}
 ```
 
-Assign takes the signature of `assign prop ${fn}` where `prop` is a property on the __context__ object, and `fn` is a function that returns a new value for `prop`.
+```js
+import createMachine from './counter.js';
+
+const counterMachine = createMachine({
+  context: { count: 0 },
+  actions: {
+    logIncrement: () => console.log('Incremented')
+  },
+  assigns: {
+    increment: ({ count }) => count + 1
+  }
+}).start();
+
+counterMachine.send('inc'); // Incremented
+console.log(counterMachine.context.count); // 1
+```
+
+Assign takes the form `assign(prop, fn)` where `prop` is a property on the __context__ object, and `fn` is a function that returns a new value for `prop`. It's called with the context and the event, like an action. Each assign gives the machine a new context object rather than changing the old one.
 
 # Guards
 
 __Guards__ control the ability to exit or enter a state. In the following example we only want to enter the `submit` state if the machine state is valid.
 
 ```lucy
-guard invalidPassword
+guard invalidPassword = :invalidPassword
 
 initial state form {
-  done => submit
+  done => validate
 }
 
-final state submit {
+state validate {
   => invalidPassword => form
+  => submit
 }
+
+final state submit {}
 ```
 
 We could also model this as part of the form transition. When the `done` event fires, check for the passwords validity before proceeding:
 
 ```lucy
-guard validPassword
+guard validPassword = :validPassword
 
 initial state form {
   done => validPassword => submit

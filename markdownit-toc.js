@@ -112,26 +112,28 @@ var renderAnchorLink = function renderAnchorLink(anchor, options, tokens, idx, _
 
 var treeToMarkdownBulletList = function treeToMarkdownBulletList(tree) {
   var indent = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+  var fromBase = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "";
   return tree.map(function (item) {
     var indentation = "  ";
     var node = "".concat(repeat(indentation, indent), "*");
 
     if (item.heading.content) {
       var contentWithoutAnchor = item.heading.content.replace(/\[([^\]]*)\]\([^)]*\)/g, "$1");
-      node += " " + "[".concat(contentWithoutAnchor, "](#").concat(item.heading.anchor, ")\n");
+      // Like the heading anchors, link from the <base>, not the page.
+      node += " " + "[".concat(contentWithoutAnchor, "](").concat(fromBase, "#").concat(item.heading.anchor, ")\n");
     } else {
       node += "\n";
     }
 
     if (item.nodes.length) {
-      node += treeToMarkdownBulletList(item.nodes, indent + 1);
+      node += treeToMarkdownBulletList(item.nodes, indent + 1, fromBase);
     }
 
     return node;
   }).join("");
 };
 
-var generateTocMarkdownFromArray = function generateTocMarkdownFromArray(headings, options) {
+var generateTocMarkdownFromArray = function generateTocMarkdownFromArray(headings, options, fromBase) {
   var tree = {
     nodes: []
   }; // create an ast
@@ -160,7 +162,7 @@ var generateTocMarkdownFromArray = function generateTocMarkdownFromArray(heading
       nodes: []
     });
   });
-  return treeToMarkdownBulletList(tree.nodes);
+  return treeToMarkdownBulletList(tree.nodes, 0, fromBase);
 };
 
 function _default(md, options) {
@@ -230,7 +232,7 @@ function _default(md, options) {
       }
     }
 
-    tocMarkdown = generateTocMarkdownFromArray(tocArray, options);
+    tocMarkdown = generateTocMarkdownFromArray(tocArray, options, state.env.page ? state.env.page.url.substr(1) : "");
     tocTokens = markdownItSecondInstance.parse(tocMarkdown, {}); // Adding tocClassName to 'ul' element
 
     if (_typeof(tocTokens[0]) === "object" && tocTokens[0].type === "bullet_list_open") {

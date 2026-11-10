@@ -33,14 +33,14 @@ An __identifier__ is any sort of named item that can be referenced elsewhere. Lu
 
 Some examples of identifiers:
 
-* An use reference: `use './util' { log }`
+* A use reference: `use './util' { log }`
 * A named machine `machine one {}`
 
 Additionally there are a couple of special types of references in Lucy programs.
 
 ### Variables
 
-An [action](#action) or a [guard](#guard) can be given a name, in which case they are an immutable __variable__.
+An [action](docs/language/#actions) or a [guard](docs/language/#guards) can be given a name, in which case they are an immutable __variable__.
 
 ```lucy
 use './util' { log }
@@ -56,12 +56,14 @@ __Symbols__ are an important part of Lucy programs, they allow you to refer to a
 state idle {
   pay => guard(:hasFunds) => purchase
 }
+
+state purchase {}
 ```
 
-Here `:hasFunds` refers to a function that is passed in on the JavaScript side. A `symbol` can be used anywhere a normal reference can be used.
+Here `:hasFunds` refers to a function that is passed in on the JavaScript side, when the machine is created. A `symbol` can be used anywhere a normal reference can be used.
 
 ```js
-import createMachine from './register.lucy';
+import createMachine from './register.js';
 
 const machine = createMachine({
   context: {
@@ -72,6 +74,8 @@ const machine = createMachine({
   }
 });
 ```
+
+Each kind of symbol goes in its own option: `actions`, `guards`, `assigns` (the values for [assign](docs/language/#assign)), `delays`, and `services` (what [invoke](docs/language/#invoke) and [spawn](docs/language/#spawning) call). Each function is called with `(context, event)`. A machine only reads the options it uses.
 
 ## Machine
 
@@ -93,26 +97,56 @@ machine toggleMachine {
 }
 ```
 
-This translates to JavaScript where a function is exported that creates the machine:
+This compiles to a JavaScript module that exports a function to create the machine, named `create` followed by the machine's name. The output is plain JavaScript, with no runtime library:
+
+__out.js__
 
 ```js
-import { createMachine } from 'xstate';
-
-export function toggleMachine() {
-  return createMachine({
-    states: {
-      on: {
-        on: {
-          toggle: 'off'
-        }
-      },
-      off: {
-        on: {
-          toggle: 'on'
-        }
+export function createToggleMachine({ context = {} } = {}) {
+  const listeners = new Set();
+  const states = {
+    on: {
+      toggle() {
+        machine.state = 'off';
+      }
+    },
+    off: {
+      toggle() {
+        machine.state = 'on';
       }
     }
-  });
+  };
+  function notify() {
+    for(const listener of listeners) {
+      listener(machine);
+    }
+  }
+  const machine = {
+    state: 'on',
+    context,
+    send(event) {
+      if(typeof event === 'string') {
+        event = { type: event };
+      }
+      const handler = states[machine.state][event.type];
+      if(handler) {
+        handler(event);
+        notify();
+      }
+    },
+    subscribe(listener) {
+      listeners.add(listener);
+      return () => listeners.delete(listener);
+    },
+    start() {
+      notify();
+      return machine;
+    },
+    stop() {
+      listeners.clear();
+    }
+  };
+  return machine;
 }
 ```
 
@@ -140,27 +174,42 @@ machine stoplight {
 
 ### Implicit machines
 
-A Lucy file can have top-level states, in which case there is an implicit machine. The `machine` keyword is not needed in this case, and a single machine is exported (as the default JavaScript) export.
+A Lucy file can have top-level states, in which case there is an implicit machine. The `machine` keyword is not needed in this case, and a single machine is exported as the module's default export, a function named `createMachine`.
 
 ```lucy
 state idle {}
 ```
 
-__out.js__
+__out.js__ (the first line)
 
 ```js
-import { createMachine } from 'xstate';
-
-export default function() {
-  return createMachine({
-    states: {
-      idle: {
-
-      }
-    }
-  });
-}
+export default function createMachine({ context = {} } = {}) {
 ```
+
+### Using a machine
+
+Each factory takes an optional object of options, `{ context, actions, guards, assigns, delays, services }`, and returns a machine:
+
+```js
+import { createToggleMachine } from './toggle.js';
+
+const machine = createToggleMachine({ context: { clicks: 0 } });
+
+machine.subscribe(m => console.log(m.state, m.context));
+machine.start();         // on { clicks: 0 }
+machine.send('toggle');  // off { clicks: 0 }
+machine.stop();
+```
+
+* `state` is the name of the current state, or a dotted path such as `'red.walk'` inside a [nested state](docs/language/#nested-state).
+* `context` is the machine's data, a plain object. It starts as the `context` option (or `{}`), and each [assign](docs/language/#assign) replaces it with a new object.
+* `send(event)` takes an event's type, or an object like `{ type: 'set', data: 5 }`, and runs the transition at once. An event the current state doesn't handle is ignored.
+* `subscribe(listener)` calls the listener with the machine after each change. It returns a function that unsubscribes.
+* `start()` enters the initial state (running its entry actions, delays and invokes) and returns the machine.
+* `stop()` clears timers, drops pending invokes, stops child machines and removes the listeners.
+* `done` is there when the machine has [final states](docs/language/#final-state), and becomes `true` when one is entered.
+
+The `.js` file comes from compiling the `.lucy` file with `lucyc` (`lucyc --out-file toggle.js toggle.lucy`) or from JavaScript; see the [install page](install/).
 
 ## State
 
@@ -178,7 +227,7 @@ In the above `idle` is the name of the state, `click` is an event that occurs wi
 
 ### Initial state
 
-The `initial` state is the state that the machine is first in when the machine starts. Machines *are not* required to have an initial state, but most FSM runtimes expect one. You can mark a state as initial using the `initial` modifier:
+The `initial` state is the state that the machine is first in when the machine starts. Machines *are not* required to have an initial state; without one, the machine starts in the first state. You can mark a state as initial using the `initial` modifier:
 
 ```lucy
 initial state idle {}
@@ -186,7 +235,7 @@ initial state idle {}
 
 ### Final state
 
-A final state is a state which cannot be transitioned out of.
+A final state is a state which cannot be transitioned out of. When the machine enters one, its `done` property becomes `true`. A machine that [invokes](docs/language/#invoke) this one gets a `done` event at that point.
 
 ```lucy
 initial state loading {
@@ -197,6 +246,8 @@ final state broken {
 
 }
 ```
+
+A final state can still have `@entry` actions, but any transitions in it are never taken, and the compiler warns about them.
 
 ### Nested state
 
@@ -230,9 +281,31 @@ machine light {
 }
 ```
 
+When the light enters `red`, it also enters the nested machine's initial state, so its `state` is `'red.walk'`, then `'red.wait'` and `'red.stop'`. Events that `red` handles still work in its nested states: `timer` moves from any of them back to `green`.
+
+A transition can target a nested state with the same dotted path:
+
+```lucy
+initial state idle {
+  fetch => fetching
+
+  machine idling {
+    initial state noError {}
+
+    state errored {}
+  }
+}
+
+state fetching {
+  reportError => idle.errored
+}
+```
+
 ## Transitions
 
-Moving from one [state](#state) to another is called a __transition__. A transition can occur for a number of reasons, illuminated below. Most commonly however, a transition occurs because of an __event__, such as a user clicking a button.
+Moving from one [state](docs/language/#state) to another is called a __transition__. A transition can occur for a number of reasons, illuminated below. Most commonly however, a transition occurs because of an __event__, such as a user clicking a button.
+
+A transition can also have [guards](docs/language/#guards) and [actions](docs/language/#actions). When it's taken, the guards are checked first, and if any of them fails nothing happens. Otherwise the current state's `@exit` actions run, then the transition's actions in the order they're written, and then the new state is entered and its `@entry` actions run.
 
 ### Event
 
@@ -244,7 +317,7 @@ state idle {
 }
 
 state loadingUser {
-  // ...  
+  // ...
 }
 ```
 
@@ -256,6 +329,8 @@ Using `click =>` is how you will almost always define transitions in Lucy. It's 
 state idle {
   on(click) => loadingUser
 }
+
+state loadingUser {}
 ```
 
 This can *rarely* be useful. For example, `delay` is a keyword in Lucy so this will result in a compilation error:
@@ -272,6 +347,8 @@ However if you use the on() function you can have events named delay:
 state idle {
   on(delay) => loadingUser
 }
+
+state loadingUser {}
 ```
 
 ### Immediate
@@ -281,7 +358,7 @@ An __immediate__ transition is one that occurs immediately upon entering a state
 In Lucy an immediate is specified by using the `=>` token *without* an event name, like so:
 
 ```lucy
-action setUser = :addUserToContext
+action setUser = assign(user, :addUserToContext)
 
 state loading {
   complete => assignData
@@ -318,6 +395,8 @@ Delays can be specified using either:
   initial state loading {
     delay(200) => idle
   }
+
+  state idle {}
   ```
 
   Above the `loading` state transitions to `idle` after 200 milliseconds.
@@ -338,7 +417,7 @@ Delays can be specified using either:
   Above the `wait` state transitions to `start` after a delay of __2 seconds__.
 
 
-* __Function__: a function imported from JavaScript or provided via a symbol can be used to specify a dynamic delay. This is useful when the context of the state machine is needed to determine the length of the delay. The function must return an integer.
+* __Function__: a function imported from JavaScript or provided via a symbol (in the `delays` option) can be used to specify a dynamic delay. This is useful when the context of the state machine is needed to determine the length of the delay. The function is called with `(context, event)` and must return a number of milliseconds.
 
   ```lucy
   state green {
@@ -358,7 +437,7 @@ Additionally Lucy has the concept of 2 special events, `@entry` and `@exit`. The
 
 #### @entry
 
-The `@entry` event occurs when first entering a state. It provides a way to perform [actions](#actions) without exiting the state.
+The `@entry` event occurs when first entering a state. It provides a way to perform [actions](docs/language/#actions) without exiting the state.
 
 ```lucy
 state first {
@@ -374,7 +453,7 @@ state second {
 
 #### @exit
 
-The `@exit` event occurs when exiting a state. It provides a way to peform [actions](#actions) within needing an intermediate state.
+The `@exit` event occurs when exiting a state. It provides a way to perform [actions](docs/language/#actions) without needing an intermediate state.
 
 ```lucy
 state first {
@@ -430,7 +509,7 @@ state pong {
 
 ### Assign
 
-An __assign__ is a special kind of action that assigns a *value* to the machine's data (in XState this is called the [context](https://xstate.js.org/docs/guides/context.html)).
+An __assign__ is a special kind of action that assigns a *value* to a property of the machine's data, its __context__. The context is a plain object, `machine.context`; an assign doesn't change it in place but replaces it with a new object that has the new value.
 
 #### Named actions
 
@@ -446,7 +525,17 @@ state idle {
 state loaded {}
 ```
 
-Here we are assigning the __user__ property to the machine's data. `pluckUser` is being used as a reducer. It takes in the event coming from `enter`, which might contain data such as a list of users, and returns something that is assigned to `user`.
+Here we are assigning the __user__ property to the machine's data. `pluckUser` is being used as a reducer, passed in the `assigns` option. It is called with the context and the event coming from `enter`, which might contain data such as a list of users, and returns something that is assigned to `user`.
+
+```js
+const machine = createMachine({
+  assigns: {
+    pluckUser: (context, event) => event.data.users[0]
+  }
+});
+```
+
+With only a property name, `assign(user)` assigns the event's `data`.
 
 #### Inline assigns
 
@@ -494,27 +583,36 @@ state purchasing {}
 
 ## Invoke
 
-The keyword `invoke` is used to call external code and wait until it is complete. This could be a [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) or a Machine. If it is a machine, the `done` event will be sent when the machine reaches its [final state](docs/language/#final-state).
+The keyword `invoke` is used to call external code and wait until it is complete. This could be a function that returns a [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise), or a Machine. The invoke starts when the state is entered and is dropped if the state is left first. For a promise, the `done` event is sent with the resolved value as its `data`, and the `error` event if it rejects. If it is a machine, the `done` event will be sent when the machine reaches its [final state](docs/language/#final-state).
 
 Invoking promises:
 
 __utils.js__
 
 ```js
-export function getUsers() {
-  return fetch('/users');
+export function getUsers(context, event) {
+  return fetch('/users').then(res => res.json());
 }
 ```
 
 __machine.lucy__
 
 ```lucy
-state idle {
-  invoke(:getUsers) {
-    done => assign(users)
+use './utils.js' { getUsers }
+
+initial state loading {
+  invoke(getUsers) {
+    done => assign(users) => loaded
+    error => failed
   }
 }
+
+state loaded {}
+
+state failed {}
 ```
+
+The function can also be a symbol, `invoke(:getUsers)`, passed in the `services` option.
 
 Invoking other machines:
 
@@ -542,9 +640,9 @@ machine main {
 
 ## Actors
 
-Actors allow you to create new machines and keep a reference to them within your own machine, through an [assign reference](#assign). You can send messages to the new machine, and they can send messages back to you.
+Actors allow you to create new machines and keep a reference to them within your own machine, through an [assign reference](docs/language/#assign). You can send messages to the new machine, and they can send messages back to you.
 
-Spawning a machine is a little like using [invoke](#invoke) on a machine. Unlike with __invoke__, a spawned machine does not block your current machine from transitioning.
+Spawning a machine is a little like using [invoke](docs/language/#invoke) on a machine. Unlike with __invoke__, a spawned machine does not block your current machine from transitioning.
 
 ### Spawning
 
@@ -562,17 +660,21 @@ machine app {
 }
 ```
 
+The spawned machine is created by calling its factory and started, and the reference is saved to the context. A spawned machine is created without options, so give it what it needs with `use` rather than symbols, as below. Spawned machines are stopped when their parent is.
+
 ### Sending messages to actors
 
 Once you've spawned a machine you can send messages to it using the __send__ action. The first argument is the referenced actor, the second is an event to send.
 
 ```lucy
+use './api.js' { deleteTodo }
+
 machine todoItem {
   state idle {
     delete => deleting
   }
   state deleting {
-    invoke(:deleteTodo) {
+    invoke(deleteTodo) {
       done => deleted
     }
   }
@@ -594,17 +696,19 @@ Here during the `delete` event of our app we use the send action to tell our ref
 Likewise, an actor can send messages back to their parent using the special `parent` keyword with `send`:
 
 ```lucy
+use './api.js' { deleteTodo }
+
 machine todoItem {
   state idle {
     delete => deleting
   }
   state deleting {
-    invoke(:deleteTodo) {
+    invoke(deleteTodo) {
       done => deleted
     }
   }
   final state deleted {
-    enter => send(parent, deletedTodo)
+    @entry => send(parent, deletedTodo)
   }
 }
 
@@ -612,7 +716,9 @@ machine app {
   state idle {
     new => assign(todo, spawn(todoItem))
     delete => send(todo, delete)
-    deleted => action(:updateUI)
+    deletedTodo => action(:updateUI)
   }
 }
 ```
+
+> Note: the current compiler doesn't give spawned machines a reference to their parent yet, so `send(parent, ...)` compiles but fails when it runs.
