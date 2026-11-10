@@ -1,7 +1,6 @@
 ---
-layout: page.njk
+layout: ../layouts/Page.astro
 title: Prism Plugin
-tags: page
 ---
 
 Adds support for Lucy to the [Prism](https://prismjs.com/) syntax highlighter. Highlighting works for Lucy blocks and when Lucy is embedded in JavaScript [tagged templates](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals#Tagged_templates).

@@ -1,0 +1,28 @@
+---
+import Base from '../components/Base.astro';
+import BaseStyles from '../components/BaseStyles.astro';
+import Footer from '../components/Footer.astro';
+import Icons from '../components/Icons.astro';
+import Nav from '../components/Nav.astro';
+
+const { frontmatter, bodyClass, base } = Astro.props;
+---
+<!doctype html>
+<html lang="en">
+<title>{frontmatter.title}</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<Base href={base} />
+<BaseStyles />
+<Icons />
+
+<body class:list={['page', bodyClass, 'no-anchor-link']}>
+<Nav />
+
+<section class="container font-3">
+  <slot />
+</section>
+
+<Footer />
+</body>
+</html>

@@ -1,0 +1,13 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "lucy-website",
+  "compatibility_date": "2026-11-10",
+  // A static site: no Worker script, just the files Astro builds into dist/.
+  "assets": {
+    "directory": "./dist",
+    // /install serves (by redirect) /install/, which is install/index.html.
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page"
+  },
+  "routes": [{ "pattern": "lucy.spooky.click", "custom_domain": true }]
+}

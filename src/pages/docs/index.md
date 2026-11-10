@@ -1,6 +1,6 @@
 ---
 title: Documentation
-layout: page.njk
+layout: ../../layouts/Page.astro
 ---
 
 # Lucy Docs

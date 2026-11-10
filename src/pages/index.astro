@@ -1,22 +1,29 @@
 ---
-title: Lucy | A DSL for Finite State Machines
+import { Prism } from '@astrojs/prism';
+import Base from '../components/Base.astro';
+import BaseStyles from '../components/BaseStyles.astro';
+import Footer from '../components/Footer.astro';
+import Nav from '../components/Nav.astro';
+import '../prism.ts';
+
+const title = 'Lucy | A DSL for Finite State Machines';
 ---
 <!doctype html>
 <html lang="en">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>{{ title }}</title>
-<base href="{{ page.url | baseUrl }}">
+<title>{title}</title>
+<Base />
 
 <link rel="stylesheet" href="styles/home.css">
-{% include "_base-styles.njk" %}
+<BaseStyles />
 <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
 <link rel="manifest" href="images/site.webmanifest">
 
 <body class="home">
-{% include "_nav.njk" %}
+<Nav />
 <div class="hero container">
   <header class="description">
     <h1 class="title">🧛🏻‍♀️ Lucy <span class="subtitle">language</span></h1>
@@ -35,19 +42,16 @@ title: Lucy | A DSL for Finite State Machines
   <section class="example">
     <h1>toggle.lucy</h1>
 
-    {% highlight "lucy" %}
-state enabled {
+    <Prism lang="lucy" code={`state enabled {
   toggle => disabled
 }
 
 initial state disabled {
   toggle => enabled
-}
-    {% endhighlight %}
+}`} />
 
     <h1>out.js</h1>
-    {% highlight "js" %}
-export default function createMachine({ context = {} } = {}) {
+    <Prism lang="js" code={`export default function createMachine({ context = {} } = {}) {
   const listeners = new Set();
   const states = {
     enabled: {
@@ -92,9 +96,8 @@ export default function createMachine({ context = {} } = {}) {
     }
   };
   return machine;
-}
-    {% endhighlight %}
-  <section>
+}`} />
+  </section>
 </div>
 
 <section class="install container">
@@ -103,9 +106,8 @@ export default function createMachine({ context = {} } = {}) {
   <p>See the <a href="install/">install page</a> for detailed instructions on the various ways you can use Lucy, such as with popular JavaScript build tools.</p>
   <p>To use the command-line compiler install with:</p>
 
-   {% highlight "shell" %}
-curl -sSf https://lucy.spooky.click/install.sh | bash
-   {% endhighlight %}
+   <Prism lang="shell" code={`curl -sSf https://lucy.spooky.click/install.sh | bash`} />
 </section>
 
-{% include "_footer.njk" %}
+<Footer /></body>
+</html>

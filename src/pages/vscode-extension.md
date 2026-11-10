@@ -1,7 +1,6 @@
 ---
-layout: page.njk
+layout: ../layouts/Page.astro
 title: VSCode Extension
-tags: page
 ---
 
 Syntax highlighting and code completion for [Lucy](./).
