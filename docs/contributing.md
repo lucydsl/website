@@ -5,7 +5,7 @@ layout: page.njk
 
 # Contributing
 
-If you want to fix a bug or implement a feature in the Lucy compiler, that should be done in the [liblucy](https://github.com/matthewp/liblucy) project.
+If you want to fix a bug or implement a feature in the Lucy compiler, that should be done in the [liblucy](https://github.com/lucydsl/liblucy) project.
 
 Most development can be done using the `lucyc` CLI. You can build just this binary using `make bin/lucyc`. Below is instructions on building liblucy.
 

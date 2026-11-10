@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# This is the bootstrap Unix installer served by `https://lucylang.org/install.sh`.
+# This is the bootstrap Unix installer served by `https://lucy.spooky.click/install.sh`.
 # Its responsibility is to query the system to determine what OS (and in the
 # case of Linux, what OpenSSL version) the system has, fetch and install the
 # appropriate build of Lucy, and modify the user's profile.

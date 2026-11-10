@@ -9,7 +9,7 @@ The following are currently supported methods of installing __Lucy__.
 ## Installer
 
 ```bash
-curl -sSf https://lucylang.org/install.sh | bash
+curl -sSf https://lucy.spooky.click/install.sh | bash
 ```
 
 This will install the `lucyc` binary to your `$HOME/.lucy` folder. Open a new terminal and run:
