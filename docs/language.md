@@ -43,7 +43,7 @@ Additionally there are a couple of special types of references in Lucy programs.
 
 ### Variables
 
-An [action](#action) or a [guard](#guard) can be given a name, in which case they are an immutable __variable__.
+An [action](docs/language/#actions) or a [guard](docs/language/#guards) can be given a name, in which case they are an immutable __variable__.
 
 ```lucy
 use './util' { log }
@@ -78,7 +78,7 @@ const machine = createMachine({
 });
 ```
 
-Each kind of symbol goes in its own option: `actions`, `guards`, `assigns` (the values for [assign](#assign)), `delays`, and `services` (what [invoke](#invoke) and [spawn](#spawning) call). Each function is called with `(context, event)`. A machine only reads the options it uses.
+Each kind of symbol goes in its own option: `actions`, `guards`, `assigns` (the values for [assign](docs/language/#assign)), `delays`, and `services` (what [invoke](docs/language/#invoke) and [spawn](docs/language/#spawning) call). Each function is called with `(context, event)`. A machine only reads the options it uses.
 
 ## Machine
 
@@ -204,13 +204,13 @@ machine.send('toggle');  // off { clicks: 0 }
 machine.stop();
 ```
 
-* `state` is the name of the current state, or a dotted path such as `'red.walk'` inside a [nested state](#nested-state).
-* `context` is the machine's data, a plain object. It starts as the `context` option (or `{}`), and each [assign](#assign) replaces it with a new object.
+* `state` is the name of the current state, or a dotted path such as `'red.walk'` inside a [nested state](docs/language/#nested-state).
+* `context` is the machine's data, a plain object. It starts as the `context` option (or `{}`), and each [assign](docs/language/#assign) replaces it with a new object.
 * `send(event)` takes an event's type, or an object like `{ type: 'set', data: 5 }`, and runs the transition at once. An event the current state doesn't handle is ignored.
 * `subscribe(listener)` calls the listener with the machine after each change. It returns a function that unsubscribes.
 * `start()` enters the initial state (running its entry actions, delays and invokes) and returns the machine.
 * `stop()` clears timers, drops pending invokes, stops child machines and removes the listeners.
-* `done` is there when the machine has [final states](#final-state), and becomes `true` when one is entered.
+* `done` is there when the machine has [final states](docs/language/#final-state), and becomes `true` when one is entered.
 
 The `.js` file comes from compiling the `.lucy` file with `lucyc` (`lucyc --out-file toggle.js toggle.lucy`) or from JavaScript; see the [install page](install/).
 
@@ -238,7 +238,7 @@ initial state idle {}
 
 ### Final state
 
-A final state is a state which cannot be transitioned out of. When the machine enters one, its `done` property becomes `true`. A machine that [invokes](#invoke) this one gets a `done` event at that point.
+A final state is a state which cannot be transitioned out of. When the machine enters one, its `done` property becomes `true`. A machine that [invokes](docs/language/#invoke) this one gets a `done` event at that point.
 
 ```lucy
 initial state loading {
@@ -306,9 +306,9 @@ state fetching {
 
 ## Transitions
 
-Moving from one [state](#state) to another is called a __transition__. A transition can occur for a number of reasons, illuminated below. Most commonly however, a transition occurs because of an __event__, such as a user clicking a button.
+Moving from one [state](docs/language/#state) to another is called a __transition__. A transition can occur for a number of reasons, illuminated below. Most commonly however, a transition occurs because of an __event__, such as a user clicking a button.
 
-A transition can also have [guards](#guards) and [actions](#actions). When it's taken, the guards are checked first, and if any of them fails nothing happens. Otherwise the current state's `@exit` actions run, then the transition's actions in the order they're written, and then the new state is entered and its `@entry` actions run.
+A transition can also have [guards](docs/language/#guards) and [actions](docs/language/#actions). When it's taken, the guards are checked first, and if any of them fails nothing happens. Otherwise the current state's `@exit` actions run, then the transition's actions in the order they're written, and then the new state is entered and its `@entry` actions run.
 
 ### Event
 
@@ -440,7 +440,7 @@ Additionally Lucy has the concept of 2 special events, `@entry` and `@exit`. The
 
 #### @entry
 
-The `@entry` event occurs when first entering a state. It provides a way to perform [actions](#actions) without exiting the state.
+The `@entry` event occurs when first entering a state. It provides a way to perform [actions](docs/language/#actions) without exiting the state.
 
 ```lucy
 state first {
@@ -456,7 +456,7 @@ state second {
 
 #### @exit
 
-The `@exit` event occurs when exiting a state. It provides a way to perform [actions](#actions) without needing an intermediate state.
+The `@exit` event occurs when exiting a state. It provides a way to perform [actions](docs/language/#actions) without needing an intermediate state.
 
 ```lucy
 state first {
@@ -586,7 +586,7 @@ state purchasing {}
 
 ## Invoke
 
-The keyword `invoke` is used to call external code and wait until it is complete. This could be a function that returns a [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise), or a Machine. The invoke starts when the state is entered and is dropped if the state is left first. For a promise, the `done` event is sent with the resolved value as its `data`, and the `error` event if it rejects. If it is a machine, the `done` event will be sent when the machine reaches its [final state](#final-state).
+The keyword `invoke` is used to call external code and wait until it is complete. This could be a function that returns a [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise), or a Machine. The invoke starts when the state is entered and is dropped if the state is left first. For a promise, the `done` event is sent with the resolved value as its `data`, and the `error` event if it rejects. If it is a machine, the `done` event will be sent when the machine reaches its [final state](docs/language/#final-state).
 
 Invoking promises:
 
@@ -643,9 +643,9 @@ machine main {
 
 ## Actors
 
-Actors allow you to create new machines and keep a reference to them within your own machine, through an [assign reference](#assign). You can send messages to the new machine, and they can send messages back to you.
+Actors allow you to create new machines and keep a reference to them within your own machine, through an [assign reference](docs/language/#assign). You can send messages to the new machine, and they can send messages back to you.
 
-Spawning a machine is a little like using [invoke](#invoke) on a machine. Unlike with __invoke__, a spawned machine does not block your current machine from transitioning.
+Spawning a machine is a little like using [invoke](docs/language/#invoke) on a machine. Unlike with __invoke__, a spawned machine does not block your current machine from transitioning.
 
 ### Spawning
 

@@ -196,7 +196,7 @@ When the user submits the form and the `canSubmit` guard passes, it moves to the
 
 Finite state machines allow modeling known states, but real applications contain data such as from user input that must be placed outside of the states. Statecharts include [extended state](https://en.wikipedia.org/wiki/UML_state_machine#Extended_states) as an answer for this.
 
-In Lucy extended state is modeled as __context__, a plain object. The initial context is passed in from JavaScript when the machine is created, and [assign](#assign) actions can modify the context.
+In Lucy extended state is modeled as __context__, a plain object. The initial context is passed in from JavaScript when the machine is created, and [assign](language-overview/#assign) actions can modify the context.
 
 __name.lucy__
 
