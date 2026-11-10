@@ -31,7 +31,7 @@ const Prism = require('prismjs');
 lucy(Prism);
 ```
 
-Once you've down that you can use Prism as normal and code blocks marked with `language-lucy` will be highlighted like so:
+Once you've done that you can use Prism as normal and code blocks marked with `language-lucy` will be highlighted like so:
 
 ```lucy
 state writing {
@@ -45,7 +45,7 @@ state break {
 
 # JavaScript
 
-`@lucy/prism` also works withing JavaScript tagged template literals using `machine` like so:
+`@lucy/prism` also works within JavaScript tagged template literals using `machine` like so:
 
 ```js
 const { lucyTemplate } = require('@lucy/prism');
@@ -54,11 +54,9 @@ const Prism = require('prismjs');
 lucyTemplate(Prism);
 ```
 
-Which results in highlighting inside code that uses the `machine` function like so:
+Which results in highlighting inside code that uses a `machine` tag function like so:
 
 ```js
-import { machine } from '@lucy/xstate';
-
 const codingMachine = machine`
   initial state implement {
     finish => test
@@ -71,3 +69,5 @@ const codingMachine = machine`
   final state release {}
 `;
 ```
+
+> Lucy itself no longer provides a `machine` tag function: the old one came from `@lucy/xstate`, which targeted XState. Compiling `.lucy` files is now the main way to use Lucy, and the highlighting works for any template tagged `machine`.

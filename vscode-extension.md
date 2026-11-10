@@ -31,8 +31,6 @@ And when embedded in JavaScript:
 __example.js__
 
 ```js
-import { machine } from '@lucy/xstate';
-
 const exampleMachine = machine`
   initial state start {
     complete => end
@@ -43,6 +41,8 @@ const exampleMachine = machine`
 ```
 
 > Important: The tagged template function *must* be named `machine` for highlighting to work in embedded JavaScript.
+
+> Lucy itself no longer provides a `machine` tag function: the old one came from `@lucy/xstate`, which targeted XState. Compiling `.lucy` files is now the main way to use Lucy, and the highlighting works for any template tagged `machine`.
 
 # Code Completion
 
