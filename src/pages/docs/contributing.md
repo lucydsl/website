@@ -1,6 +1,6 @@
 ---
 title: Contributing
-layout: page.njk
+layout: ../../layouts/Page.astro
 ---
 
 # Contributing

@@ -1,7 +1,6 @@
 ---
-layout: language.njk
+layout: ../../layouts/Language.astro
 title: Language Overview
-tags: page
 sections:
   - References:
     - Variables

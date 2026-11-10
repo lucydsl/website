@@ -1,7 +1,6 @@
 ---
-layout: page.njk
+layout: ../layouts/Page.astro
 title: Language Overview
-tags: page
 ---
 
 This page gives an overview of the language. Once you understand the few concepts on this page you'll be able to build any type of machine needed.

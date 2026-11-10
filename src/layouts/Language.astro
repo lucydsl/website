@@ -1,0 +1,69 @@
+---
+import Base from '../components/Base.astro';
+import BaseStyles from '../components/BaseStyles.astro';
+import Icons from '../components/Icons.astro';
+import Nav from '../components/Nav.astro';
+import { fromBase } from '../site.ts';
+
+// `sections` in the frontmatter lists the sidebar: a string is a link to a
+// section, and a one-key object is a section with its subsections.
+type Section = string | Record<string, string[]>;
+
+const { frontmatter } = Astro.props;
+const sections = (frontmatter.sections as Section[]).map((section) => {
+  if (typeof section === 'string') return { title: section, items: undefined };
+  const [title] = Object.keys(section);
+  return { title, items: section[title] };
+});
+const page = fromBase(Astro.url.pathname);
+const hashLink = (title: string) => page + '#' + title.toLowerCase().replace(/ /g, '-');
+---
+<!doctype html>
+<html lang="en">
+<title>Language Overview</title>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{frontmatter.title}</title>
+<Base />
+<BaseStyles />
+<link rel="stylesheet" href="styles/language.css">
+<Icons />
+
+<Nav />
+<div class="language-contents">
+  <aside>
+    <h1>Features</h1>
+
+    <ul>
+      {sections.map((section) => (
+      <li>
+        {section.items ? (
+          <Fragment>
+          <a href={hashLink(section.title)} class="section-title">{section.title}</a>
+
+          <ul>
+            {section.items.map((item) => (
+            <li>
+            <a href={hashLink(item)} class="section-title">
+              {item}
+            </a>
+            </li>
+            ))}
+          </ul>
+          </Fragment>
+        ) : (
+          <a href={hashLink(section.title)} class="section-title">
+            {section.title}
+          </a>
+        )}
+      </li>
+      ))}
+    </ul>
+  </aside>
+
+  <main>
+    <slot />
+  </main>
+</div>
+</html>

@@ -1,5 +1,5 @@
 ---
-layout: install.njk
+layout: ../layouts/Install.astro
 ---
 
 # Install Lucy

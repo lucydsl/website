@@ -1,17 +1,33 @@
 {
   "name": "lucy-site",
-  "main": "index.md",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
   "scripts": {
-    "dev": "eleventy --serve",
-    "build": "eleventy"
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check"
+  },
+  "dependencies": {
+    "@astrojs/markdown-satteri": "^0.4.8",
+    "@astrojs/prism": "^4.1.2",
+    "@lucy/prism": "^1.5.0",
+    "astro": "^7.4.10",
+    "prismjs": "1.25.0",
+    "uslug": "^1.0.4"
+  },
+  "volta": {
+    "node": "24.22.2"
+  },
+  "overrides": {
+    "prismjs": "1.25.0"
   },
   "devDependencies": {
-    "@11ty/eleventy": "^0.11.1",
-    "@11ty/eleventy-plugin-syntaxhighlight": "^3.1.0",
-    "@lucy/prism": "^1.5.0",
-    "markdown-it": "^12.0.4",
-    "markdown-it-toc-and-anchor": "^4.2.0"
+    "@astrojs/check": "^0.9.12",
+    "@types/node": "^24.19.2",
+    "@types/prismjs": "^1.26.6",
+    "typescript": "^6.0.3",
+    "wrangler": "^4.160.0"
   }
 }
