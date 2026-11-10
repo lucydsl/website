@@ -1,4 +1,10 @@
 ---
 import { baseUrl } from '../site.ts';
+
+interface Props {
+  href?: string;
+}
+
+const { href = baseUrl(Astro.url.pathname) } = Astro.props;
 ---
-<base href={baseUrl(Astro.url.pathname)}>
+<base href={href}>
