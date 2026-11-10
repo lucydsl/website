@@ -6,10 +6,7 @@ sections:
   - References:
     - Variables
     - Symbols
-  - Machine:
-    - Named machines
-    - Implicit machines
-    - Using a machine
+  - Machine
   - State:
     - Initial state
     - Final state
