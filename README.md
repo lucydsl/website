@@ -24,6 +24,6 @@ npm run check    # astro check
 
 ## Deploy
 
-The site is a static-assets Cloudflare Worker, `lucy-website`, on the custom domain lucy.spooky.click (see `wrangler.jsonc`). Workers Builds deploys every push to `main`: it runs `npm run build`, then `npx wrangler deploy`. To deploy by hand, build, then run `npx wrangler deploy`.
+The site is a static-assets Cloudflare Worker, `lucy-website`, on the custom domain lucy.spooky.click (see `wrangler.jsonc`). Workers Builds deploys every push to `main`: it runs `npm run build`, then `npx wrangler deploy`. Pull requests get a preview build (`npm run build`, then `npx wrangler preview`), linked from the PR. To deploy by hand, build, then run `npx wrangler deploy`.
 
 Prism is pinned to 1.25.0 (with an npm override) because later versions tokenize JavaScript object keys and shell flags differently, which changes the colors of the code samples.
