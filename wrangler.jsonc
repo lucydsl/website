@@ -9,5 +9,7 @@
     "html_handling": "auto-trailing-slash",
     "not_found_handling": "404-page"
   },
-  "routes": [{ "pattern": "lucy.spooky.click", "custom_domain": true }]
+  "routes": [{ "pattern": "lucy.spooky.click", "custom_domain": true }],
+  // Pull requests get a preview (`wrangler preview`), which needs this block.
+  "previews": {}
 }
