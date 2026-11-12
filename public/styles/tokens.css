@@ -15,7 +15,6 @@
 :root {
   /* 1. Tideway primitives */
   --space-0: 0;
-  --space-1: 0.25rem;
   --space-2: 0.5rem;
   --space-3-5: 0.875rem;
   --space-4: 1rem;
@@ -98,7 +97,6 @@
   --surface-sunken: var(--color-lucy-ink);    /* nav bar, inline code */
   --surface-hover: color-mix(in srgb, var(--color-lucy-lilac) 40%, transparent);
   --text: var(--color-lucy-fog);
-  --border: var(--color-lucy-dusk);
   --accent: var(--color-lucy-violet);
   --accent-text: var(--color-lucy-violet);
   --link: var(--color-lucy-cyan);
