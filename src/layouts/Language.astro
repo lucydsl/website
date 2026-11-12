@@ -31,21 +31,21 @@ const hashLink = (title: string) => page + '#' + title.toLowerCase().replace(/ /
 <Icons />
 
 <Nav />
-<div class="language-contents">
-  <aside>
-    <h1>Features</h1>
+<div class="guide">
+  <aside class="guide__sidebar">
+    <h1 class="guide__sidebar-title">Features</h1>
 
-    <ul>
+    <ul class="guide__list">
       {sections.map((section) => (
       <li>
         {section.items ? (
           <Fragment>
-          <a href={hashLink(section.title)} class="section-title">{section.title}</a>
+          <a href={hashLink(section.title)} class="guide__link">{section.title}</a>
 
-          <ul>
+          <ul class="guide__list">
             {section.items.map((item) => (
             <li>
-            <a href={hashLink(item)} class="section-title">
+            <a href={hashLink(item)} class="guide__link">
               {item}
             </a>
             </li>
@@ -53,7 +53,7 @@ const hashLink = (title: string) => page + '#' + title.toLowerCase().replace(/ /
           </ul>
           </Fragment>
         ) : (
-          <a href={hashLink(section.title)} class="section-title">
+          <a href={hashLink(section.title)} class="guide__link">
             {section.title}
           </a>
         )}
@@ -62,7 +62,7 @@ const hashLink = (title: string) => page + '#' + title.toLowerCase().replace(/ /
     </ul>
   </aside>
 
-  <main>
+  <main class="guide__main prose">
     <slot />
   </main>
 </div>

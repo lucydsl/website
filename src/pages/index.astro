@@ -15,32 +15,32 @@ const title = 'Lucy | A DSL for Finite State Machines';
 <title>{title}</title>
 <Base />
 
-<link rel="stylesheet" href="styles/home.css">
 <BaseStyles />
+<link rel="stylesheet" href="styles/home.css">
 <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
 <link rel="manifest" href="images/site.webmanifest">
 
-<body class="home">
+<body>
 <Nav />
 <div class="hero container">
-  <header class="description">
-    <h1 class="title">🧛🏻‍♀️ Lucy <span class="subtitle">language</span></h1>
-    <h2 class="subtitle">A concise language for describing <a href="https://brilliant.org/wiki/finite-state-machines/">Finite State Machines</a>.</h2>
+  <header class="hero__description">
+    <h1 class="hero__title">🧛🏻‍♀️ Lucy <span class="hero__title-suffix">language</span></h1>
+    <h2 class="hero__tagline">A concise language for describing <a href="https://brilliant.org/wiki/finite-state-machines/">Finite State Machines</a>.</h2>
 
-    <dl>
-      <dt>Expressive</dt>
-      <dd>Complex sets of events, guards, actions, and destination states can be expressed in a single line. Nesting machines gives you a hierarchical machine.</dd>
-      <dt>Plain JavaScript</dt>
-      <dd>Lucy compiles each machine to a small, readable JavaScript module with no dependencies and no runtime library. What runs is a handful of ordinary functions, so the code you ship is tiny and stack traces stay shallow.</dd>
-      <dt>Fast</dt>
-      <dd>Lucy is written in C, so compiling is quick: <code>lucyc</code> is a native command-line compiler, and the same compiler is built to <a href="https://webassembly.org/">WebAssembly</a> for easy use in JavaScript projects. At run time, sending an event is a lookup and a function call.</dd>
+    <dl class="hero__features">
+      <dt class="hero__feature-name">Expressive</dt>
+      <dd class="hero__feature-text">Complex sets of events, guards, actions, and destination states can be expressed in a single line. Nesting machines gives you a hierarchical machine.</dd>
+      <dt class="hero__feature-name">Plain JavaScript</dt>
+      <dd class="hero__feature-text">Lucy compiles each machine to a small, readable JavaScript module with no dependencies and no runtime library. What runs is a handful of ordinary functions, so the code you ship is tiny and stack traces stay shallow.</dd>
+      <dt class="hero__feature-name">Fast</dt>
+      <dd class="hero__feature-text">Lucy is written in C, so compiling is quick: <code class="inline-code">lucyc</code> is a native command-line compiler, and the same compiler is built to <a href="https://webassembly.org/">WebAssembly</a> for easy use in JavaScript projects. At run time, sending an event is a lookup and a function call.</dd>
     </dl>
   </header>
 
-  <section class="example">
-    <h1>toggle.lucy</h1>
+  <section class="hero__example">
+    <h1 class="hero__file-name">toggle.lucy</h1>
 
     <Prism lang="lucy" code={`state enabled {
   toggle => disabled
@@ -50,7 +50,7 @@ initial state disabled {
   toggle => enabled
 }`} />
 
-    <h1>out.js</h1>
+    <h1 class="hero__file-name">out.js</h1>
     <Prism lang="js" code={`export default function createMachine({ context = {} } = {}) {
   const listeners = new Set();
   const states = {
@@ -101,7 +101,7 @@ initial state disabled {
 </div>
 
 <section class="install container">
-  <h1>Install</h1>
+  <h1 class="install__title">Install</h1>
 
   <p>See the <a href="install/">install page</a> for detailed instructions on the various ways you can use Lucy, such as with popular JavaScript build tools.</p>
   <p>To use the command-line compiler install with:</p>

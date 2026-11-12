@@ -1,164 +1,67 @@
-* {
-  box-sizing: border-box;
-}
+/* Site chrome shared by every page: the page column, nav, footer and inline code. */
 
-html, body {
-  margin: 0;
-  padding: 0;
-}
-
-body {
-  font-family: 'Lato', sans-serif;
-  font-size: 16px;
-  line-height: 1.5;
-
-  --link-color: #8be9fd;
-  --black-color: #000;
-  --color-purple: #9580ff;
-  --color-white: #f2f2f2;
-
-  --color-primary: var(--color-white);
-
-  --background-primary: #282A36;
-  --background-secondary: #393A59;
-
-  background: var(--background-primary);
-  color: var(--color-primary);
-}
-
-a, a:visited {
-  color: var(--link-color);
-}
-
-h2 {
-  font-size: 1.5em;
-}
-
-.font-3 {
-  font-size: 1.3rem;
-  font-weight: 300;
+/* Page column: 980px wide, with --space-4 of room at each side on narrower screens. */
+.container {
+  margin-inline: auto;
+  width: min(var(--container-lucy-page), 100% - 2 * var(--space-4));
 }
 
 /* Site nav */
 .site-nav {
-  background: #000;
-  background: #181A22;
-  height: 3rem;
+  background: var(--surface-sunken);
+  height: var(--space-12);
   display: grid;
-  justify-content: flex-end;
+  justify-content: center;
   align-items: center;
-  padding: 0;
+  padding: var(--space-0);
 }
 
-.site-nav > ul {
+.site-nav__list {
   list-style-type: none;
-  margin: 0;
+  margin: var(--space-0);
+  padding: var(--space-0);
   height: 100%;
 }
 
-.site-nav > ul li {
+.site-nav__item {
   display: inline-block;
   height: 100%;
 }
 
-.site-nav > ul li.active {
-  border-bottom: 2px solid var(--color-purple);
+.site-nav__item--active {
+  border-bottom: var(--border-2) solid var(--accent);
 }
 
-.site-nav > ul a {
-  color: var(--color-white);
+.site-nav__link {
+  color: var(--text);
   text-decoration: none;
-  font-size: .8rem;
+  font-size: var(--text-lg);
   height: 100%;
   display: inline-flex;
   align-items: center;
-  padding: 0 1.2rem;
+  padding: var(--space-0) var(--space-5);
 }
 
-.site-nav > ul a:hover {
-  background: rgb(189, 147, 249, .4);
-}
-/* end site nav */
-
-.container {
-  margin-left: auto;
-  margin-right: auto;
-  width: 980px;
+.site-nav__link:hover {
+  background: var(--surface-hover);
 }
 
-.content {
-  font-size: 16px;
+/* sm */
+@media (min-width: 640px) {
+  .site-nav {
+    justify-content: flex-end;
+    padding: var(--space-0) var(--space-16);
+  }
 }
 
-.home .content h1 {
-  font-size: 2.5em;
-}
-
-.content h1, .content h2 {
-  border-bottom: 1px solid #eaecef;
-  padding-bottom: .3em;
-  margin-bottom: 16px;
-  margin-top: 24px;
-}
-
-.content h1[id] .heading-anchor, 
-.content h2[id] .heading-anchor,
-.content h3[id] .heading-anchor {
-  margin-left: -25px;
-  color: var(--black-color);
-  visibility: hidden;
-}
-
-.content h1[id]:hover .heading-anchor,
-.content h2[id]:hover .heading-anchor,
-.content h3[id]:hover .heading-anchor,
-.content h1[id] .heading-anchor:hover,
-.content h2[id] .heading-anchor:hover,
-.content h3[id] .heading-anchor:hover  {
-  visibility: visible;
-}
-
-.content a {
-  color: var(--link-color);
-  text-decoration: none;
-}
-
-.content pre {
-  font-size: 85%;
-}
-
-.content code:not([class*="language-"]) {
-  background-color: rgba(27,31,35,.05);
-  border-radius: 3px;
-  margin: 0;
-  padding: .2em .4em;
-  font-size: 90%;
-}
-
-pre[class^="language-"] {
-  border: 2px solid #393A59;
-  font-size: 90%;
-}
-
-:not(pre) > code {
-  background: var(--color-dark, #181A22);
-  font-size: 80%;
-  padding: .2rem .4rem;
-  font-family:'Courier New', Courier, monospace;
-}
-
-body > footer {
-  height: 200px;
+/* Site footer */
+.site-footer {
+  height: var(--space-48);
   position: relative;
   overflow: hidden;
 }
 
-body > footer a {
-  color: var(--color-purple);
-  font-weight: 700;
-}
-
-.footer-content {
+.site-footer__content {
   width: 100%;
   height: 100%;
   display: flex;
@@ -166,75 +69,15 @@ body > footer a {
   align-items: center;
 }
 
-/* Page styles */
-body.page h1 {
-  font-size: 3rem;
-  margin: .2rem;
+.site-footer__link {
+  color: var(--accent-text);
+  font-weight: var(--font-bold);
 }
 
-body.page h2 {
-  color: var(--color-purple);
-}
-
-.no-anchor-link .heading-anchor {
-  display: none;
-}
-/* End page styles */
-
-/* Extra small devices (phones, 600px and down) */
-@media only screen and (max-width: 600px) {
-  .container {
-    max-width: 100%;
-    padding-inline: .4rem;
-  }
-
-  .site-nav {
-    justify-content: center;
-  }
-
-  .site-nav ul {
-    padding: 0;
-  }
-}
-
-@media only screen and (min-width: 420px) {
-  .site-nav > ul a {
-    font-size: 1.15rem;
-  }
-}
-
-/* Small devices (portrait tablets and large phones, 600px and up) */
-@media only screen and (min-width: 600px) {
-  .container {
-    max-width: 544px;
-  }
-
-  .site-nav {
-    padding: 0 4rem;
-  }
-
-  body.page h1 {
-    font-size: 5rem;
-  }
-} 
-
-/* Medium devices (landscape tablets, 768px and up) */
-@media only screen and (min-width: 768px) {
-  .container {
-    max-width: 768px;
-  }
-} 
-
-/* Large devices (laptops/desktops, 992px and up) */
-@media only screen and (min-width: 992px) {
-  .container {
-    max-width: 1012px;
-  }
-} 
-
-/* Extra large devices (large laptops and desktops, 1200px and up) */
-@media only screen and (min-width: 1200px) {
-  .container-xl {
-    max-width: 1280px;
-  }
+/* Inline code in hand-written markup. Markdown's inline code gets the same look from prose.css. */
+.inline-code {
+  background: var(--surface-sunken);
+  font-size: var(--text-lucy-code-inline);
+  padding: var(--space-lucy-tight) var(--space-lucy-code-x);
+  font-family: var(--font-lucy-code-inline);
 }

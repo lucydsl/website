@@ -1,0 +1,29 @@
+{
+  "version": 2,
+  "skills": {
+    "migrate": {
+      "source": "matthewp/tideway",
+      "sourceType": "github",
+      "skillPath": "skills/migrate/SKILL.md",
+      "computedHash": "4fc576f02578d861c7ca5c49b3ee81a7aa1e74bc8a410cddabb19a8d6ddf8ec1"
+    },
+    "prune": {
+      "source": "matthewp/tideway",
+      "sourceType": "github",
+      "skillPath": "skills/prune/SKILL.md",
+      "computedHash": "cb007294e2b5d6b3e67d61a6a8c6b3030b3ffe5ed7e8cc5c10cf0ba5a226ff6c"
+    },
+    "review": {
+      "source": "matthewp/tideway",
+      "sourceType": "github",
+      "skillPath": "skills/review/SKILL.md",
+      "computedHash": "7f26c26df92d29fc428799333ac1c8a6329f2c07959f55fe479b05b44331404c"
+    },
+    "style": {
+      "source": "matthewp/tideway",
+      "sourceType": "github",
+      "skillPath": "skills/style/SKILL.md",
+      "computedHash": "548f1ef84ea788512377b392a7a754e9603bed8d765c9f273a4a0b71a24e9efe"
+    }
+  }
+}

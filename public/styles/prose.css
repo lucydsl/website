@@ -1,0 +1,54 @@
+/*
+ * Prose: Markdown content.
+ *
+ * Allowed exception to flat BEM. Markdown renders plain elements (h1, h2, a,
+ * code, ...) plus the `heading-anchor` links and the `toc` list from
+ * src/markdown/toc-and-anchors.ts, so nothing inside can carry BEM classes.
+ * The `prose` block styles them from its own root instead, and only there.
+ * Every selector is `.prose`/`.prose--*` followed by :where(...), so the
+ * specificity stays at one class (0,1,0), like the rest of the site.
+ *
+ * Code blocks are styled by dracula-prism.css, the other exception.
+ */
+
+.prose :where(h2) {
+  font-size: var(--text-2xl);
+}
+
+.prose :where(.heading-anchor) {
+  text-decoration: none;
+}
+
+.prose :where(:not(pre) > code) {
+  background: var(--surface-sunken);
+  font-size: var(--text-lucy-code-inline);
+  padding: var(--space-lucy-tight) var(--space-lucy-code-x);
+  font-family: var(--font-lucy-code-inline);
+}
+
+/* Content pages (the Page layout): larger, lighter text and no heading anchors. */
+.prose--page {
+  font-size: var(--text-lucy-body);
+  font-weight: var(--font-light);
+}
+
+.prose--page :where(h1) {
+  font-size: var(--text-5xl);
+  margin: var(--space-lucy-tight);
+}
+
+.prose--page :where(h2) {
+  font-size: var(--text-lucy-page-h2);
+  color: var(--accent-text);
+}
+
+.prose--page :where(.heading-anchor) {
+  display: none;
+}
+
+/* sm */
+@media (min-width: 640px) {
+  .prose--page :where(h1) {
+    font-size: var(--text-lucy-page-title);
+  }
+}

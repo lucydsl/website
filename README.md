@@ -9,6 +9,17 @@ The site at https://lucy.spooky.click/, built with [Astro](https://astro.build/)
 - `src/prism.ts`: adds Lucy to Prism, which highlights code in Markdown and through `<Prism>` on the home page.
 - `public/`: copied as is: `styles/`, `images/` and `install.sh` (served at `/install.sh`).
 
+## Styles
+
+The CSS in `public/styles/` follows [Tideway](https://tidewaystyle.com/) (its skills are in `.claude/skills/`): every value is a token from `tokens.css`, colour comes from the semantic roles there, and every class is flat BEM (`block__element--modifier`), one class per selector.
+
+- `tokens.css`: Tideway's scales, plus the site's own palette and the few off-scale sizes its look depends on (named `--*-lucy-*`), the semantic roles, and the Dracula syntax roles. Loaded first.
+- `base.css`: the reset and element defaults, the only bare element selectors.
+- `main.css` (page column, nav, footer, inline code), `home.css`, `language.css`: one BEM block per component.
+- Two documented exceptions, for markup the site doesn't write: `prose.css` styles rendered Markdown (headings, anchors, inline code) under a `.prose` block, and `dracula-prism.css` styles Prism's generated `.token` classes.
+
+Breakpoints are Tideway's, mobile-first: `sm` 640px, `md` 768px, `lg` 1024px.
+
 Pages link relative to a `<base href>` at the site root, so write links like `docs/language/`, not `/docs/language/`.
 
 ## Develop
