@@ -1,11 +1,12 @@
 ---
 layout: ../layouts/Page.astro
 title: Prism Plugin
+lede: Lucy highlighting for the Prism syntax highlighter.
 ---
 
 Adds support for Lucy to the [Prism](https://prismjs.com/) syntax highlighter. Highlighting works for Lucy blocks and when Lucy is embedded in JavaScript [tagged templates](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals#Tagged_templates).
 
-# Installation
+## Installation
 
 Install `@lucy/prism` from npm:
 
@@ -19,7 +20,7 @@ Or with Yarn:
 yarn add @lucy/prism
 ```
 
-# Lucy
+## Lucy
 
 To use highlighting with Lucy blocks use the `lucy` export like so:
 
@@ -42,7 +43,7 @@ state break {
 }
 ```
 
-# JavaScript
+## JavaScript
 
 `@lucy/prism` also works within JavaScript tagged template literals using `machine` like so:
 

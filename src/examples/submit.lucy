@@ -1,0 +1,5 @@
+initial state form {
+  submit => guard(:canSubmit) => action(:thank) => sent
+}
+
+final state sent {}

@@ -1,69 +1,48 @@
 ---
-import Base from '../components/Base.astro';
-import BaseStyles from '../components/BaseStyles.astro';
-import Icons from '../components/Icons.astro';
-import Nav from '../components/Nav.astro';
+// The language guide: the rail and the guide, with its contents beside it
+// (from lg up) or folded above it (below lg). The contents are drawn as a
+// statechart: each section a state, with its subsections nested inside.
+import Site from './Site.astro';
+import Statechart from '../components/Statechart.astro';
+import PageHead from '../components/PageHead.astro';
 import { fromBase } from '../site.ts';
 
-// `sections` in the frontmatter lists the sidebar: a string is a link to a
+// `sections` in the frontmatter lists the contents: a string is a link to a
 // section, and a one-key object is a section with its subsections.
 type Section = string | Record<string, string[]>;
 
 const { frontmatter } = Astro.props;
 const sections = (frontmatter.sections as Section[]).map((section) => {
-  if (typeof section === 'string') return { title: section, items: undefined };
+  if (typeof section === 'string') return { title: section, items: [] as string[] };
   const [title] = Object.keys(section);
   return { title, items: section[title] };
 });
 const page = fromBase(Astro.url.pathname);
 const hashLink = (title: string) => page + '#' + title.toLowerCase().replace(/ /g, '-');
+const contents = sections.map(({ title, items }) => ({
+  title,
+  href: hashLink(title),
+  items: items.map((item) => ({ title: item, href: hashLink(item) })),
+}));
 ---
-<!doctype html>
-<html lang="en">
-<title>Language Overview</title>
+<Site title={frontmatter.title + ' | Lucy'} description={frontmatter.lede} styles={['language']}>
+  <div class="guide">
+    <div class="guide__body rail">
+      <PageHead title={frontmatter.title} lede={frontmatter.lede} />
 
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>{frontmatter.title}</title>
-<Base />
-<BaseStyles />
-<link rel="stylesheet" href="styles/language.css">
-<Icons />
+      <details class="guide__fold">
+        <summary class="guide__summary">Contents</summary>
+        <Statechart sections={contents} />
+      </details>
 
-<Nav />
-<div class="guide">
-  <aside class="guide__sidebar">
-    <h1 class="guide__sidebar-title">Features</h1>
+      <div class="rail__content prose">
+        <slot />
+      </div>
+    </div>
 
-    <ul class="guide__list">
-      {sections.map((section) => (
-      <li>
-        {section.items ? (
-          <Fragment>
-          <a href={hashLink(section.title)} class="guide__link">{section.title}</a>
-
-          <ul class="guide__list">
-            {section.items.map((item) => (
-            <li>
-            <a href={hashLink(item)} class="guide__link">
-              {item}
-            </a>
-            </li>
-            ))}
-          </ul>
-          </Fragment>
-        ) : (
-          <a href={hashLink(section.title)} class="guide__link">
-            {section.title}
-          </a>
-        )}
-      </li>
-      ))}
-    </ul>
-  </aside>
-
-  <main class="guide__main prose">
-    <slot />
-  </main>
-</div>
-</html>
+    <nav class="guide__aside" aria-label="Guide contents">
+      <p class="guide__aside-title">Contents</p>
+      <Statechart sections={contents} />
+    </nav>
+  </div>
+</Site>

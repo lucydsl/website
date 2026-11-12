@@ -1,54 +1,151 @@
 /*
  * Prose: Markdown content.
  *
- * Allowed exception to flat BEM. Markdown renders plain elements (h1, h2, a,
- * code, ...) plus the `heading-anchor` links and the `toc` list from
- * src/markdown/toc-and-anchors.ts, so nothing inside can carry BEM classes.
- * The `prose` block styles them from its own root instead, and only there.
- * Every selector is `.prose`/`.prose--*` followed by :where(...), so the
+ * Allowed exception to flat BEM. Markdown renders plain elements (h2, p, a,
+ * code, blockquote, ...) plus the `heading-anchor` links and the `toc` list
+ * from src/markdown/toc-and-anchors.ts, so nothing inside can carry BEM
+ * classes. The `prose` block styles them from its own root instead, and
+ * only there. Every selector is `.prose` followed by :where(...), so the
  * specificity stays at one class (0,1,0), like the rest of the site.
+ *
+ * Section headings (h2) sit on the page's rail as nodes: their anchor link
+ * is drawn as the hollow circle on the rail's line (see main.css, .rail).
  *
  * Code blocks are styled by dracula-prism.css, the other exception.
  */
 
+.prose :where(p, ul, ol, blockquote, pre) {
+  margin-block: var(--space-0) var(--space-5);
+}
+
+.prose :where(h2, h3, h4) {
+  position: relative;
+  text-wrap: balance;
+}
+
 .prose :where(h2) {
-  font-size: var(--text-2xl);
-}
-
-.prose :where(.heading-anchor) {
-  text-decoration: none;
-}
-
-.prose :where(:not(pre) > code) {
-  background: var(--surface-sunken);
-  font-size: var(--text-lucy-code-inline);
-  padding: var(--space-lucy-tight) var(--space-lucy-code-x);
-  font-family: var(--font-lucy-code-inline);
-}
-
-/* Content pages (the Page layout): larger, lighter text and no heading anchors. */
-.prose--page {
-  font-size: var(--text-lucy-body);
-  font-weight: var(--font-light);
-}
-
-.prose--page :where(h1) {
+  margin: var(--space-16) var(--space-0) var(--space-5);
+  font-family: var(--font-lucy-display);
+  font-weight: var(--font-bold);
   font-size: var(--text-5xl);
-  margin: var(--space-lucy-tight);
+  line-height: var(--leading-none);
+  letter-spacing: var(--tracking-tight);
 }
 
-.prose--page :where(h2) {
-  font-size: var(--text-lucy-page-h2);
+.prose :where(h3) {
+  margin: var(--space-10) var(--space-0) var(--space-3);
+  font-family: var(--font-lucy-display);
+  font-style: italic;
+  font-weight: var(--font-semibold);
+  font-size: var(--text-3xl);
+  line-height: var(--leading-tight);
   color: var(--accent-text);
 }
 
-.prose--page :where(.heading-anchor) {
+.prose :where(h4) {
+  margin: var(--space-8) var(--space-0) var(--space-2);
+  font-family: var(--font-lucy-code);
+  font-weight: var(--font-semibold);
+  font-size: var(--text-base);
+  color: var(--accent-text);
+}
+
+.prose :where(h2:first-child) {
+  margin-top: var(--space-0);
+}
+
+/* h2: the anchor is the node on the rail; its "#" stays its accessible name */
+.prose :where(h2 > .heading-anchor) {
+  position: absolute;
+  top: 0.3em;
+  left: calc(-1 * var(--space-lucy-rail) - var(--space-lucy-node) / 2 - var(--space-2) - var(--space-px) / 2);
+  width: calc(var(--space-lucy-node) + 2 * var(--space-2));
+  height: calc(var(--space-lucy-node) + 2 * var(--space-2));
+  border: var(--space-2) solid var(--surface);
+  border-radius: var(--radius-full);
+  background: var(--surface);
+  box-shadow: inset 0 0 0 var(--border-2) var(--line);
+  font-size: 0;
+  color: transparent;
+}
+
+.prose :where(h2 > .heading-anchor:hover, h2 > .heading-anchor:focus-visible) {
+  background: var(--line);
+}
+
+/* h3 and h4 have no node; their anchors stay out of the way */
+.prose :where(h3 > .heading-anchor, h4 > .heading-anchor) {
   display: none;
 }
 
-/* sm */
-@media (min-width: 640px) {
-  .prose--page :where(h1) {
-    font-size: var(--text-lucy-page-title);
-  }
+.prose :where(strong) {
+  font-weight: var(--font-semibold);
+}
+
+.prose :where(ul, ol) {
+  padding-inline-start: var(--space-6);
+}
+
+.prose :where(li) {
+  margin-block: var(--space-1);
+}
+
+.prose :where(li)::marker {
+  color: var(--accent-text);
+}
+
+.prose :where(:not(pre) > code) {
+  padding: var(--space-0-5) var(--space-1-5);
+  border-radius: var(--radius-md);
+  background: var(--surface-raised);
+  font-family: var(--font-lucy-code);
+  font-size: var(--text-lucy-code-inline);
+}
+
+/* Notes: set in the margin's voice, labelled */
+.prose :where(blockquote) {
+  margin-inline: var(--space-0);
+  padding: var(--space-3) var(--space-0) var(--space-3) var(--space-5);
+  border-inline-start: var(--border-2) solid var(--line);
+  font-style: italic;
+  color: var(--text-muted);
+}
+
+.prose :where(blockquote)::before {
+  content: 'Note';
+  display: block;
+  margin-bottom: var(--space-1);
+  font-family: var(--font-lucy-code);
+  font-style: normal;
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-widest);
+  text-transform: uppercase;
+  color: var(--accent-text);
+}
+
+.prose :where(blockquote > :last-child) {
+  margin-bottom: var(--space-0);
+}
+
+/* The @[toc] table of contents */
+.prose :where(.toc) {
+  margin: var(--space-0) var(--space-0) var(--space-12);
+  padding: var(--space-5) var(--space-6);
+  border: var(--border-1) solid var(--border-strong);
+  border-radius: var(--radius-xl);
+  list-style: none;
+  font-family: var(--font-lucy-code);
+  font-size: var(--text-sm);
+  columns: var(--container-xs) 2;
+  column-gap: var(--space-8);
+}
+
+.prose :where(.toc ul) {
+  margin: var(--space-0);
+  padding-inline-start: var(--space-4);
+  list-style: none;
+}
+
+.prose :where(.toc li) {
+  break-inside: avoid;
 }

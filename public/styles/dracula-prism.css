@@ -5,7 +5,8 @@
  * `code.language-*`, `span.token.keyword`, ...), so these selectors follow
  * Prism's class names, not BEM: attribute selectors, compound `.token.*`
  * classes and pseudo-elements on `pre`. Colours come from the syntax roles in
- * tokens.css; keep the rules here to Prism's own markup.
+ * tokens.css; keep the rules here to Prism's own markup. Each block is
+ * labelled with its language (lucy, js, shell) by a ::before on the pre.
  */
 
 /* PrismJS 1.14.0
@@ -29,7 +30,8 @@ http://prismjs.com/download.html#themes=prism&languages=markup+css+clike+javascr
 */
 
 pre::-webkit-scrollbar {
-  width: var(--space-3-5);
+  width: var(--space-3);
+  height: var(--space-3);
 }
 
 pre::-webkit-scrollbar-track {
@@ -88,15 +90,41 @@ code[class*="language-"] ::selection {
   }
 }
 
-/* Code blocks */
-pre[class*="language-"] {
-  border: var(--border-2) solid var(--code-border);
+/*
+ * Code blocks: a well of night with its language written above the code.
+ * The block's box and label are wrapped in :where() so they have no
+ * specificity: a BEM class passed to <Prism class="..."> can change them.
+ */
+:where(pre[class*="language-"]) {
+  border: var(--border-1) solid var(--code-border);
   font-size: var(--text-lucy-code-block);
+  line-height: var(--leading-relaxed);
   border-radius: var(--radius-lg);
-  padding: var(--space-4);
+  padding: var(--space-3) var(--space-5) var(--space-4);
   margin: var(--space-2) var(--space-0);
   overflow: auto;
   height: auto;
+}
+
+:where(pre[class*="language-"])::before {
+  display: block;
+  margin-bottom: var(--space-2);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-widest);
+  text-transform: uppercase;
+  color: var(--code-label);
+}
+
+:where(pre.language-lucy)::before {
+  content: 'lucy';
+}
+
+:where(pre.language-js, pre.language-javascript)::before {
+  content: 'js';
+}
+
+:where(pre.language-bash, pre.language-shell)::before {
+  content: 'shell';
 }
 
 .token.comment {

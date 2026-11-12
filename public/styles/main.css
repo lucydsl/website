@@ -1,83 +1,282 @@
-/* Site chrome shared by every page: the page column, nav, footer and inline code. */
+/*
+ * Site chrome shared by every page: the header, the rail, page headers,
+ * the footer, and small pieces used across pages.
+ *
+ * The rail is the spine of every page: a line that drops from the initial
+ * dot in the header, runs down beside the content (headings sit on it as
+ * nodes) and ends at the final-state bullseye in the footer. Its x position
+ * is the page gutter plus half the 10px dot, so it lines up with the dot.
+ */
 
-/* Page column: 980px wide, with --space-4 of room at each side on narrower screens. */
-.container {
-  margin-inline: auto;
-  width: min(var(--container-lucy-page), 100% - 2 * var(--space-4));
+/* Skip link: off screen until focused */
+.skip-link {
+  position: absolute;
+  left: var(--space-4);
+  top: calc(-1 * var(--space-16));
+  padding: var(--space-2) var(--space-4);
+  background: var(--surface-active);
+  color: var(--text-on-active);
+  font-family: var(--font-lucy-code);
+  font-size: var(--text-sm);
+  z-index: var(--z-10);
 }
 
-/* Site nav */
-.site-nav {
-  background: var(--surface-sunken);
-  height: var(--space-12);
-  display: grid;
-  justify-content: center;
+.skip-link:focus {
+  top: var(--space-4);
+}
+
+/* Site header: the initial dot leading into "Lucy", and the nav */
+.site-head {
+  display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  padding: var(--space-0);
+  justify-content: space-between;
+  gap: var(--space-3) var(--space-6);
+  padding: var(--space-5) var(--space-lucy-gutter) var(--space-0);
 }
 
-.site-nav__list {
-  list-style-type: none;
-  margin: var(--space-0);
-  padding: var(--space-0);
-  height: 100%;
-}
-
-.site-nav__item {
-  display: inline-block;
-  height: 100%;
-}
-
-.site-nav__item--active {
-  border-bottom: var(--border-2) solid var(--accent);
-}
-
-.site-nav__link {
-  color: var(--text);
-  text-decoration: none;
-  font-size: var(--text-lg);
-  height: 100%;
+.site-head__brand {
   display: inline-flex;
   align-items: center;
-  padding: var(--space-0) var(--space-5);
+  gap: var(--space-2);
+  color: var(--text);
+  text-decoration: none;
 }
 
-.site-nav__link:hover {
-  background: var(--surface-hover);
+.site-head__initial {
+  flex: none;
+  fill: var(--line);
+  stroke: var(--line);
+  stroke-width: 1.25;
 }
 
-/* sm */
-@media (min-width: 640px) {
-  .site-nav {
-    justify-content: flex-end;
-    padding: var(--space-0) var(--space-16);
-  }
+.site-head__name {
+  font-family: var(--font-lucy-display);
+  font-weight: var(--font-bold);
+  font-size: var(--text-3xl);
+  line-height: var(--leading-none);
+  letter-spacing: var(--tracking-tight);
 }
 
-/* Site footer */
-.site-footer {
-  height: var(--space-48);
-  position: relative;
-  overflow: hidden;
-}
-
-.site-footer__content {
-  width: 100%;
-  height: 100%;
+/* The other pages, drawn as states. The current one is filled. */
+.site-nav__list {
   display: flex;
-  justify-content: center;
-  align-items: center;
+  gap: var(--space-2);
+  list-style: none;
+  margin: var(--space-0);
+  padding: var(--space-0);
+}
+
+.site-nav__state {
+  display: inline-block;
+  padding: var(--space-1) var(--space-3);
+  border: var(--border-1) solid var(--border-strong);
+  border-radius: var(--radius-lg);
+  color: var(--text);
+  font-family: var(--font-lucy-code);
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+  text-decoration: none;
+  transition: border-color var(--duration-150) var(--ease-in-out);
+}
+
+.site-nav__state:hover {
+  border-color: var(--line);
+}
+
+.site-nav__state--active {
+  background: var(--surface-active);
+  border-color: var(--surface-active);
+  color: var(--text-on-active);
+  font-weight: var(--font-semibold);
+}
+
+.site-main {
+  display: block;
+}
+
+/* The rail: content pages hang their content beside it */
+.rail {
+  margin-inline-start: calc(var(--space-lucy-gutter) + var(--space-1));
+  margin-inline-end: var(--space-lucy-gutter);
+  padding-inline-start: var(--space-lucy-rail);
+  padding-block: var(--space-12) var(--space-16);
+  border-inline-start: var(--border-1) solid var(--border);
+  max-width: calc(var(--container-3xl) + var(--space-lucy-rail));
+}
+
+/* The home page's rail: room for the hero's diagram beside its words */
+.rail--wide {
+  max-width: var(--container-7xl);
+}
+
+.rail__content {
+  min-width: 0;
+}
+
+/*
+ * A label in mono on the rail, with the rail's node beside it: hollow for a
+ * state you can move to, filled (--active) for the one you're in.
+ */
+.node-label {
+  position: relative;
+  margin: var(--space-0) var(--space-0) var(--space-3);
+  font-family: var(--font-lucy-code);
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+  color: var(--accent-text);
+}
+
+.node-label::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: calc(-1 * var(--space-lucy-rail) - var(--space-lucy-node) / 2 - var(--space-px) / 2);
+  width: var(--space-lucy-node);
+  height: var(--space-lucy-node);
+  margin-top: calc(var(--space-lucy-node) / -2);
+  border: var(--border-2) solid var(--line);
+  border-radius: var(--radius-full);
+  background: var(--surface);
+}
+
+.node-label--active::before {
+  border-color: var(--surface-active);
+  background: var(--surface-active);
+}
+
+.node-label__arrow {
+  color: var(--text-muted);
+}
+
+/* Page header: the page's state path, title and lede */
+.page-head {
+  margin-bottom: var(--space-10);
+}
+
+.page-head__key {
+  color: var(--text-muted);
+}
+
+.page-head__title {
+  margin: var(--space-0);
+  font-family: var(--font-lucy-display);
+  font-weight: var(--font-bold);
+  font-size: var(--text-lucy-title);
+  line-height: var(--leading-none);
+  letter-spacing: var(--tracking-tight);
+  text-wrap: balance;
+}
+
+.page-head__lede {
+  margin: var(--space-4) var(--space-0) var(--space-0);
+  max-width: var(--container-prose);
+  font-size: var(--text-xl);
+  font-style: italic;
+  color: var(--text-muted);
+}
+
+/* Site footer: the site map, then the final state the rail ends at */
+.site-footer {
+  margin-inline: calc(var(--space-lucy-gutter) + var(--space-1)) var(--space-lucy-gutter);
+  padding-bottom: var(--space-12);
+}
+
+.site-footer__map {
+  padding: var(--space-8) var(--space-0) var(--space-8) var(--space-lucy-rail);
+  border-inline-start: var(--border-1) solid var(--border);
+  border-top: var(--border-1) solid var(--border);
+}
+
+.site-footer__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-6);
+  list-style: none;
+  margin: var(--space-0);
+  padding: var(--space-0);
+  font-family: var(--font-lucy-code);
+  font-size: var(--text-sm);
 }
 
 .site-footer__link {
+  color: var(--text-muted);
+  text-decoration: none;
+}
+
+.site-footer__link:hover {
+  color: var(--link);
+  text-decoration: underline;
+}
+
+/* The bullseye's centre sits on the rail's line */
+.site-footer__final {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--space-lucy-rail) - var(--space-3));
+  margin: var(--space-0) var(--space-0) var(--space-0) calc(-1 * var(--space-3));
+  font-size: var(--text-base);
+  color: var(--text-muted);
+}
+
+.site-footer__bullseye {
+  flex: none;
+}
+
+.site-footer__ring {
+  fill: none;
+  stroke: var(--line);
+  stroke-width: 1.5;
+}
+
+.site-footer__dot {
+  fill: var(--line);
+}
+
+.site-footer__author {
   color: var(--accent-text);
-  font-weight: var(--font-bold);
+}
+
+/* A file's name, set like a label */
+.file-name {
+  font-family: var(--font-lucy-code);
+  font-size: var(--text-lucy-code-inline);
+  color: var(--accent-text);
 }
 
 /* Inline code in hand-written markup. Markdown's inline code gets the same look from prose.css. */
 .inline-code {
-  background: var(--surface-sunken);
+  padding: var(--space-0-5) var(--space-1-5);
+  border-radius: var(--radius-md);
+  background: var(--surface-raised);
+  font-family: var(--font-lucy-code);
   font-size: var(--text-lucy-code-inline);
-  padding: var(--space-lucy-tight) var(--space-lucy-code-x);
-  font-family: var(--font-lucy-code-inline);
+}
+
+/* A link written as a Lucy transition: "event => target" */
+.transition {
+  font-family: var(--font-lucy-code);
+  font-size: var(--text-base);
+}
+
+.transition__event {
+  color: var(--text-muted);
+}
+
+.transition__arrow {
+  color: var(--accent-text);
+  padding-inline: var(--space-2);
+}
+
+.transition__target {
+  color: var(--link);
+}
+
+/*
+ * Fangs: two transition arrowheads pointing down. The section ornament,
+ * centred on the rail between the home page's sections.
+ */
+.fangs {
+  display: block;
+  fill: var(--line);
 }

@@ -1,0 +1,75 @@
+/* The docs index: each page of documentation drawn as a state, joined by transitions. */
+
+.doc-map {
+  list-style: none;
+  margin: var(--space-0);
+  padding: var(--space-0);
+}
+
+.doc-map__item {
+  display: grid;
+  gap: var(--space-2) var(--space-8);
+  position: relative;
+  padding-bottom: var(--space-10);
+}
+
+/* The transition down to the next state */
+.doc-map__item::after {
+  content: '';
+  position: absolute;
+  left: var(--space-8);
+  bottom: var(--space-1);
+  height: var(--space-6);
+  border-inline-start: var(--border-1) solid var(--border-strong);
+}
+
+.doc-map__item:last-child {
+  padding-bottom: var(--space-0);
+}
+
+.doc-map__item:last-child::after {
+  content: none;
+}
+
+.doc-map__state {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-4) var(--space-5);
+  border: var(--border-1) solid var(--border-strong);
+  border-radius: var(--radius-xl);
+  color: var(--text);
+  text-decoration: none;
+  transition: border-color var(--duration-150) var(--ease-in-out), background-color var(--duration-150) var(--ease-in-out);
+}
+
+.doc-map__state:hover {
+  border-color: var(--surface-active);
+  background: var(--surface-raised);
+}
+
+.doc-map__path {
+  font-family: var(--font-lucy-code);
+  font-size: var(--text-xs);
+  color: var(--accent-text);
+}
+
+.doc-map__name {
+  font-family: var(--font-lucy-display);
+  font-weight: var(--font-bold);
+  font-size: var(--text-3xl);
+  line-height: var(--leading-tight);
+}
+
+.doc-map__text {
+  margin: var(--space-0);
+  color: var(--text-muted);
+  align-self: center;
+}
+
+/* md: the text beside its state */
+@media (min-width: 768px) {
+  .doc-map__item {
+    grid-template-columns: var(--space-64) minmax(0, 1fr);
+  }
+}

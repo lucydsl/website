@@ -1,28 +1,17 @@
 ---
-import Base from '../components/Base.astro';
-import BaseStyles from '../components/BaseStyles.astro';
-import Footer from '../components/Footer.astro';
-import Icons from '../components/Icons.astro';
-import Nav from '../components/Nav.astro';
+// Content pages: the page header, then the content running down the rail.
+// Markdown pages get the prose styles; pass prose={false} for hand-written
+// markup with its own classes, and list its stylesheets in `styles`.
+import Site from './Site.astro';
+import PageHead from '../components/PageHead.astro';
 
-const { frontmatter, base } = Astro.props;
+const { frontmatter, base, prose = true, styles } = Astro.props;
 ---
-<!doctype html>
-<html lang="en">
-<title>{frontmatter.title}</title>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<Base href={base} />
-<BaseStyles />
-<Icons />
-
-<body>
-<Nav />
-
-<section class="container prose prose--page">
-  <slot />
-</section>
-
-<Footer />
-</body>
-</html>
+<Site title={frontmatter.title + ' | Lucy'} description={frontmatter.lede} base={base} styles={styles}>
+  <div class="rail">
+    <PageHead title={frontmatter.title} lede={frontmatter.lede} state={frontmatter.state} />
+    <div class:list={['rail__content', { prose }]}>
+      <slot />
+    </div>
+  </div>
+</Site>

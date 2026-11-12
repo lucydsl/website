@@ -1,0 +1,23 @@
+---
+// A list of sections drawn as a statechart: each section a state (a rounded
+// box), its subsections nested inside it, the states joined by transitions.
+interface Props {
+  sections: { title: string; href: string; items: { title: string; href: string }[] }[];
+}
+
+const { sections } = Astro.props;
+---
+<ol class="statechart">
+  {sections.map((section) => (
+    <li class="statechart__state">
+      <a href={section.href} class="statechart__name">{section.title}</a>
+      {section.items.length > 0 && (
+        <ol class="statechart__nested">
+          {section.items.map((item) => (
+            <li class="statechart__child"><a href={item.href} class="statechart__link">{item.title}</a></li>
+          ))}
+        </ol>
+      )}
+    </li>
+  ))}
+</ol>

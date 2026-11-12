@@ -1,0 +1,65 @@
+/*
+ * Self-hosted web fonts, latin subsets only, from Fontsource (SIL OFL 1.1;
+ * the licences are in /fonts/). Seven files, about 145 KB in all, and each
+ * page loads only the ones it uses.
+ *
+ *   Cormorant Garamond: display (700, and 600 italic for flourishes)
+ *   Spectral: reading text (400, 400 italic, 600)
+ *   IBM Plex Mono: code, labels and state paths (400, 600)
+ */
+
+@font-face {
+  font-family: 'Cormorant Garamond';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('../fonts/cormorant-garamond-latin-700-normal.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Cormorant Garamond';
+  font-style: italic;
+  font-weight: 600;
+  font-display: swap;
+  src: url('../fonts/cormorant-garamond-latin-600-italic.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Spectral';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../fonts/spectral-latin-400-normal.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Spectral';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../fonts/spectral-latin-400-italic.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Spectral';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('../fonts/spectral-latin-600-normal.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../fonts/ibm-plex-mono-latin-400-normal.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('../fonts/ibm-plex-mono-latin-600-normal.woff2') format('woff2');
+}

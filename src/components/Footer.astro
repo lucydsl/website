@@ -1,5 +1,30 @@
+---
+// Every page ends in the final state: the rail that runs down the page
+// stops at a bullseye, the statechart symbol for "done".
+const links = [
+  { name: 'install', href: 'install/' },
+  { name: 'docs', href: 'docs/' },
+  { name: 'language guide', href: 'docs/language/' },
+  { name: 'language overview', href: 'language-overview/' },
+  { name: 'contributing', href: 'docs/contributing/' },
+  { name: 'prism plugin', href: 'prism/' },
+  { name: 'vscode extension', href: 'vscode-extension/' },
+  { name: 'github', href: 'https://github.com/lucydsl/liblucy' },
+];
+---
 <footer class="site-footer">
-  <div class="site-footer__content">
-    <p>Made with 🎃&nbsp;&nbsp;by <a href="https://twitter.com/matthewcp" class="site-footer__link">@matthewcp</a></p>
-  </div>
+  <nav class="site-footer__map" aria-label="Site map">
+    <ul class="site-footer__list">
+      {links.map((link) => (
+        <li class="site-footer__item"><a href={link.href} class="site-footer__link">{link.name}</a></li>
+      ))}
+    </ul>
+  </nav>
+  <p class="site-footer__final">
+    <svg class="site-footer__bullseye" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+      <circle class="site-footer__ring" cx="12" cy="12" r="10.5" />
+      <circle class="site-footer__dot" cx="12" cy="12" r="6" />
+    </svg>
+    <span>Made with 🎃&nbsp;by <a href="https://twitter.com/matthewcp" class="site-footer__author">@matthewcp</a></span>
+  </p>
 </footer>
