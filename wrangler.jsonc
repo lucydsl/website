@@ -9,7 +9,10 @@
     "html_handling": "auto-trailing-slash",
     "not_found_handling": "404-page"
   },
-  "routes": [{ "pattern": "lucy.spooky.click", "custom_domain": true }],
+  // previews_enabled serves pull request previews at
+  // <branch>.previews.lucy.spooky.click. Without it, each `wrangler deploy`
+  // turns preview URLs off again.
+  "routes": [{ "pattern": "lucy.spooky.click", "custom_domain": true, "previews_enabled": true }],
   // Pull requests get a preview (`wrangler preview`), which needs this block.
   "previews": {}
 }
