@@ -15,6 +15,10 @@
   font-size: var(--text-2xl);
 }
 
+.prose :where(.heading-anchor) {
+  text-decoration: none;
+}
+
 .prose :where(:not(pre) > code) {
   background: var(--surface-sunken);
   font-size: var(--text-lucy-code-inline);

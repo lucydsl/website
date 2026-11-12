@@ -92,9 +92,9 @@ code[class*="language-"] ::selection {
 pre[class*="language-"] {
   border: var(--border-2) solid var(--code-border);
   font-size: var(--text-lucy-code-block);
-  border-radius: 0.5em;
-  padding: 1em;
-  margin: 0.5em 0;
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+  margin: var(--space-2) var(--space-0);
   overflow: auto;
   height: auto;
 }
