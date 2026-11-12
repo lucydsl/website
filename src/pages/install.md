@@ -1,10 +1,8 @@
 ---
-layout: ../layouts/Install.astro
+layout: ../layouts/Page.astro
+title: Install
+lede: A native compiler, a JavaScript package, and plugins for build tools.
 ---
-
-# Install Lucy
-
-The following are currently supported methods of installing __Lucy__.
 
 ## Installer
 

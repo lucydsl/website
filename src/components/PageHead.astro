@@ -1,0 +1,18 @@
+---
+// A page's header: its state path (with the rail's filled node: you are
+// here), its title and a lede.
+import { statePath } from '../site.ts';
+
+interface Props {
+  title: string;
+  lede?: string;
+  state?: string;
+}
+
+const { title, lede, state = statePath(Astro.url.pathname) } = Astro.props;
+---
+<header class="page-head">
+  <p class="node-label node-label--active"><span class="page-head__key">state:</span> '{state}'</p>
+  <h1 class="page-head__title">{title}</h1>
+  {lede && <p class="page-head__lede">{lede}</p>}
+</header>

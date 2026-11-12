@@ -1,69 +1,466 @@
-/* Home page: the hero (title, features and example) and the install section. */
+/*
+ * Home page: the hero (Lucy beside the toggle machine, drawn), then one
+ * chapter per idea, each a node on the rail: a transition's anatomy, the
+ * annotated output, the two builds of the compiler, and install.
+ */
 
+/* Hero */
 .hero {
   display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  column-gap: var(--space-6);
-  margin-top: var(--space-8);
-  margin-bottom: var(--space-12);
+  gap: var(--space-12);
+  padding-top: var(--space-4);
 }
 
 .hero__title {
-  font-size: var(--text-lucy-display);
-  font-weight: var(--font-medium);
   margin: var(--space-0);
+  font-family: var(--font-lucy-display);
+  font-weight: var(--font-bold);
+  font-size: var(--text-lucy-wordmark);
+  line-height: var(--leading-lucy-wordmark);
+  letter-spacing: var(--tracking-tight);
 }
 
-.hero__title-suffix {
-  font-size: var(--text-lucy-subtitle);
-  color: var(--accent-text);
-  font-weight: var(--font-normal);
+.hero__vampire {
+  font-size: var(--text-4xl);
+  vertical-align: top;
+  margin-inline-start: var(--space-2);
 }
 
-.hero__tagline {
-  font-size: var(--text-lucy-lead);
-  font-weight: var(--font-light);
+.hero__lede {
+  margin: var(--space-12) var(--space-0) var(--space-0);
+  max-width: var(--container-2xl);
+  font-size: var(--text-xl);
+  line-height: var(--leading-relaxed);
+}
+
+.hero__moves {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  list-style: none;
+  margin: var(--space-8) var(--space-0) var(--space-0);
+  padding: var(--space-0);
+}
+
+.hero__figure {
   margin: var(--space-0);
+  min-width: 0;
+  max-width: var(--container-xl);
 }
 
-.hero__features {
-  margin-top: var(--space-8);
+.hero__caption {
+  margin: var(--space-3) var(--space-0) var(--space-4);
+  font-size: var(--text-base);
+  font-style: italic;
+  color: var(--text-muted);
 }
 
-.hero__feature-name {
-  color: var(--accent-text);
-  font-size: var(--text-2xl);
-  margin-bottom: var(--space-2);
-  margin-top: var(--space-4);
-}
+/* sm: a little more presence for the lede */
+@media (min-width: 640px) {
+  .hero__lede {
+    font-size: var(--text-2xl);
+  }
 
-.hero__feature-text {
-  margin: var(--space-0);
-  font-size: var(--text-lucy-feature);
-  font-weight: var(--font-light);
-}
-
-.hero__file-name {
-  font-weight: var(--font-light);
-  text-decoration: overline;
-  text-align: end;
-  margin-bottom: var(--space-0);
-}
-
-/* lg: side by side once the example fits beside the text */
-@media (min-width: 1024px) {
-  .hero {
-    grid-template-columns: 1fr 1fr;
+  .hero__vampire {
+    font-size: var(--text-6xl);
   }
 }
 
-.install {
-  margin-top: var(--space-16);
+/* lg: the words and the machine side by side */
+@media (min-width: 1024px) {
+  .hero {
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    gap: var(--space-16);
+    align-items: center;
+  }
+
+  .hero__figure {
+    max-width: none;
+  }
 }
 
-.install__title {
-  font-size: var(--text-lucy-display);
-  color: var(--accent-text);
-  text-align: center;
+/*
+ * The toggle machine, drawn. Its states and edges are lilac line work; the
+ * current state is filled. With motion allowed, a pulse runs along each
+ * toggle edge and the fill moves across, forever. Without, disabled (the
+ * initial state) stays filled.
+ */
+.machine {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.machine__initial,
+.machine__head {
+  fill: var(--line);
+}
+
+.machine__edge {
+  fill: none;
+  stroke: var(--line);
+  stroke-width: var(--stroke-lucy-line);
+}
+
+.machine__pulse {
+  fill: none;
+  stroke: var(--link);
+  stroke-width: var(--stroke-lucy-pulse);
+  stroke-linecap: round;
+  stroke-dasharray: var(--dash-lucy-pulse);
+  stroke-dashoffset: var(--dash-lucy-pulse-before);
+}
+
+.machine__event {
+  font-family: var(--font-lucy-code);
+  font-size: var(--text-lucy-diagram-event);
+  fill: var(--text-muted);
+  text-anchor: middle;
+}
+
+.machine__box {
+  fill: var(--surface);
+  stroke: var(--line);
+  stroke-width: var(--stroke-lucy-line);
+}
+
+.machine__box--active {
+  fill: var(--surface-active);
+  stroke: var(--surface-active);
+}
+
+.machine__name {
+  font-family: var(--font-lucy-code);
+  font-size: var(--text-lucy-diagram-state);
+  font-weight: var(--font-semibold);
+  fill: var(--text);
+  text-anchor: middle;
+}
+
+.machine__name--active {
+  fill: var(--text-on-active);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .machine__box--disabled {
+    animation: machine-box-first var(--duration-lucy-toggle) infinite;
+  }
+
+  .machine__box--enabled {
+    animation: machine-box-second var(--duration-lucy-toggle) infinite;
+  }
+
+  .machine__name--disabled {
+    animation: machine-name-first var(--duration-lucy-toggle) infinite;
+  }
+
+  .machine__name--enabled {
+    animation: machine-name-second var(--duration-lucy-toggle) infinite;
+  }
+
+  .machine__pulse--enable {
+    animation: machine-pulse-first var(--duration-lucy-toggle) var(--ease-in-out) infinite;
+  }
+
+  .machine__pulse--disable {
+    animation: machine-pulse-second var(--duration-lucy-toggle) var(--ease-in-out) infinite;
+  }
+}
+
+/* disabled holds the first half of the cycle, enabled the second */
+@keyframes machine-box-first {
+  0%, 47%, 100% { fill: var(--surface-active); stroke: var(--surface-active); }
+  50%, 97% { fill: var(--surface); stroke: var(--line); }
+}
+
+@keyframes machine-box-second {
+  0%, 47%, 100% { fill: var(--surface); stroke: var(--line); }
+  50%, 97% { fill: var(--surface-active); stroke: var(--surface-active); }
+}
+
+@keyframes machine-name-first {
+  0%, 47%, 100% { fill: var(--text-on-active); }
+  50%, 97% { fill: var(--text); }
+}
+
+@keyframes machine-name-second {
+  0%, 47%, 100% { fill: var(--text); }
+  50%, 97% { fill: var(--text-on-active); }
+}
+
+/* each toggle: a pulse along the edge, just before the fill arrives */
+@keyframes machine-pulse-first {
+  0%, 38% { stroke-dashoffset: var(--dash-lucy-pulse-before); }
+  49%, 100% { stroke-dashoffset: var(--dash-lucy-pulse-after); }
+}
+
+@keyframes machine-pulse-second {
+  0%, 88% { stroke-dashoffset: var(--dash-lucy-pulse-before); }
+  99%, 100% { stroke-dashoffset: var(--dash-lucy-pulse-after); }
+}
+
+/* Chapters: one idea each, hung on the rail */
+.chapter {
+  margin-top: var(--space-20);
+  max-width: var(--container-3xl);
+}
+
+.chapter__title {
+  margin: var(--space-0) var(--space-0) var(--space-6);
+  font-family: var(--font-lucy-display);
+  font-weight: var(--font-bold);
+  font-size: var(--text-4xl);
+  line-height: var(--leading-none);
+  letter-spacing: var(--tracking-tight);
+  text-wrap: balance;
+}
+
+.chapter__text {
+  margin: var(--space-0) var(--space-0) var(--space-5);
+  max-width: var(--container-prose);
+}
+
+.chapter__pair {
+  display: grid;
+  gap: var(--space-4);
+  margin-top: var(--space-10);
+}
+
+.chapter__panel {
+  min-width: 0;
+}
+
+.chapter__label {
   margin: var(--space-0);
+  font-family: var(--font-lucy-code);
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+.chapter__notes {
+  margin: var(--space-6) var(--space-0) var(--space-0);
+  padding-inline-start: var(--space-6);
+  max-width: var(--container-prose);
+  font-size: var(--text-base);
+}
+
+/* sm: titles grow */
+@media (min-width: 640px) {
+  .chapter__title {
+    font-size: var(--text-5xl);
+  }
+}
+
+/* md */
+@media (min-width: 768px) {
+  .chapter__title {
+    font-size: var(--text-6xl);
+  }
+}
+
+/* lg: chapters may use the width beside the rail */
+@media (min-width: 1024px) {
+  .chapter {
+    margin-top: var(--space-32);
+    max-width: var(--container-5xl);
+  }
+
+  .chapter__title {
+    font-size: var(--text-7xl);
+    max-width: 18ch;
+  }
+}
+
+/*
+ * The anatomy of one transition: each part of the line over a bracket
+ * naming its role, the parts joined by Lucy's =>.
+ */
+.anatomy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-4) var(--space-3);
+  margin: var(--space-10) var(--space-0) var(--space-0);
+}
+
+.anatomy__part {
+  display: grid;
+  grid-template-columns: auto auto;
+  column-gap: var(--space-3);
+}
+
+.anatomy__part--then::before {
+  content: '=>';
+  grid-column: 1;
+  grid-row: 1;
+  font-family: var(--font-lucy-code);
+  font-size: var(--text-lg);
+  color: var(--syntax-operator);
+}
+
+.anatomy__code {
+  grid-column: 2;
+  font-family: var(--font-lucy-code);
+  font-size: var(--text-lg);
+  color: var(--code-text);
+}
+
+.anatomy__role {
+  grid-column: 2;
+  margin: var(--space-2) var(--space-0) var(--space-0);
+  padding: var(--space-1) var(--space-2) var(--space-0);
+  border: var(--border-1) solid var(--line);
+  border-bottom: 0;
+  font-family: var(--font-lucy-code);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-widest);
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--accent-text);
+}
+
+/* sm: the parts in a line, wrapping where they must */
+@media (min-width: 640px) {
+  .anatomy {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+}
+
+/* md: the whole line at a size you can read across the room */
+@media (min-width: 768px) {
+  .anatomy__code,
+  .anatomy__part--then::before {
+    font-size: var(--text-2xl);
+  }
+}
+
+/*
+ * The manuscript: toggle.js, complete, cut into pieces with a note in the
+ * margin beside each. The pieces join into one well of code.
+ */
+.manuscript {
+  list-style: none;
+  margin: var(--space-10) var(--space-0) var(--space-0);
+  padding: var(--space-0);
+}
+
+.manuscript__piece {
+  display: grid;
+  gap: var(--space-2) var(--space-8);
+}
+
+.manuscript__note {
+  margin: var(--space-4) var(--space-0) var(--space-0);
+  font-size: var(--text-base);
+  font-style: italic;
+  line-height: var(--leading-normal);
+  color: var(--text-muted);
+}
+
+.manuscript__range {
+  display: block;
+  font-family: var(--font-lucy-code);
+  font-size: var(--text-xs);
+  font-style: normal;
+  color: var(--accent-text);
+}
+
+.manuscript__code {
+  margin: var(--space-0);
+  border-radius: var(--radius-none);
+  border-top-style: dashed;
+  border-bottom: 0;
+}
+
+.manuscript__code::before {
+  content: none;
+}
+
+.manuscript__code--first {
+  border-top-style: solid;
+  border-radius: var(--radius-lg) var(--radius-lg) var(--radius-none) var(--radius-none);
+}
+
+.manuscript__code--first::before {
+  content: 'toggle.js';
+}
+
+.manuscript__code--last {
+  border-bottom: var(--border-1) solid var(--code-border);
+  border-radius: var(--radius-none) var(--radius-none) var(--radius-lg) var(--radius-lg);
+}
+
+/* lg: notes in the margin, beside the code they describe */
+@media (min-width: 1024px) {
+  .manuscript__piece {
+    grid-template-columns: var(--space-64) minmax(0, 1fr);
+  }
+
+  .manuscript__note {
+    margin-top: var(--space-0);
+    padding-top: var(--space-3);
+    border-top: var(--border-1) dashed var(--border);
+    text-align: end;
+  }
+}
+
+/* The fork: one set of C sources, two builds of the compiler */
+.fork {
+  margin: var(--space-8) var(--space-0);
+  font-family: var(--font-lucy-code);
+}
+
+.fork__source {
+  display: inline-block;
+  margin: var(--space-0);
+  padding: var(--space-2) var(--space-4);
+  border: var(--border-1) solid var(--line);
+  border-radius: var(--radius-lg);
+  font-size: var(--text-sm);
+}
+
+.fork__targets {
+  list-style: none;
+  margin: var(--space-0) var(--space-0) var(--space-0) var(--space-6);
+  padding: var(--space-0);
+  border-inline-start: var(--border-1) solid var(--line);
+}
+
+.fork__target {
+  display: grid;
+  gap: var(--space-1);
+  position: relative;
+  padding: var(--space-6) var(--space-0) var(--space-0) var(--space-12);
+}
+
+/* each branch: a transition from the sources' line into the build */
+.fork__target::before {
+  content: '';
+  position: absolute;
+  left: var(--space-0);
+  top: calc(var(--space-6) + var(--space-3));
+  width: var(--space-10);
+  border-top: var(--border-1) solid var(--line);
+}
+
+.fork__name {
+  justify-self: start;
+  padding: var(--space-1) var(--space-3);
+  border: var(--border-1) solid var(--surface-active);
+  border-radius: var(--radius-lg);
+  background: var(--surface-active);
+  color: var(--text-on-active);
+  font-weight: var(--font-semibold);
+  font-size: var(--text-sm);
+}
+
+.fork__text {
+  font-family: var(--font-lucy-body);
+  color: var(--text-muted);
+}
+
+.chapter--last {
+  margin-bottom: var(--space-8);
 }

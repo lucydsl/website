@@ -1,6 +1,7 @@
 ---
 layout: ../../layouts/Language.astro
-title: Language Overview
+title: Language Guide
+lede: The elements of Lucy’s syntax, with examples of how to build machines.
 sections:
   - References:
     - Variables
@@ -21,8 +22,6 @@ sections:
   - Invoke
   - Actors
 ---
-
-# The Lucy Language Guide
 
 ## References
 

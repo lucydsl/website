@@ -1,15 +1,14 @@
 ---
 layout: ../layouts/Page.astro
 title: VSCode Extension
+lede: Syntax highlighting for Lucy in Visual Studio Code.
 ---
 
-Syntax highlighting and code completion for [Lucy](./).
+## Installation
 
-# Installation
+Search for Lucy in the VS Code marketplace and install the extension.
 
-Search for Lucy in the vscode marketplace install the extension.
-
-# Highlighting
+## Highlighting
 
 The VSCode Lucy plugin is able to highlight files with the `.lucy` file extension and JavaScript using the `machine` tagged template function.
 
@@ -43,6 +42,6 @@ const exampleMachine = machine`
 
 > Lucy itself no longer provides a `machine` tag function: the old one came from `@lucy/xstate`, which targeted XState. Compiling `.lucy` files is now the main way to use Lucy, and the highlighting works for any template tagged `machine`.
 
-# Code Completion
+## Code Completion
 
 Coming Soon!

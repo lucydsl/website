@@ -10,3 +10,15 @@ export function baseUrl(pathname: string): string {
 export function fromBase(pathname: string): string {
   return pathname.slice(1);
 }
+
+// Each page is a state of the site, named the way a Lucy machine reports a
+// nested state: a dotted path. "/docs/language/" -> "docs.language".
+export function statePath(pathname: string): string {
+  return pathname.split('/').filter(Boolean).join('.') || 'home';
+}
+
+// The pages that count as documentation, for the nav's "docs" state.
+const docsPages = ['/docs/', '/language-overview/', '/prism/', '/vscode-extension/'];
+export function isDocs(pathname: string): boolean {
+  return docsPages.some((page) => pathname.startsWith(page));
+}

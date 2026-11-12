@@ -1,113 +1,204 @@
 ---
-import { Prism } from '@astrojs/prism';
-import Base from '../components/Base.astro';
-import BaseStyles from '../components/BaseStyles.astro';
-import Footer from '../components/Footer.astro';
-import Nav from '../components/Nav.astro';
+import { Prism as Code } from '@astrojs/prism';
+import Prism from 'prismjs';
+import Site from '../layouts/Site.astro';
 import '../prism.ts';
+// The machines shown here and the compiler's output for them, unedited
+// (see src/examples/README.md).
+import toggleLucy from '../examples/toggle.lucy?raw';
+import toggleJs from '../examples/toggle.js?raw';
+import submitLucy from '../examples/submit.lucy?raw';
+import submitJs from '../examples/submit.js?raw';
 
-const title = 'Lucy | A DSL for Finite State Machines';
+const lines = (text: string) => text.trimEnd().split('\n');
+
+// toggle.js in the pieces the margin notes describe, by line number.
+const toggleLines = lines(toggleJs);
+const pieces = [
+  {
+    to: 2,
+    note: 'One exported function per machine; the file’s unnamed machine is the default export. Nothing is imported.',
+  },
+  { to: 14, note: 'Each state is an object, and each event it handles is a function on it.' },
+  { to: 19, note: 'Subscribers are called with the machine after every change.' },
+  {
+    to: 32,
+    note: 'The state is a plain string. Sending an event is a lookup and a function call.',
+  },
+  { to: toggleLines.length, note: '<code class="inline-code">subscribe</code> returns a function that unsubscribes. <code class="inline-code">start</code> and <code class="inline-code">stop</code> begin and end the machine.' },
+];
+let from = 0;
+const annotated = pieces.map((piece) => {
+  const code = toggleLines.slice(from, piece.to).join('\n');
+  const range = from + 1 === piece.to ? `line ${piece.to}` : `lines ${from + 1}–${piece.to}`;
+  from = piece.to;
+  return { ...piece, code, range };
+});
+
+// The submit transition, part by part, highlighted the way Prism highlights Lucy.
+const lucy = (code: string) => Prism.highlight(code, Prism.languages.lucy, 'lucy');
+const parts = [
+  { code: 'submit', role: 'event' },
+  { code: 'guard(:canSubmit)', role: 'guard' },
+  { code: 'action(:thank)', role: 'action' },
+  { code: 'sent', role: 'target state' },
+];
+
+// The form state's handler from submit.js (lines 4–12), moved four spaces left.
+const submitHandler = lines(submitJs)
+  .slice(3, 12)
+  .map((line) => line.slice(4))
+  .join('\n');
+
+const sourceLines = lines(toggleLucy).length;
 ---
-<!doctype html>
-<html lang="en">
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>{title}</title>
-<Base />
+<Site
+  title="Lucy | A language for finite state machines"
+  description="Lucy is a small language for finite state machines. It compiles to small, readable JavaScript with no runtime library."
+  styles={['home']}
+>
+  <div class="rail rail--wide">
+    <section class="hero" aria-labelledby="lucy">
+      <div class="hero__words">
+        <p class="node-label node-label--active">initial state</p>
+        <h1 class="hero__title" id="lucy">Lucy<span class="hero__vampire" role="img" aria-label="a vampire">🧛🏻‍♀️</span></h1>
+        <p class="hero__lede">
+          A concise language for describing <a href="https://brilliant.org/wiki/finite-state-machines/">finite state machines</a>.
+          Write the states and the transitions between them; Lucy compiles them to a small module of plain JavaScript.
+        </p>
+        <ul class="hero__moves">
+          <li class="transition"><span class="transition__event">ready</span><span class="transition__arrow" aria-hidden="true">=&gt;</span><a href="install/" class="transition__target">install</a></li>
+          <li class="transition"><span class="transition__event">curious</span><span class="transition__arrow" aria-hidden="true">=&gt;</span><a href="docs/language/" class="transition__target">the language guide</a></li>
+        </ul>
+      </div>
 
-<BaseStyles />
-<link rel="stylesheet" href="styles/home.css">
-<link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
-<link rel="manifest" href="images/site.webmanifest">
+      <figure class="hero__figure">
+        <svg class="machine" viewBox="0 0 480 280" role="img" aria-labelledby="machine-title">
+          <title id="machine-title">The toggle machine: two states, disabled (the initial state) and enabled. A toggle event moves each to the other.</title>
+          <defs>
+            <marker id="arrowhead" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path class="machine__head" d="M0 0 10 5 0 10z" />
+            </marker>
+          </defs>
+          <circle class="machine__initial" cx="110" cy="30" r="7" />
+          <path class="machine__edge" d="M110 37v73" marker-end="url(#arrowhead)" />
 
-<body>
-<Nav />
-<div class="hero container">
-  <header class="hero__description">
-    <h1 class="hero__title">🧛🏻‍♀️ Lucy <span class="hero__title-suffix">language</span></h1>
-    <h2 class="hero__tagline">A concise language for describing <a href="https://brilliant.org/wiki/finite-state-machines/">Finite State Machines</a>.</h2>
+          <path class="machine__edge" d="M160 111C185 52 295 52 320 111" marker-end="url(#arrowhead)" />
+          <path class="machine__pulse machine__pulse--enable" d="M160 111C185 52 295 52 320 111" pathLength="100" />
+          <text class="machine__event" x="240" y="58">toggle</text>
 
-    <dl class="hero__features">
-      <dt class="hero__feature-name">Expressive</dt>
-      <dd class="hero__feature-text">Complex sets of events, guards, actions, and destination states can be expressed in a single line. Nesting machines gives you a hierarchical machine.</dd>
-      <dt class="hero__feature-name">Plain JavaScript</dt>
-      <dd class="hero__feature-text">Lucy compiles each machine to a small, readable JavaScript module with no dependencies and no runtime library. What runs is a handful of ordinary functions, so the code you ship is tiny and stack traces stay shallow.</dd>
-      <dt class="hero__feature-name">Fast</dt>
-      <dd class="hero__feature-text">Lucy is written in C, so compiling is quick: <code class="inline-code">lucyc</code> is a native command-line compiler, and the same compiler is built to <a href="https://webassembly.org/">WebAssembly</a> for easy use in JavaScript projects. At run time, sending an event is a lookup and a function call.</dd>
-    </dl>
-  </header>
+          <path class="machine__edge" d="M320 189C295 248 185 248 160 189" marker-end="url(#arrowhead)" />
+          <path class="machine__pulse machine__pulse--disable" d="M320 189C295 248 185 248 160 189" pathLength="100" />
+          <text class="machine__event" x="240" y="256">toggle</text>
 
-  <section class="hero__example">
-    <h1 class="hero__file-name">toggle.lucy</h1>
+          <g>
+            <rect class="machine__box machine__box--disabled machine__box--active" x="30" y="112" width="160" height="76" rx="16" />
+            <text class="machine__name machine__name--disabled machine__name--active" x="110" y="157">disabled</text>
+          </g>
+          <g>
+            <rect class="machine__box machine__box--enabled" x="290" y="112" width="160" height="76" rx="16" />
+            <text class="machine__name machine__name--enabled" x="370" y="157">enabled</text>
+          </g>
+        </svg>
+        <figcaption class="hero__caption">
+          <span class="file-name">toggle.lucy</span>, drawn. The filled state is the current one; each <code class="inline-code">toggle</code> moves it across.
+        </figcaption>
+        <Code lang="lucy" code={toggleLucy.trimEnd()} />
+      </figure>
+    </section>
 
-    <Prism lang="lucy" code={`state enabled {
-  toggle => disabled
-}
+    <section class="chapter" aria-labelledby="expressive">
+      <p class="node-label"><span class="node-label__arrow" aria-hidden="true">=&gt;</span> expressive</p>
+      <h2 class="chapter__title" id="expressive">A whole transition on one line.</h2>
+      <p class="chapter__text">
+        Complex sets of events, guards, actions, and destination states can be expressed in a single line.
+        Nesting machines gives you a hierarchical machine.
+      </p>
 
-initial state disabled {
-  toggle => enabled
-}`} />
+      <dl class="anatomy">
+        {parts.map((part, i) => (
+          <div class:list={['anatomy__part', { 'anatomy__part--then': i > 0 }]}>
+            <dt class="anatomy__code"><code set:html={lucy(part.code)} /></dt>
+            <dd class="anatomy__role">{part.role}</dd>
+          </div>
+        ))}
+      </dl>
 
-    <h1 class="hero__file-name">out.js</h1>
-    <Prism lang="js" code={`export default function createMachine({ context = {} } = {}) {
-  const listeners = new Set();
-  const states = {
-    enabled: {
-      toggle() {
-        machine.state = 'disabled';
-      }
-    },
-    disabled: {
-      toggle() {
-        machine.state = 'enabled';
-      }
-    }
-  };
-  function notify() {
-    for(const listener of listeners) {
-      listener(machine);
-    }
-  }
-  const machine = {
-    state: 'disabled',
-    context,
-    send(event) {
-      if(typeof event === 'string') {
-        event = { type: event };
-      }
-      const handler = states[machine.state][event.type];
-      if(handler) {
-        handler(event);
-        notify();
-      }
-    },
-    subscribe(listener) {
-      listeners.add(listener);
-      return () => listeners.delete(listener);
-    },
-    start() {
-      notify();
-      return machine;
-    },
-    stop() {
-      listeners.clear();
-    }
-  };
-  return machine;
-}`} />
-  </section>
-</div>
+      <div class="chapter__pair">
+        <div class="chapter__panel">
+          <p class="chapter__label">submit.lucy</p>
+          <Code lang="lucy" code={submitLucy.trimEnd()} />
+        </div>
+        <div class="chapter__panel">
+          <p class="chapter__label">submit.js, the <code class="inline-code">form</code> state</p>
+          <Code lang="js" code={submitHandler} />
+        </div>
+      </div>
+      <ol class="chapter__notes">
+        <li>The <strong>event</strong> names a function on the state that handles it.</li>
+        <li>The <strong>guard</strong> becomes an <code class="inline-code">if</code>: no pass, no transition.</li>
+        <li>The <strong>action</strong> is a call, with the context and the event.</li>
+        <li>The <strong>target</strong> is an assignment to <code class="inline-code">machine.state</code>. <code class="inline-code">sent</code> is final, so <code class="inline-code">done</code> becomes <code class="inline-code">true</code> as well.</li>
+      </ol>
+    </section>
 
-<section class="install container">
-  <h1 class="install__title">Install</h1>
+    <section class="chapter" aria-labelledby="plain-javascript">
+      <p class="node-label"><span class="node-label__arrow" aria-hidden="true">=&gt;</span> plain javascript</p>
+      <h2 class="chapter__title" id="plain-javascript">{sourceLines} lines in, {toggleLines.length} out, nothing&nbsp;imported.</h2>
+      <p class="chapter__text">
+        Lucy compiles each machine to a small, readable JavaScript module with no dependencies and no runtime library.
+        What runs is a handful of ordinary functions, so the code you ship is tiny and stack traces stay shallow.
+        Here is everything <code class="inline-code">lucyc</code> writes for <span class="file-name">toggle.lucy</span>:
+      </p>
 
-  <p>See the <a href="install/">install page</a> for detailed instructions on the various ways you can use Lucy, such as with popular JavaScript build tools.</p>
-  <p>To use the command-line compiler install with:</p>
+      <ol class="manuscript">
+        {annotated.map((piece, i) => (
+          <li class="manuscript__piece">
+            <p class="manuscript__note"><span class="manuscript__range">{piece.range}</span> <span set:html={piece.note} /></p>
+            <Code
+              lang="js"
+              code={piece.code}
+              class:list={['manuscript__code', { 'manuscript__code--first': i === 0, 'manuscript__code--last': i === annotated.length - 1 }]}
+            />
+          </li>
+        ))}
+      </ol>
+    </section>
 
-   <Prism lang="shell" code={`curl -sSf https://lucy.spooky.click/install.sh | bash`} />
-</section>
+    <section class="chapter" aria-labelledby="fast">
+      <p class="node-label"><span class="node-label__arrow" aria-hidden="true">=&gt;</span> fast</p>
+      <h2 class="chapter__title" id="fast">Written in C, built twice.</h2>
+      <p class="chapter__text">
+        Lucy is written in C, so compiling is quick. The same compiler is built two ways:
+      </p>
+      <div class="fork">
+        <p class="fork__source">the C sources</p>
+        <ul class="fork__targets">
+          <li class="fork__target">
+            <span class="fork__name">lucyc</span>
+            <span class="fork__text">a native command-line compiler</span>
+          </li>
+          <li class="fork__target">
+            <span class="fork__name">WebAssembly</span>
+            <span class="fork__text"><a href="https://www.npmjs.com/package/@lucy/liblucy">@lucy/liblucy</a>, for JavaScript projects in Node.js and the browser</span>
+          </li>
+        </ul>
+      </div>
+      <p class="chapter__text">At run time, sending an event is a lookup and a function call.</p>
+    </section>
 
-<Footer /></body>
-</html>
+    <section class="chapter chapter--last" aria-labelledby="install">
+      <p class="node-label"><span class="node-label__arrow" aria-hidden="true">=&gt;</span> install</p>
+      <h2 class="chapter__title" id="install">Install</h2>
+      <p class="chapter__text">To use the command-line compiler, install it with:</p>
+      <Code lang="shell" code={`curl -sSf https://lucy.spooky.click/install.sh | bash`} />
+      <p class="chapter__text">
+        The <a href="install/">install page</a> covers the other ways to use Lucy, such as with JavaScript build tools.
+        The current release still predates the plain JavaScript compiler shown here; the install page says how to build it from source in the meantime.
+      </p>
+      <svg class="fangs" viewBox="0 0 48 30" width="48" height="30" aria-hidden="true">
+        <path d="M0 0h18c0 9-3 20-7.5 30C5 20 1 9 0 0zM30 0h18c-1 9-5 20-10.5 30C33 20 30 9 30 0z" />
+      </svg>
+    </section>
+  </div>
+</Site>

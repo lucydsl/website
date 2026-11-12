@@ -1,47 +1,147 @@
-/* The language guide (Language layout): a sidebar of sections beside the guide. */
+/*
+ * The language guide (Language layout): the guide on the rail, and its
+ * contents drawn as a statechart: beside the guide from lg up, folded into
+ * a <details> above it below lg.
+ */
 
-.guide {
-  padding-inline: var(--space-4);
+.guide__fold {
+  margin-bottom: var(--space-12);
 }
 
-.guide__sidebar {
-  padding: var(--space-8) var(--space-4);
-  background: var(--surface-raised);
+.guide__summary {
+  display: inline-block;
+  padding: var(--space-1) var(--space-4);
+  border: var(--border-1) solid var(--border-strong);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-lucy-code);
+  font-size: var(--text-sm);
+  cursor: pointer;
+  margin-bottom: var(--space-4);
+}
+
+.guide__aside {
   display: none;
 }
 
-.guide__sidebar-title {
-  font-weight: var(--font-semibold);
-  text-align: center;
+.guide__aside-title {
+  margin: var(--space-0) var(--space-0) var(--space-3);
+  font-family: var(--font-lucy-code);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-widest);
+  text-transform: uppercase;
+  color: var(--text-muted);
 }
 
-.guide__list {
-  list-style-type: circle;
+/* lg: the contents beside the guide, following you down the page */
+@media (min-width: 1024px) {
+  .guide {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) var(--space-64);
+    column-gap: var(--space-8);
+    margin-inline-end: var(--space-lucy-gutter);
+  }
+
+  .guide__body {
+    max-width: none;
+    margin-inline-end: var(--space-0);
+  }
+
+  .guide__fold {
+    display: none;
+  }
+
+  .guide__aside {
+    display: block;
+    position: sticky;
+    top: var(--space-0);
+    align-self: start;
+    max-height: 100vh;
+    overflow-y: auto;
+    padding: var(--space-12) var(--space-1) var(--space-8);
+  }
+}
+
+/* xl: the guide keeps to its measure, and the contents sit close to it */
+@media (min-width: 1280px) {
+  .guide {
+    grid-template-columns: minmax(0, var(--container-3xl)) var(--space-64);
+    column-gap: var(--space-16);
+  }
+}
+
+/*
+ * A statechart of sections: it starts at an initial dot, and each section
+ * is a state with a transition coming into it from the one above.
+ * Subsections are a nested machine inside their section's state.
+ */
+.statechart {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  list-style: none;
   margin: var(--space-0);
-  padding-inline: var(--space-6);
+  padding: var(--space-0);
 }
 
-.guide__link {
-  font-size: var(--text-lucy-feature);
-  display: inline-block;
-  margin-block: var(--space-lucy-tight);
+.statechart::before {
+  content: '';
+  width: var(--space-2);
+  height: var(--space-2);
+  margin-inline-start: calc(var(--space-4) - var(--space-1) + var(--space-px));
+  margin-bottom: calc(-1 * var(--space-3));
+  border-radius: var(--radius-full);
+  background: var(--line);
+}
+
+.statechart__state {
+  position: relative;
+  padding: var(--space-1-5) var(--space-3);
+  border: var(--border-1) solid var(--border-strong);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+}
+
+.statechart__state::before {
+  content: '';
+  position: absolute;
+  left: var(--space-4);
+  bottom: 100%;
+  height: calc(var(--space-3) + var(--space-px));
+  border-inline-start: var(--border-1) solid var(--line);
+}
+
+.statechart__name {
+  display: block;
+  font-weight: var(--font-semibold);
+  font-size: var(--text-base);
+  line-height: var(--leading-snug);
   color: var(--text);
   text-decoration: none;
 }
 
-/* lg: the sidebar once there is room for it beside the guide */
-@media (min-width: 1024px) {
-  .guide {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 4fr);
-    padding-inline: var(--space-0);
-  }
+.statechart__name:hover {
+  color: var(--link);
+}
 
-  .guide__sidebar {
-    display: block;
-  }
+.statechart__nested {
+  list-style: none;
+  margin: var(--space-1-5) var(--space-0) var(--space-0);
+  padding: var(--space-1) var(--space-0) var(--space-0);
+  border-top: var(--border-1) dashed var(--border-strong);
+}
 
-  .guide__main {
-    padding: var(--space-4) var(--space-16);
-  }
+.statechart__child {
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+}
+
+.statechart__link {
+  display: block;
+  padding-block: var(--space-0-5);
+  color: var(--text-muted);
+  text-decoration: none;
+}
+
+.statechart__link:hover {
+  color: var(--link);
 }

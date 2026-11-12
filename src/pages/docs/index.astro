@@ -1,0 +1,57 @@
+---
+// The docs: every page of documentation, drawn as the states of a machine
+// you can move between.
+import Page from '../../layouts/Page.astro';
+
+const pages = [
+  {
+    name: 'Language Guide',
+    href: 'docs/language/',
+    path: 'docs.language',
+    text: 'The elements of Lucy’s syntax, section by section, with examples of how to build machines.',
+  },
+  {
+    name: 'Language Overview',
+    href: 'language-overview/',
+    path: 'language-overview',
+    text: 'States, transitions, context, actions and guards on one page: the few concepts you need to build any machine.',
+  },
+  {
+    name: 'Install',
+    href: 'install/',
+    path: 'install',
+    text: 'The native compiler, the JavaScript package, and plugins for build tools.',
+  },
+  {
+    name: 'Contributing',
+    href: 'docs/contributing/',
+    path: 'docs.contributing',
+    text: 'How to build and test liblucy, Lucy’s compiler, and how its C sources are laid out.',
+  },
+  {
+    name: 'Prism Plugin',
+    href: 'prism/',
+    path: 'prism',
+    text: 'Highlight Lucy, and Lucy inside JavaScript template literals, with Prism.',
+  },
+  {
+    name: 'VSCode Extension',
+    href: 'vscode-extension/',
+    path: 'vscode-extension',
+    text: 'Syntax highlighting for .lucy files and for Lucy embedded in JavaScript.',
+  },
+];
+---
+<Page frontmatter={{ title: 'Documentation', lede: 'Every page about Lucy. Pick a state to move to.' }} prose={false} styles={['docs']}>
+  <ol class="doc-map">
+    {pages.map((page, i) => (
+      <li class:list={['doc-map__item', { 'doc-map__item--last': i === pages.length - 1 }]}>
+        <a href={page.href} class="doc-map__state">
+          <span class="doc-map__path">'{page.path}'</span>
+          <span class="doc-map__name">{page.name}</span>
+        </a>
+        <p class="doc-map__text">{page.text}</p>
+      </li>
+    ))}
+  </ol>
+</Page>

@@ -1,15 +1,12 @@
 ---
 layout: ../layouts/Page.astro
 title: Language Overview
+lede: The few concepts you need to build any kind of machine, on one page.
 ---
-
-This page gives an overview of the language. Once you understand the few concepts on this page you'll be able to build any type of machine needed.
-
-__Table of Contents__
 
 @[toc]
 
-# State
+## State
 
 A Finite State Machine is made up of states that the machine can transition between. This classic stop light example shows the different states of this machine:
 
@@ -88,7 +85,7 @@ final state clean {
 }
 ```
 
-## Nested state
+### Nested state
 
 States can contain their own states, by putting a machine inside the state. This allows better grouping of states within your application. Just as with top-level states, nested states can be marked as __initial__ and __final__.
 
@@ -110,7 +107,7 @@ state lunch {
 
 While the machine is in a nested state its `state` is a dotted path, such as `'lunch.cook'`.
 
-# Transitions
+## Transitions
 
 In Lucy you can define a transition between states. The fat-arrow (`=>`) symbol is used to pipe from one step to the other. A transition can contain:
 
@@ -135,7 +132,7 @@ state enabled {
 
 Here the event `toggle` is send outside of the machine and immediately transitions to the next state (either `enabled` or `disabled`).
 
-## Immediate transitions
+### Immediate transitions
 
 If no __event__ is provided for a transition it will occur immediately when the state is entered. Here's a machine for a daily schedule where breakfast is skipped.
 
@@ -191,7 +188,7 @@ Whenever the user starts typing again the error message is cleared out and isn't
 
 When the user submits the form and the `canSubmit` guard passes, it moves to the `complete` state, whose `@entry` runs the `thankUser` action.
 
-# Context
+## Context
 
 Finite state machines allow modeling known states, but real applications contain data such as from user input that must be placed outside of the states. Statecharts include [extended state](https://en.wikipedia.org/wiki/UML_state_machine#Extended_states) as an answer for this.
 
@@ -220,7 +217,7 @@ console.log(nameMachine.context.name); // world
 
 Here `name.js` is `name.lucy` compiled with `lucyc` (see the [install page](install/) for other ways).
 
-# Actions
+## Actions
 
 An __action__ is a side-effect taken within a transition. The following is an action that logs whenever the `inc` event is sent through the machine:
 
@@ -246,7 +243,7 @@ const counterMachine = createMachine({
 counterMachine.send('inc'); // Incremented
 ```
 
-## Assign
+### Assign
 
 The __assign__ keyword is used within an action to assign a __context__ value as part of an action. This is useful to keep [extended state](https://en.wikipedia.org/wiki/UML_state_machine#Extended_states).
 
@@ -279,7 +276,7 @@ console.log(counterMachine.context.count); // 1
 
 Assign takes the form `assign(prop, fn)` where `prop` is a property on the __context__ object, and `fn` is a function that returns a new value for `prop`. It's called with the context and the event, like an action. Each assign gives the machine a new context object rather than changing the old one.
 
-# Guards
+## Guards
 
 __Guards__ control the ability to exit or enter a state. In the following example we only want to enter the `submit` state if the machine state is valid.
 
@@ -312,7 +309,7 @@ final state submit {
 }
 ```
 
-# Comments
+## Comments
 
 Comments can be added using the `//` syntax, as in C-like languages:
 

@@ -38,9 +38,12 @@ const escapeHtml = (s: string) =>
 
 function renderToc(headings: Heading[], page: string): string {
   const tree: TocNode = { nodes: [] };
+  // Nest from the page's top heading level (pages start at h2 under the
+  // layout's h1), so the list has no empty wrapper levels.
+  const top = Math.min(...headings.map((heading) => heading.level));
   for (const heading of headings) {
     let parent = tree;
-    for (let level = 1; level < heading.level; level++) {
+    for (let level = top; level < heading.level; level++) {
       if (parent.nodes.length === 0) parent.nodes.push({ nodes: [] });
       parent = parent.nodes[parent.nodes.length - 1];
     }

@@ -1,8 +1,6 @@
 ---
 import Page from '../layouts/Page.astro';
 ---
-<Page frontmatter={{ title: 'Not found' }} base="/">
-<h1>Not found</h1>
-
-<p>There's nothing at this address. Try the <a href="docs/">docs</a> or the <a href="./">home page</a>.</p>
+<Page frontmatter={{ title: 'Not found', state: 'undefined', lede: 'No state by that name. There’s no transition here.' }} base="/">
+<p>There’s nothing at this address. Try the <a href="docs/">docs</a> or the <a href="./">home page</a>.</p>
 </Page>
