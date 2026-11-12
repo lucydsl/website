@@ -1,48 +1,47 @@
+/* The language guide (Language layout): a sidebar of sections beside the guide. */
 
-.language-contents {
-  padding-inline: .8rem;
+.guide {
+  padding-inline: 0.8rem;
 }
 
-.language-contents > aside {
-  padding: 2rem 1rem;
-  background: var(--background-secondary);
+.guide__sidebar {
+  padding: var(--space-8) var(--space-4);
+  background: var(--surface-raised);
   display: none;
 }
 
-.language-contents > aside h1 {
-  font-weight: 600;
+.guide__sidebar-title {
+  font-weight: var(--font-semibold);
   text-align: center;
 }
 
-.language-contents > aside ul {
+.guide__list {
   list-style-type: circle;
-  margin: 0;
-  padding-inline: 1.5em;
+  margin: var(--space-0);
+  padding-inline: var(--space-6);
 }
 
-.language-contents > aside .section-title {
-  font-size: 1.2em;
+.guide__link {
+  font-size: var(--text-lucy-feature);
   display: inline-block;
-  margin-block: .2rem;
-}
-
-.language-contents > aside :where(.section-title, .section-title:visited) {
-  color: var(--color-primary);
+  margin-block: var(--space-lucy-tight);
+  color: var(--text);
   text-decoration: none;
 }
 
-@media only screen and (min-width: 601px) {
-  .language-contents main {
-    padding: 1rem 4rem;
-  } 
+/* sm */
+@media (min-width: 640px) {
+  .guide {
+    display: grid;
+    grid-template-columns: 1fr 4fr;
+    padding-inline: var(--space-0);
+  }
 
-  .language-contents aside {
+  .guide__sidebar {
     display: block;
   }
 
-  .language-contents {
-    display: grid;
-    grid-template-columns: 1fr 4fr;
-    padding-inline: 0;
+  .guide__main {
+    padding: var(--space-4) var(--space-16);
   }
 }

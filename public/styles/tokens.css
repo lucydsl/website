@@ -1,0 +1,145 @@
+/*
+ * Design tokens (Tideway). Load this before every other stylesheet.
+ *
+ * Four layers, in order:
+ *   1. Tideway primitives: the scale values this site uses, as Tideway defines them.
+ *   2. Lucy primitives: the site's own palette and the few off-scale values its
+ *      look depends on. Tideway allows project tokens; these keep the site
+ *      looking the way it always has.
+ *   3. Semantic roles: what components read colour from. Never a palette token.
+ *   4. Syntax roles: the Dracula colours of the Prism theme (dracula-prism.css).
+ *
+ * The site has one, dark, theme, so the roles have no light-dark() pairs.
+ */
+
+:root {
+  /* 1. Tideway primitives */
+  --space-0: 0;
+  --space-1: 0.25rem;
+  --space-1-5: 0.375rem;
+  --space-2: 0.5rem;
+  --space-3-5: 0.875rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-48: 12rem;
+
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-2xl: 1.5rem;
+  --text-5xl: 3rem;
+
+  --font-light: 300;
+  --font-normal: 400;
+  --font-medium: 500;
+  --font-semibold: 600;
+  --font-bold: 700;
+
+  --leading-normal: 1.5;
+
+  --radius-none: 0;
+  --radius-lg: 0.5rem;
+
+  --container-3xl: 48rem;
+
+  --border-2: 2px;
+
+  /* 2. Lucy primitives */
+  --font-lucy-body: 'Lato', sans-serif;
+  --font-lucy-code: PT Mono, Consolas, Monaco, "Andale Mono", "Ubuntu Mono", monospace;
+  --font-lucy-code-inline: 'Courier New', Courier, monospace;
+
+  --text-lucy-feature: 1.2rem;     /* home feature text, guide sidebar links */
+  --text-lucy-body: 1.3rem;        /* running text on content pages */
+  --text-lucy-lead: 1.4rem;        /* home tagline */
+  --text-lucy-page-h2: 1.95rem;    /* section headings on content pages */
+  --text-lucy-subtitle: 2.4rem;    /* "language" beside the home title */
+  --text-lucy-display: 4rem;       /* home title and "Install" */
+  --text-lucy-page-title: 5rem;    /* content page titles, from sm up */
+  --text-lucy-code-block: 90%;     /* code blocks, relative to the text around them */
+  --text-lucy-code-inline: 80%;    /* inline code, relative to the text around it */
+
+  --space-lucy-tight: 0.2rem;      /* page title margin, guide sidebar link spacing */
+  --space-lucy-code-x: 0.4rem;     /* inline code side padding */
+
+  --container-lucy-page: 61.25rem; /* 980px page column */
+  --container-lucy-sm: 34rem;      /* 544px page column from sm to md */
+
+  --color-lucy-ink: #181a22;
+  --color-lucy-night: #282a36;
+  --color-lucy-dusk: #393a59;
+  --color-lucy-fog: #f2f2f2;
+  --color-lucy-violet: #9580ff;
+  --color-lucy-lilac: #bd93f9;
+  --color-lucy-cyan: #8be9fd;
+
+  --color-dracula-background: #282936;
+  --color-dracula-foreground: #ccc;
+  --color-dracula-selection: #5a5f80;
+  --color-dracula-comment: #6272a4;
+  --color-dracula-cyan: #8be9fd;
+  --color-dracula-sky: #66d9ef;
+  --color-dracula-green: #50fa7b;
+  --color-dracula-mint: #62ef75;
+  --color-dracula-sage: #7ec699;
+  --color-dracula-orange: #ffb86c;
+  --color-dracula-pink: #ff79c6;
+  --color-dracula-magenta: #dc68aa;
+  --color-dracula-purple: #bd93f9;
+  --color-dracula-red: #e2777a;
+  --color-dracula-salmon: #ff879d;
+  --color-dracula-yellow: #f1fa8c;
+  --color-dracula-gold: #e6db74;
+  --color-dracula-stone: #cfcfc2;
+
+  /* 3. Semantic roles */
+  --surface: var(--color-lucy-night);
+  --surface-raised: var(--color-lucy-dusk);   /* guide sidebar */
+  --surface-sunken: var(--color-lucy-ink);    /* nav bar, inline code */
+  --surface-hover: color-mix(in srgb, var(--color-lucy-lilac) 40%, transparent);
+  --text: var(--color-lucy-fog);
+  --border: var(--color-lucy-dusk);
+  --accent: var(--color-lucy-violet);
+  --accent-text: var(--color-lucy-violet);
+  --link: var(--color-lucy-cyan);
+
+  /* 4. Syntax roles (Prism, Dracula) */
+  --code-surface: var(--color-dracula-background);
+  --code-text: var(--color-dracula-foreground);
+  --code-border: var(--color-lucy-dusk);
+  --code-selection: var(--color-dracula-selection);
+  --code-scrollbar-track: var(--color-dracula-comment);
+  --code-scrollbar-thumb: var(--color-dracula-purple);
+
+  --syntax-default: var(--color-dracula-pink);
+  --syntax-comment: var(--color-dracula-comment);
+  --syntax-prolog: var(--color-dracula-stone);
+  --syntax-tag: var(--color-dracula-magenta);
+  --syntax-entity: var(--color-dracula-cyan);
+  --syntax-atrule: var(--color-dracula-mint);
+  --syntax-url: var(--color-dracula-sky);
+  --syntax-selector: var(--color-dracula-stone);
+  --syntax-string: var(--color-dracula-yellow);
+  --syntax-property: var(--color-dracula-orange);
+  --syntax-important: var(--color-dracula-pink);
+  --syntax-punctuation: var(--color-dracula-gold);
+  --syntax-number: var(--color-dracula-purple);
+  --syntax-function: var(--color-dracula-green);
+  --syntax-class-name: var(--color-dracula-orange);
+  --syntax-keyword: var(--color-dracula-pink);
+  --syntax-boolean: var(--color-dracula-orange);
+  --syntax-operator: var(--color-dracula-cyan);
+  --syntax-char: var(--color-dracula-salmon);
+  --syntax-regex: var(--color-dracula-green);
+  --syntax-variable: var(--color-dracula-green);
+  --syntax-constant: var(--color-dracula-orange);
+  --syntax-symbol: var(--color-dracula-orange);
+  --syntax-builtin: var(--color-dracula-pink);
+  --syntax-attr-value: var(--color-dracula-sage);
+  --syntax-deleted: var(--color-dracula-red);
+  --syntax-namespace: var(--color-dracula-red);
+  --syntax-embedded: var(--color-dracula-foreground);
+}

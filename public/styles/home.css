@@ -1,69 +1,68 @@
+/* Home page: the hero (title, features and example) and the install section. */
+
 .hero {
   display: grid;
-  grid-column-gap: 1.5rem;
-  margin-top: 2rem;
-  margin-bottom: 3rem;
+  column-gap: var(--space-6);
+  margin-top: var(--space-8);
+  margin-bottom: var(--space-12);
 }
 
-.hero .title {
-  font-size: 4rem;
-  font-weight: 500;
-  margin: 0;
+.hero__title {
+  font-size: var(--text-lucy-display);
+  font-weight: var(--font-medium);
+  margin: var(--space-0);
 }
 
-.hero .title .subtitle {
-  font-size: .6em;
-  color: var(--color-purple);
-  font-weight: 400;
+.hero__title-suffix {
+  font-size: var(--text-lucy-subtitle);
+  color: var(--accent-text);
+  font-weight: var(--font-normal);
 }
 
-.hero .description > .subtitle {
-  font-size: 1.4rem;
-  font-weight: 300;
-  margin: 0;
+.hero__tagline {
+  font-size: var(--text-lucy-lead);
+  font-weight: var(--font-light);
+  margin: var(--space-0);
 }
 
-.hero .description > dl {
-  margin-top: 2rem;
+.hero__features {
+  margin-top: var(--space-8);
 }
 
-.hero .description > dl > dt {
-  color: var(--color-purple);
-  font-size: 1.5rem;
-  margin-bottom: .5rem;
-  margin-top: 1rem;
+.hero__feature-name {
+  color: var(--accent-text);
+  font-size: var(--text-2xl);
+  margin-bottom: var(--space-2);
+  margin-top: var(--space-4);
 }
 
-.hero .description > dl > dd {
-  margin: 0;
-  font-size: 1.2rem;
-  font-weight: 300;
+.hero__feature-text {
+  margin: var(--space-0);
+  font-size: var(--text-lucy-feature);
+  font-weight: var(--font-light);
 }
 
-.hero a, .hero a:visited {
-  color: var(--link-color);
-}
-
-.example h1 {
-  font-weight: 300;
+.hero__file-name {
+  font-weight: var(--font-light);
   text-decoration: overline;
   text-align: end;
-  margin-bottom: 0;
+  margin-bottom: var(--space-0);
 }
 
-.install {
-  margin-top: 4rem;
-}
-
-.install h1 {
-  font-size: 4rem;
-  color: var(--color-purple);
-  text-align: center;
-  margin: 0;
-}
-
-@media only screen and (min-width: 600px) {
+/* sm */
+@media (min-width: 640px) {
   .hero {
     grid-template-columns: 1fr 1fr;
   }
+}
+
+.install {
+  margin-top: var(--space-16);
+}
+
+.install__title {
+  font-size: var(--text-lucy-display);
+  color: var(--accent-text);
+  text-align: center;
+  margin: var(--space-0);
 }

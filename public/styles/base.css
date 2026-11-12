@@ -1,0 +1,28 @@
+/*
+ * Reset and element defaults. The only stylesheet with bare element
+ * selectors; everything else styles classes.
+ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: var(--space-0);
+  padding: var(--space-0);
+}
+
+body {
+  font-family: var(--font-lucy-body);
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
+  background: var(--surface);
+  color: var(--text);
+}
+
+a {
+  color: var(--link);
+}

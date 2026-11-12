@@ -1,3 +1,13 @@
+/*
+ * Prism theme: Dracula, plus the site's code block border and size.
+ *
+ * Allowed exception to flat BEM. Prism generates this markup (`pre.language-*`,
+ * `code.language-*`, `span.token.keyword`, ...), so these selectors follow
+ * Prism's class names, not BEM: attribute selectors, compound `.token.*`
+ * classes and pseudo-elements on `pre`. Colours come from the syntax roles in
+ * tokens.css; keep the rules here to Prism's own markup.
+ */
+
 /* PrismJS 1.14.0
 http://prismjs.com/download.html#themes=prism&languages=markup+css+clike+javascript+abap+actionscript+ada+apacheconf+apl+applescript+c+arff+asciidoc+asm6502+aspnet+autohotkey+autoit+bash+basic+batch+bison+brainfuck+bro+cpp+csharp+arduino+coffeescript+clojure+ruby+csp+css-extras+d+dart+diff+django+docker+eiffel+elixir+elm+markup-templating+erlang+fsharp+flow+fortran+gedcom+gherkin+git+glsl+go+graphql+groovy+haml+handlebars+haskell+haxe+http+hpkp+hsts+ichigojam+icon+inform7+ini+io+j+java+jolie+json+julia+keyman+kotlin+latex+less+liquid+lisp+livescript+lolcode+lua+makefile+markdown+erb+matlab+mel+mizar+monkey+n4js+nasm+nginx+nim+nix+nsis+objectivec+ocaml+opencl+oz+parigp+parser+pascal+perl+php+php-extras+sql+powershell+processing+prolog+properties+protobuf+pug+puppet+pure+python+q+qore+r+jsx+typescript+renpy+reason+rest+rip+roboconf+crystal+rust+sas+sass+scss+scala+scheme+smalltalk+smarty+plsql+soy+stylus+swift+tcl+textile+twig+tsx+vbnet+velocity+verilog+vhdl+vim+visual-basic+wasm+wiki+xeora+xojo+yaml&plugins=line-numbers+toolbar+show-language */
 /**
@@ -19,32 +29,31 @@ http://prismjs.com/download.html#themes=prism&languages=markup+css+clike+javascr
 */
 
 pre::-webkit-scrollbar {
-  width: 14px;
+  width: var(--space-3-5);
 }
 
 pre::-webkit-scrollbar-track {
-  background-color: #6272a4;
-  border-radius: 0px;
+  background-color: var(--code-scrollbar-track);
+  border-radius: var(--radius-none);
 }
 
 pre::-webkit-scrollbar-thumb {
-  background-color: #bd93f9;
-  border-radius: 0px;
+  background-color: var(--code-scrollbar-thumb);
+  border-radius: var(--radius-none);
 }
 
 code[class*="language-"],
 pre[class*="language-"] {
-  color: #ccc;
-  background: rgb(40, 41, 54);
+  color: var(--code-text);
+  background: var(--code-surface);
   text-shadow: none;
-  font-family: PT Mono, Consolas, Monaco, "Andale Mono", "Ubuntu Mono",
-    monospace;
+  font-family: var(--font-lucy-code);
   text-align: left;
   white-space: pre;
   word-spacing: normal;
   word-break: normal;
   word-wrap: normal;
-  line-height: 1.5;
+  line-height: var(--leading-normal);
 
   -moz-tab-size: 4;
   -o-tab-size: 4;
@@ -61,7 +70,7 @@ pre[class*="language-"] ::-moz-selection,
 code[class*="language-"]::-moz-selection,
 code[class*="language-"] ::-moz-selection {
   text-shadow: none;
-  background-color: #5a5f80;
+  background-color: var(--code-selection);
 }
 
 pre[class*="language-"]::selection,
@@ -69,7 +78,7 @@ pre[class*="language-"] ::selection,
 code[class*="language-"]::selection,
 code[class*="language-"] ::selection {
   text-shadow: none;
-  background-color: #5a5f80;
+  background-color: var(--code-selection);
 }
 
 @media print {
@@ -81,17 +90,13 @@ code[class*="language-"] ::selection {
 
 /* Code blocks */
 pre[class*="language-"] {
-  background: rgba(40, 41, 54, 1) !important;
+  border: var(--border-2) solid var(--code-border);
+  font-size: var(--text-lucy-code-block);
   border-radius: 0.5em;
   padding: 1em;
   margin: 0.5em 0;
   overflow: auto;
   height: auto;
-}
-
-:not(pre) > code[class*="language-"],
-pre[class*="language-"] {
-  background: rgba(40, 41, 54, 1);
 }
 
 /* Inline code */
@@ -132,112 +137,112 @@ pre[class*="language-"] {
 }
 
 .token.comment {
-  color: rgba(98, 114, 164, 1);
+  color: var(--syntax-comment);
 }
 
 .token.prolog {
-  color: rgba(207, 207, 194, 1);
+  color: var(--syntax-prolog);
 }
 
 .token.tag {
-  color: rgba(220, 104, 170, 1);
+  color: var(--syntax-tag);
 }
 
 .token.entity {
-  color: rgba(139, 233, 253, 1);
+  color: var(--syntax-entity);
 }
 
 .token.atrule {
-  color: rgba(98, 239, 117, 1);
+  color: var(--syntax-atrule);
 }
 
 .token.url {
-  color: rgba(102, 217, 239, 1);
+  color: var(--syntax-url);
 }
 
 .token.selector {
-  color: rgba(207, 207, 194, 1);
+  color: var(--syntax-selector);
 }
 
 .token.string {
-  color: rgba(241, 250, 140, 1);
+  color: var(--syntax-string);
 }
 
 .token.property {
-  color: rgba(255, 184, 108, 1);
+  color: var(--syntax-property);
 }
 
 .token.important {
-  color: rgba(255, 121, 198, 1);
-  font-weight: bold;
+  color: var(--syntax-important);
+  font-weight: var(--font-bold);
 }
 
 .token.punctuation {
-  color: rgba(230, 219, 116, 1);
+  color: var(--syntax-punctuation);
 }
 
 .token.number {
-  color: rgba(189, 147, 249, 1);
+  color: var(--syntax-number);
 }
 
 .token.function {
-  color: rgba(80, 250, 123, 1);
+  color: var(--syntax-function);
 }
 
 .token.class-name {
-  color: rgba(255, 184, 108, 1);
+  color: var(--syntax-class-name);
 }
 
 .token.keyword {
-  color: rgba(255, 121, 198, 1);
+  color: var(--syntax-keyword);
 }
 
 .token.boolean {
-  color: rgba(255, 184, 108, 1);
+  color: var(--syntax-boolean);
 }
 
 .token.operator {
-  color: rgba(139, 233, 253, 1);
+  color: var(--syntax-operator);
 }
 
 .token.char {
-  color: rgba(255, 135, 157, 1);
+  color: var(--syntax-char);
 }
 
 .token.regex {
-  color: rgba(80, 250, 123, 1);
+  color: var(--syntax-regex);
 }
 
 .token.variable {
-  color: rgba(80, 250, 123, 1);
+  color: var(--syntax-variable);
 }
 
 .token.constant {
-  color: rgba(255, 184, 108, 1);
+  color: var(--syntax-constant);
 }
 
 .token.symbol {
-  color: rgba(255, 184, 108, 1);
+  color: var(--syntax-symbol);
 }
 
 .token.builtin {
-  color: rgba(255, 121, 198, 1);
+  color: var(--syntax-builtin);
 }
 
 .token.attr-value {
-  color: #7ec699;
+  color: var(--syntax-attr-value);
 }
 
 .token.deleted {
-  color: #e2777a;
+  color: var(--syntax-deleted);
 }
 
 .token.namespace {
-  color: #e2777a;
+  color: var(--syntax-namespace);
 }
 
 .token.bold {
-  font-weight: bold;
+  font-weight: var(--font-bold);
 }
 
 .token.italic {
@@ -245,11 +250,11 @@ pre[class*="language-"] {
 }
 
 .token {
-  color: #ff79c6;
+  color: var(--syntax-default);
 }
 
 .token.template-string .token.lucy.language-lucy {
-  color: #ccc;
+  color: var(--syntax-embedded);
 }
 
 .language-cpp .token.string {
@@ -265,7 +270,7 @@ pre[class*="language-"] {
 }
 
 .language-css .token.property {
-  color: rgba(255, 184, 108, 1);
+  color: var(--syntax-property);
 }
 
 .language-java span.token.class-name {

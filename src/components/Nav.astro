@@ -2,15 +2,15 @@
 const { pathname } = Astro.url;
 ---
 <nav class="site-nav">
-  <ul>
-    <li class:list={{ active: pathname === '/install/' }}>
-      <a href="install/">Install</a>
+  <ul class="site-nav__list">
+    <li class:list={['site-nav__item', { 'site-nav__item--active': pathname === '/install/' }]}>
+      <a href="install/" class="site-nav__link">Install</a>
     </li>
-    <li class:list={{ active: pathname.startsWith('/docs') }}>
-      <a href="docs/">Docs</a>
+    <li class:list={['site-nav__item', { 'site-nav__item--active': pathname.startsWith('/docs') }]}>
+      <a href="docs/" class="site-nav__link">Docs</a>
     </li>
-    <li>
-      <a href="https://github.com/lucydsl/liblucy">GitHub</a>
+    <li class="site-nav__item">
+      <a href="https://github.com/lucydsl/liblucy" class="site-nav__link">GitHub</a>
     </li>
   </ul>
 </nav>
