@@ -1,33 +1,9 @@
 /* Site chrome shared by every page: the page column, nav, footer and inline code. */
 
-/* Page column */
+/* Page column: 980px wide, with --space-4 of room at each side on narrower screens. */
 .container {
   margin-inline: auto;
-  width: var(--container-lucy-page);
-  max-width: 100%;
-  padding-inline: var(--space-1-5);
-}
-
-/* sm */
-@media (min-width: 640px) {
-  .container {
-    max-width: var(--container-lucy-sm);
-    padding-inline: var(--space-0);
-  }
-}
-
-/* md */
-@media (min-width: 768px) {
-  .container {
-    max-width: var(--container-3xl);
-  }
-}
-
-/* lg */
-@media (min-width: 1024px) {
-  .container {
-    max-width: none;
-  }
+  width: min(var(--container-lucy-page), 100% - 2 * var(--space-4));
 }
 
 /* Site nav */
@@ -59,7 +35,7 @@
 .site-nav__link {
   color: var(--text);
   text-decoration: none;
-  font-size: 0.8rem;
+  font-size: var(--text-lg);
   height: 100%;
   display: inline-flex;
   align-items: center;
@@ -68,12 +44,6 @@
 
 .site-nav__link:hover {
   background: var(--surface-hover);
-}
-
-@media (min-width: 420px) {
-  .site-nav__link {
-    font-size: var(--text-lg);
-  }
 }
 
 /* sm */

@@ -1,7 +1,7 @@
 /* The language guide (Language layout): a sidebar of sections beside the guide. */
 
 .guide {
-  padding-inline: 0.8rem;
+  padding-inline: var(--space-4);
 }
 
 .guide__sidebar {
@@ -29,11 +29,11 @@
   text-decoration: none;
 }
 
-/* sm */
-@media (min-width: 640px) {
+/* lg: the sidebar once there is room for it beside the guide */
+@media (min-width: 1024px) {
   .guide {
     display: grid;
-    grid-template-columns: 1fr 4fr;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 4fr);
     padding-inline: var(--space-0);
   }
 
