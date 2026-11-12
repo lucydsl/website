@@ -44,8 +44,8 @@ const pages = [
 ---
 <Page frontmatter={{ title: 'Documentation', lede: 'Every page about Lucy. Pick a state to move to.' }} prose={false} styles={['docs']}>
   <ol class="doc-map">
-    {pages.map((page) => (
-      <li class="doc-map__item">
+    {pages.map((page, i) => (
+      <li class:list={['doc-map__item', { 'doc-map__item--last': i === pages.length - 1 }]}>
         <a href={page.href} class="doc-map__state">
           <span class="doc-map__path">'{page.path}'</span>
           <span class="doc-map__name">{page.name}</span>

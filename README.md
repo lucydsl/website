@@ -2,12 +2,17 @@
 
 The site at https://lucy.spooky.click/, built with [Astro](https://astro.build/).
 
-- `src/pages/`: one file per page. Most are Markdown; the home page is `index.astro`.
-- `src/layouts/`: `Page` (most pages), `Install` and `Language` (the language guide, with its sidebar from the `sections` frontmatter).
-- `src/components/`: the nav, footer, `<base>`, stylesheets and icons shared by the layouts.
+- `src/pages/`: one file per page. Most are Markdown; the home page (`index.astro`) and the docs index (`docs/index.astro`) are hand-written.
+- `src/layouts/`: `Site` (the document shell: head, header, footer), `Page` (content pages: a header with the page's state path, title and `lede` from the frontmatter, then the content) and `Language` (the language guide, with its contents from the `sections` frontmatter). Markdown pages start their sections at `##`; the layout writes the `h1` from `title`.
+- `src/components/`: the header (`Nav`), footer, page header, the statechart contents list, `<base>`, stylesheets and icons.
+- `src/examples/`: the machines on the home page and `lucyc`'s output for them, unedited (see its README).
 - `src/markdown/toc-and-anchors.ts`: heading ids, `#` anchor links and the `@[toc]` table of contents.
 - `src/prism.ts`: adds Lucy to Prism, which highlights code in Markdown and through `<Prism>` on the home page.
-- `public/`: copied as is: `styles/`, `images/` and `install.sh` (served at `/install.sh`).
+- `public/`: copied as is: `styles/`, `fonts/`, `images/` and `install.sh` (served at `/install.sh`).
+
+## Design
+
+"A statechart, printed at night." Every page is a state: the header starts at the initial dot (a statechart's initial pseudostate), a rail runs from it down the page with headings as nodes on it, and the footer ends at the final-state bullseye. Nav links are drawn as states, the current one filled; each page header reads its state path the way a Lucy machine reports a nested state (`'docs.language'`). Type is Cormorant Garamond (display), Spectral (text) and IBM Plex Mono (code and labels), self-hosted from Fontsource in `public/fonts/` (latin subsets, OFL). The palette is the site's old one, with ink as the page.
 
 ## Styles
 
@@ -15,8 +20,9 @@ The CSS in `public/styles/` follows [Tideway](https://tidewaystyle.com/) (its sk
 
 - `tokens.css`: Tideway's scales, plus the site's own palette and the few off-scale sizes its look depends on (named `--*-lucy-*`), the semantic roles, and the Dracula syntax roles. Loaded first.
 - `base.css`: the reset and element defaults, the only bare element selectors.
-- `main.css` (page column, nav, footer, inline code), `home.css`, `language.css`: one BEM block per component.
-- Two documented exceptions, for markup the site doesn't write: `prose.css` styles rendered Markdown (headings, anchors, inline code) under a `.prose` block, and `dracula-prism.css` styles Prism's generated `.token` classes.
+- `fonts.css`: the `@font-face` rules.
+- `main.css` (header, rail, page header, footer, and small shared blocks), `home.css`, `language.css`, `docs.css`: one BEM block per component.
+- Two documented exceptions, for markup the site doesn't write: `prose.css` styles rendered Markdown (headings, anchors, inline code) under a `.prose` block, and `dracula-prism.css` styles Prism's generated `.token` classes (its block rules are wrapped in `:where()`, so a class passed to `<Prism class="...">` can restyle a block).
 
 Breakpoints are Tideway's, mobile-first: `sm` 640px, `md` 768px, `lg` 1024px.
 

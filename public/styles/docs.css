@@ -23,11 +23,12 @@
   border-inline-start: var(--border-1) solid var(--border-strong);
 }
 
-.doc-map__item:last-child {
+/* The last state has nowhere to go */
+.doc-map__item--last {
   padding-bottom: var(--space-0);
 }
 
-.doc-map__item:last-child::after {
+.doc-map__item--last::after {
   content: none;
 }
 

@@ -57,7 +57,7 @@
 /* h2: the anchor is the node on the rail; its "#" stays its accessible name */
 .prose :where(h2 > .heading-anchor) {
   position: absolute;
-  top: 0.3em;
+  top: var(--space-lucy-heading-node);
   left: calc(-1 * var(--space-lucy-rail) - var(--space-lucy-node) / 2 - var(--space-2) - var(--space-px) / 2);
   width: calc(var(--space-lucy-node) + 2 * var(--space-2));
   height: calc(var(--space-lucy-node) + 2 * var(--space-2));

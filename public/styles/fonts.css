@@ -6,6 +6,8 @@
  *   Cormorant Garamond: display (700, and 600 italic for flourishes)
  *   Spectral: reading text (400, 400 italic, 600)
  *   IBM Plex Mono: code, labels and state paths (400, 600)
+ *
+ * font-weight here is an @font-face descriptor, which can't read var().
  */
 
 @font-face {

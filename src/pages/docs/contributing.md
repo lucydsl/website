@@ -1,7 +1,7 @@
 ---
 title: Contributing
 layout: ../../layouts/Page.astro
-lede: How to build and test liblucy, Lucy's compiler.
+lede: How to build and test liblucy, Lucy’s compiler.
 ---
 
 If you want to fix a bug or implement a feature in the Lucy compiler, that should be done in the [liblucy](https://github.com/lucydsl/liblucy) project.

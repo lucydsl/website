@@ -72,6 +72,7 @@
   --border-2: 2px;
 
   --container-xs: 20rem;
+  --container-xl: 36rem;
   --container-2xl: 42rem;
   --container-3xl: 48rem;
   --container-5xl: 64rem;
@@ -96,6 +97,21 @@
   --space-lucy-rail: clamp(1rem, 4vw, 3rem);        /* from the rail to the content beside it */
   --space-lucy-node: 0.6875rem;                     /* a rail node's diameter (11px) */
   --space-lucy-gutter: clamp(1rem, 4vw, 4rem);      /* page side margin */
+
+  --leading-lucy-wordmark: 0.82;                    /* "Lucy": the descender of y may hang into the lede's space */
+
+  --space-lucy-underline: 0.2em;                    /* link underline offset */
+  --space-lucy-heading-node: 0.3em;                 /* a heading's rail node, down from the heading's top */
+
+  /* The diagrams are SVG: these are in its user units, which scale with the drawing. */
+  --stroke-lucy-fine: 1.25;                         /* the header's initial dot and arrow */
+  --stroke-lucy-line: 1.5;                          /* states and transitions */
+  --stroke-lucy-pulse: 3;                           /* the pulse that runs along a transition */
+  --dash-lucy-pulse: 14 200;                        /* pulse length, then a gap longer than the path (pathLength 100) */
+  --dash-lucy-pulse-before: 14;                     /* offset: the pulse waits before the path's start */
+  --dash-lucy-pulse-after: -100;                    /* offset: the pulse has run past the path's end */
+  --text-lucy-diagram-event: 15px;                  /* event labels on the diagram */
+  --text-lucy-diagram-state: 19px;                  /* state names on the diagram */
 
   --duration-lucy-toggle: 6s;                       /* one full toggle cycle of the home diagram */
 

@@ -32,7 +32,7 @@ body {
 a {
   color: var(--link);
   text-decoration-thickness: var(--border-1);
-  text-underline-offset: 0.2em;
+  text-underline-offset: var(--space-lucy-underline);
 }
 
 a:hover {
