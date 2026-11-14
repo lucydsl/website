@@ -21,6 +21,11 @@ sections:
   - Guards
   - Invoke
   - Actors
+  - Typed events:
+    - Declaring events
+    - Event types
+    - Checks
+    - In TypeScript
 ---
 
 ## References
@@ -720,3 +725,98 @@ machine app {
 ```
 
 > Note: the current compiler doesn't give spawned machines a reference to their parent yet, so `send(parent, ...)` compiles but fails when it runs.
+
+## Typed events
+
+A machine can say which events it takes, and the type of the data each one carries. The declarations are optional and change nothing in the compiled JavaScript: they let the compiler check the machine's events, and they give the machine's TypeScript declarations real event types.
+
+### Declaring events
+
+An event is declared with the `event` keyword, inside a [named machine](docs/language/#named-machines). An event that carries data has the type of that data in parentheses.
+
+```lucy
+use './types' { User }
+
+machine session {
+  event login(User)
+  event rename(string)
+  event logout
+
+  initial state anonymous {
+    login => guard(:allowed) => assign(user) => active
+  }
+
+  state active {
+    rename => assign(name)
+    logout => anonymous
+  }
+}
+```
+
+Here `login` carries a `User`, `rename` a string, and `logout` nothing. The type is that of the event's `data`:
+
+```js
+machine.send({ type: 'login', data: user });
+machine.send({ type: 'rename', data: 'Wilbur' });
+machine.send('logout');
+```
+
+Events belong to the machine they are declared in, along with the machines [nested](docs/language/#nested-state) in its states. They can't be declared at the top level of a file or in a nested machine. An event has one type, whichever state handles it: whoever sends an event doesn't know what state the machine is in. Transitions are written as before.
+
+`event` is only a keyword where a declaration can go, so a state can still handle an event called `event`.
+
+### Event types
+
+A type is a single name. It can be:
+
+* A name TypeScript already knows, such as `string`, `number`, `boolean` or `MouseEvent`.
+* A name imported with `use`.
+
+Lucy has no syntax for types beyond this. For anything else (an array, a union, an object) give the type a name in a TypeScript file and import it:
+
+__types.ts__
+
+```ts
+export interface User {
+  name: string;
+}
+
+export type Tags = string[];
+```
+
+A name used as an event's type is imported as a type only. The compiled JavaScript leaves it out of the `import`, so `./types` above never has to exist at run time.
+
+### Checks
+
+When a machine declares events, the compiler warns about:
+
+* A transition on an event the machine doesn't declare, which is most often a misspelling.
+* A declared event that none of its states handles.
+* `assign(key)` on an event declared without data, which would assign `undefined`.
+
+For any machine, it also warns about `send(child, event)` when `child` is [spawned](docs/language/#spawning) from a machine in the same file that declares its events, and `event` isn't one of them.
+
+These are warnings, so the machine still compiles. A machine that declares no events is not checked.
+
+### In TypeScript
+
+The TypeScript declarations (`lucyc --experimental-dts`, or the `dts` option) describe a machine's events when it declares them. For the machine above:
+
+__session.d.ts__ (in part)
+
+```ts
+import type { User } from './types';
+
+export interface SessionEvents {
+  login: { type: 'login'; data: User };
+  rename: { type: 'rename'; data: string };
+  logout: { type: 'logout' };
+}
+export type SessionEventName = keyof SessionEvents;
+export type SessionEvent = SessionEvents[SessionEventName];
+```
+
+* `send` takes a `SessionEvent`, or the name alone for an event without data. `machine.send('login')` and `machine.send({ type: 'rename', data: 5 })` are type errors.
+* A function passed in the options is typed with the events it is used on. The `allowed` guard above gets `SessionEvents['login']`, so its `event.data` is a `User`. One used in `@entry` or `@exit`, on a delay or in an invoke gets every event, including the ones the machine makes itself (`start`, `delay`, `done`, `error`).
+* The `context` you pass has to be able to hold what `assign(key)` stores. Here `context.user` must accept a `User` and `context.name` a string, so `{ user: null as User | null, name: '' }` is fine and `{ user: null, name: '' }` is not.
+* Functions imported with `use` aren't checked against the events they run on. Type their event parameter by name: `(context, event: SessionEvents['login']) => ...`.
