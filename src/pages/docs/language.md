@@ -800,7 +800,7 @@ These are warnings, so the machine still compiles. A machine that declares no ev
 
 ### In TypeScript
 
-The TypeScript declarations (`lucyc --experimental-dts`, or the `dts` option) describe a machine's events when it declares them. For the machine above:
+The TypeScript declarations (the `.d.ts` that `lucyc` writes beside each module, and the types in a module compiled with `--ts`) describe a machine's events when it declares them. For the machine above:
 
 __session.d.ts__ (in part)
 

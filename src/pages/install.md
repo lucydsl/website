@@ -22,6 +22,12 @@ Then compile a Lucy file to a JavaScript module with:
 lucyc --out-file toggle.js toggle.lucy
 ```
 
+This writes `toggle.js` and, beside it, its TypeScript declarations in `toggle.d.ts`. To get the two as one TypeScript module, which Node can run as it is, use `--ts`:
+
+```bash
+lucyc --ts --out-file toggle.ts toggle.lucy
+```
+
 ## JavaScript
 
 The compiler is also available as a JavaScript package, [@lucy/liblucy](https://www.npmjs.com/package/@lucy/liblucy), which runs the compiler as WebAssembly in Node.js or the browser. This is what the Vite plugin uses, and you can use it directly:
@@ -35,10 +41,10 @@ import { ready, compile } from '@lucy/liblucy';
 
 await ready;
 
-const { js } = compile(source, 'toggle.lucy');
+const { js, dts } = compile(source, 'toggle.lucy');
 ```
 
-`compile(source, filename, options)` returns an object whose `js` is the compiled module. Pass `{ dts: true }` as the options to also get TypeScript declarations as `dts` (experimental). If the source doesn't compile, `compile` prints the errors to the console and throws an error whose `diagnostics` lists them, each with a `severity`, `message`, `line` and `column`.
+`compile(source, filename, options)` returns an object whose `js` is the compiled module and whose `dts` is its TypeScript declarations. Pass `{ format: 'ts' }` as the options to get one TypeScript module instead, as `ts`. If the source doesn't compile, `compile` prints the errors to the console and throws an error whose `diagnostics` lists them, each with a `severity`, `message`, `line` and `column`.
 
 ## Vite
 
