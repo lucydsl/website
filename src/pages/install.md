@@ -71,4 +71,4 @@ const toggle = createToggle().start();
 
 This works in the dev server and in builds. A file that doesn't compile fails the build, with the error's file and line.
 
-To get types for these imports, pass `{ dts: true }`. The plugin then writes TypeScript declarations beside each `.lucy` file as it compiles it (`toggle.lucy` gets `toggle.d.lucy.ts`), which TypeScript reads when its [`allowArbitraryExtensions`](https://www.typescriptlang.org/tsconfig/#allowArbitraryExtensions) option is on. The declarations are experimental.
+The imports are typed, too. The plugin writes TypeScript declarations beside each `.lucy` file as it compiles it (`toggle.lucy` gets `toggle.lucy.d.ts`), and TypeScript reads them with no extra configuration. Commit them, or add `*.lucy.d.ts` to your `.gitignore` and build before you type check. Pass `{ dts: false }` to turn them off.
