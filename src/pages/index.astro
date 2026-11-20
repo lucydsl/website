@@ -44,9 +44,9 @@ const parts = [
   { code: 'sent', role: 'target state' },
 ];
 
-// The form state's handler from submit.js (lines 4–12), moved four spaces left.
+// The form state's handler from submit.js (lines 6–14), moved four spaces left.
 const submitHandler = lines(submitJs)
-  .slice(3, 12)
+  .slice(5, 14)
   .map((line) => line.slice(4))
   .join('\n');
 
