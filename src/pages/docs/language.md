@@ -26,6 +26,7 @@ sections:
     - Sending messages to actors
     - Sending messages to the parent
     - Sending data
+    - Lists of machines
   - Typed events:
     - Declaring events
     - Event types
@@ -669,7 +670,7 @@ machine app {
 }
 ```
 
-The spawned machine is created by calling its factory and started, and the reference is saved to the context. A spawned machine is created without options, so give it what it needs with `use` rather than symbols, as below. The compiler warns when a machine spawns or [invokes](docs/language/#invoke) a machine in the same file that uses symbols, and lists the options it would need. Spawned machines are stopped when their parent is, and spawning into a reference that already holds a machine stops that machine first.
+The spawned machine is created by calling its factory and started, and the reference is saved to the context. A spawned machine is created without options, so give it what it needs with `use` rather than symbols, as below. The compiler warns when a machine spawns or [invokes](docs/language/#invoke) a machine in the same file that uses symbols, and lists the options it would need. Spawned machines are stopped when their parent is, and spawning into a reference that already holds a machine stops that machine first. To keep more than one, see [lists of machines](docs/language/#lists-of-machines).
 
 ### Inputs
 
@@ -855,6 +856,44 @@ machine app {
 ```
 
 `self` is how a parent learns which machine an event came from: here the `deletedTodo` event's data is the todo that was deleted.
+
+### Lists of machines
+
+An `assign` with a __spawn__ keeps one machine: spawning into the same reference again stops the one it held. To keep many, use __append__, which adds what a spawn makes to a list, and __remove__, which takes a machine out of one.
+
+```lucy
+machine todoItem {
+  input title
+  input list
+
+  state idle {
+    delete => deleted
+  }
+  final state deleted {
+    @entry => send(list, deletedTodo, self)
+  }
+}
+
+machine app {
+  state idle {
+    new => append(todos, spawn(todoItem) {
+      title = event.data
+      list = self
+    })
+    deletedTodo => remove(todos, event.data)
+  }
+}
+```
+
+Each `new` event adds a todo to `todos`, a list in the app's context, which doesn't have to be there beforehand. When a todo is deleted it [sends itself](docs/language/#sending-data) to the app, which removes it.
+
+* `append(name, spawn(...))` takes any __spawn__, with or without [inputs](docs/language/#inputs).
+* `remove(name, value)` stops the machine and takes it out of the list. The value is `event.data` or `context.name`. If the machine isn't in the list, nothing happens.
+* The list is an ordinary array, replaced by a new one each time, as the context is. Your own code reads it from `machine.context.todos` and can send to the machines in it.
+* Stopping the app stops every machine in the list. A machine that reaches a [final state](docs/language/#final-state) stays in the list until it is removed.
+* `append` and `remove` are keywords where an action goes. An event can still be called either, but a state can't be and be the target of a transition.
+
+There is no way to __send__ to every machine in a list. The compiler warns about a `send` to a reference that holds a list, and about a reference that both an `assign` spawns into and an `append` adds to.
 
 ## Typed events
 
