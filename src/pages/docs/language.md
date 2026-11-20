@@ -25,6 +25,7 @@ sections:
     - Inputs
     - Sending messages to actors
     - Sending messages to the parent
+    - Sending data
   - Typed events:
     - Declaring events
     - Event types
@@ -825,6 +826,36 @@ const app = createApp({
 });
 ```
 
+### Sending data
+
+A __send__ passes on the data of the event being handled: in `delete => send(todo, delete)`, the todo's `delete` event has the same `data` as the app's.
+
+To send something else, give __send__ a third argument. It is a value like the ones in a spawn's [inputs](docs/language/#inputs): `event.data`, `context.name`, `self`, `parent`, or a function.
+
+```lucy
+machine todoItem {
+  input id
+
+  state idle {
+    delete => deleted
+    touch => send(parent, touchedTodo, context.id)
+  }
+  final state deleted {
+    @entry => send(parent, deletedTodo, self)
+  }
+}
+
+machine app {
+  state idle {
+    new => assign(todo, spawn(todoItem) { id = event.data })
+    touchedTodo => assign(lastTouched)
+    deletedTodo => assign(lastDeleted)
+  }
+}
+```
+
+`self` is how a parent learns which machine an event came from: here the `deletedTodo` event's data is the todo that was deleted.
+
 ## Typed events
 
 A machine can say which events it takes, and the type of the data each one carries. The declarations are optional and change nothing in the compiled JavaScript: they let the compiler check the machine's events, and they give the machine's TypeScript declarations real event types.
@@ -893,7 +924,7 @@ When a machine declares events, the compiler warns about:
 * A declared event that none of its states handles.
 * `assign(key)` on an event declared without data, which would assign `undefined`.
 
-For any machine, it also warns about `send(child, event)` when `child` is [spawned](docs/language/#spawning) from a machine in the same file that declares its events, and `event` isn't one of them. Likewise for `send(parent, event)` in a machine that is spawned or invoked by a machine in the same file that declares its events.
+For any machine, it also warns about `send(child, event)` when `child` is [spawned](docs/language/#spawning) from a machine in the same file that declares its events, and `event` isn't one of them. Likewise for `send(parent, event)` in a machine that is spawned or invoked by a machine in the same file that declares its events. It also warns when a `send` [gives data](docs/language/#sending-data) to an event the spawned machine declares without any.
 
 These are warnings, so the machine still compiles. A machine that declares no events is not checked.
 
