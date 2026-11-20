@@ -207,6 +207,7 @@ machine.stop();
 * `state` is the name of the current state, or a dotted path such as `'red.walk'` inside a [nested state](docs/language/#nested-state).
 * `context` is the machine's data, a plain object. It starts as the `context` option (or `{}`), and each [assign](docs/language/#assign) replaces it with a new object.
 * `send(event)` takes an event's type, or an object like `{ type: 'set', data: 5 }`, and runs the transition at once. An event the current state doesn't handle is ignored.
+* A machine handles one event at a time. If something sends it an event while it is in the middle of a transition (an action, a listener, or an [actor](docs/language/#actors) it sent to), that event waits until the transition is over and the listeners have been told, and is handled then, before the first `send` returns. If a transition throws, the events still waiting are dropped.
 * `subscribe(listener)` calls the listener with the machine after each change. It returns a function that unsubscribes.
 * `start()` enters the initial state (running its entry actions, delays and invokes) and returns the machine.
 * `stop()` clears timers, drops pending invokes, stops child machines and removes the listeners.
@@ -663,7 +664,7 @@ machine app {
 }
 ```
 
-The spawned machine is created by calling its factory and started, and the reference is saved to the context. A spawned machine is created without options, so give it what it needs with `use` rather than symbols, as below. Spawned machines are stopped when their parent is.
+The spawned machine is created by calling its factory and started, and the reference is saved to the context. A spawned machine is created without options, so give it what it needs with `use` rather than symbols, as below. The compiler warns when a machine spawns or [invokes](docs/language/#invoke) a machine in the same file that uses symbols, and lists the options it would need. Spawned machines are stopped when their parent is.
 
 ### Sending messages to actors
 
