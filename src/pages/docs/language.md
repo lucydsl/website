@@ -20,7 +20,11 @@ sections:
     - Assign
   - Guards
   - Invoke
-  - Actors
+  - Actors:
+    - Spawning
+    - Inputs
+    - Sending messages to actors
+    - Sending messages to the parent
   - Typed events:
     - Declaring events
     - Event types
@@ -665,6 +669,68 @@ machine app {
 ```
 
 The spawned machine is created by calling its factory and started, and the reference is saved to the context. A spawned machine is created without options, so give it what it needs with `use` rather than symbols, as below. The compiler warns when a machine spawns or [invokes](docs/language/#invoke) a machine in the same file that uses symbols, and lists the options it would need. Spawned machines are stopped when their parent is, and spawning into a reference that already holds a machine stops that machine first.
+
+### Inputs
+
+A machine can say what it has to be given when it's created, with `input`. The machine that spawns it gives those in a block after the __spawn__, one `name = value` to a line.
+
+```lucy
+use './types' { Storage }
+
+machine todoItem {
+  input title(string)
+  input storage(Storage)
+
+  state idle {
+    rename => assign(title)
+  }
+}
+
+machine app {
+  state idle {
+    new => assign(todo, spawn(todoItem) {
+      title = event.data
+      storage = context.storage
+    })
+  }
+}
+```
+
+An input is a key of the machine's [context](docs/language/#assign): the todo starts with `title` and `storage` in its context, and can assign to them like any other key. As with an [event](docs/language/#declaring-events), the type in parentheses is optional and is a single name, one TypeScript knows or one imported with `use`. Inputs are declared in a [named machine](docs/language/#named-machines), not in a machine nested in a state.
+
+A value is a reference to something, never an expression:
+
+* `event.data`, the data of the event being handled.
+* `context.name`, a key of the spawning machine's context.
+* `self`, the spawning machine, so that the new machine can [send](docs/language/#sending-messages-to-actors) to it.
+* `parent`, the spawning machine's own parent.
+* A function, from `use` or a [symbol](docs/language/#symbols) in `assigns`, which is called with the context and the event and returns the value.
+
+```lucy
+use './util.js' { makeId }
+
+machine app {
+  state idle {
+    new => assign(todo, spawn(todoItem) {
+      id = makeId
+      title = :titleFor
+      list = self
+    })
+  }
+}
+```
+
+A function given to __spawn__, from `use` or as a symbol in `services`, is called with `{ context, parent }`, where `context` holds the inputs. When you create a machine that has inputs yourself, pass them as its `context`:
+
+```js
+import { createTodoItem } from './todo.js';
+
+const todo = createTodoItem({
+  context: { title: 'Milk', storage }
+}).start();
+```
+
+The compiler warns about a __spawn__ of a machine in the same file that leaves out one of its inputs or gives one it doesn't declare, and about an [invoke](docs/language/#invoke) of a machine with inputs, since an invoke can't give any. A machine that declares no inputs isn't checked. In TypeScript, the inputs are a type, `TodoItemInput`, and `createTodoItem` has to be given a context that holds them.
 
 ### Sending messages to actors
 
