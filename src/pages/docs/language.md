@@ -191,7 +191,7 @@ export default function createMachine({ context = {} } = {}) {
 
 ### Using a machine
 
-Each factory takes an optional object of options, `{ context, actions, guards, assigns, delays, services }`, and returns a machine:
+Each factory takes an optional object of options, `{ context, actions, guards, assigns, delays, services }` (and `parent`, for a machine that [sends to its parent](docs/language/#sending-messages-to-the-parent)), and returns a machine:
 
 ```js
 import { createToggleMachine } from './toggle.js';
@@ -664,7 +664,7 @@ machine app {
 }
 ```
 
-The spawned machine is created by calling its factory and started, and the reference is saved to the context. A spawned machine is created without options, so give it what it needs with `use` rather than symbols, as below. The compiler warns when a machine spawns or [invokes](docs/language/#invoke) a machine in the same file that uses symbols, and lists the options it would need. Spawned machines are stopped when their parent is.
+The spawned machine is created by calling its factory and started, and the reference is saved to the context. A spawned machine is created without options, so give it what it needs with `use` rather than symbols, as below. The compiler warns when a machine spawns or [invokes](docs/language/#invoke) a machine in the same file that uses symbols, and lists the options it would need. Spawned machines are stopped when their parent is, and spawning into a reference that already holds a machine stops that machine first.
 
 ### Sending messages to actors
 
@@ -725,7 +725,39 @@ machine app {
 }
 ```
 
-> Note: the current compiler doesn't give spawned machines a reference to their parent yet, so `send(parent, ...)` compiles but fails when it runs.
+The parent is whatever created the machine: the machine that spawned or [invoked](docs/language/#invoke) it. The parent handles the event like any other, after the transition it is in. Here `app` sends `delete` to the todo, and gets `deletedTodo` once the todo has been deleted.
+
+`parent` is always the machine's creator, so it can't also be the name of one of your own references.
+
+A machine doesn't need to know what its parent is, only that it accepts these events, so any machine with a `deletedTodo` transition can spawn a `todoItem`. So can your own code: a machine that sends to its parent takes a `parent` option, which is anything with a `send` method. Without one, `send(parent, ...)` does nothing, and the machine runs on its own.
+
+```js
+import { createTodoItem } from './todo.js';
+
+const todo = createTodoItem({
+  parent: { send: event => console.log(event.type) }
+}).start();
+```
+
+A function you give to __spawn__, from `use` or as a [symbol](docs/language/#symbols) in `services`, is called with `{ parent }` and returns the machine to start.
+
+```lucy
+machine app {
+  state idle {
+    new => assign(todo, spawn(:todoItem))
+  }
+}
+```
+
+```js
+import { createApp, createTodoItem } from './app.js';
+
+const app = createApp({
+  services: {
+    todoItem: ({ parent }) => createTodoItem({ parent })
+  }
+});
+```
 
 ## Typed events
 
@@ -795,7 +827,7 @@ When a machine declares events, the compiler warns about:
 * A declared event that none of its states handles.
 * `assign(key)` on an event declared without data, which would assign `undefined`.
 
-For any machine, it also warns about `send(child, event)` when `child` is [spawned](docs/language/#spawning) from a machine in the same file that declares its events, and `event` isn't one of them.
+For any machine, it also warns about `send(child, event)` when `child` is [spawned](docs/language/#spawning) from a machine in the same file that declares its events, and `event` isn't one of them. Likewise for `send(parent, event)` in a machine that is spawned or invoked by a machine in the same file that declares its events.
 
 These are warnings, so the machine still compiles. A machine that declares no events is not checked.
 
