@@ -649,6 +649,41 @@ machine main {
 }
 ```
 
+An invoked machine is a [spawned](docs/language/#spawning) machine that lives as long as the state does: it is created and started when the state is entered, and stopped when the state is left. So it is given what a spawned machine is, written the same way, in the invoke's block beside its transitions: its [inputs](docs/language/#inputs) and its [symbols](docs/language/#symbols-for-a-spawned-machine).
+
+```lucy
+machine countdown {
+  input seconds
+
+  initial state ticking {
+    delay(1s) => guard(:more) => send(parent, tick, context.seconds) => ticking
+    delay(10s) => finished
+  }
+
+  final state finished {}
+}
+
+machine timer {
+  state idle {
+    start => running
+  }
+
+  state running {
+    invoke(countdown) {
+      seconds = event.data
+      :more = :keepGoing
+      done => idle
+    }
+    tick => assign(remaining)
+    cancel => idle
+  }
+}
+```
+
+The inputs are worked out as the state is entered, so `event.data` is the data of the `start` event. What the countdown [sends its parent](docs/language/#sending-messages-to-the-parent), here `tick`, the state handles as its own events. Only `done` goes in the block, since it is about this invoke.
+
+An invoked function takes no inputs or symbols: it is called with the context and the event, as above.
+
 ## Actors
 
 Actors allow you to create new machines and keep a reference to them within your own machine, through an [assign reference](docs/language/#assign). You can send messages to the new machine, and they can send messages back to you.
@@ -733,7 +768,7 @@ const todo = createTodoItem({
 }).start();
 ```
 
-The compiler warns about a __spawn__ of a machine in the same file that leaves out one of its inputs or gives one it doesn't declare, and about an [invoke](docs/language/#invoke) of a machine with inputs, since an invoke can't give any. A machine that declares no inputs isn't checked. In TypeScript, the inputs are a type, `TodoItemInput`, and `createTodoItem` has to be given a context that holds them.
+The compiler warns about a __spawn__, or an [invoke](docs/language/#invoke), of a machine in the same file that leaves out one of its inputs or gives one it doesn't declare. A machine that declares no inputs isn't checked. In TypeScript, the inputs are a type, `TodoItemInput`, and `createTodoItem` has to be given a context that holds them.
 
 ### Symbols for a spawned machine
 
@@ -769,7 +804,7 @@ The two kinds of line are different things:
 * `title = event.data` is data. The value is worked out when the machine is spawned, and it goes into the new machine's context.
 * `:log = log` is code. The function is handed over as it is, without being called, and is never part of the context. The todo calls it later, with its own context and events.
 
-The compiler warns about a __spawn__ of a machine in the same file that leaves out a symbol the machine uses, or gives one it doesn't use. Symbols can only be given to a machine in the same file: for a function from `use` or a symbol in `services`, the compiler can't see what the machine uses them for, and warns. An [invoke](docs/language/#invoke) of a machine can't give it any symbols.
+The compiler warns about a __spawn__ of a machine in the same file that leaves out a symbol the machine uses, or gives one it doesn't use. Symbols can only be given to a machine in the same file: for a function from `use` or a symbol in `services`, the compiler can't see what the machine uses them for, and warns. An [invoke](docs/language/#invoke) of a machine gives it symbols the same way.
 
 ### Sending messages to actors
 
