@@ -23,6 +23,7 @@ sections:
   - Actors:
     - Spawning
     - Inputs
+    - Symbols for a spawned machine
     - Sending messages to actors
     - Sending messages to the parent
     - Sending data
@@ -670,7 +671,7 @@ machine app {
 }
 ```
 
-The spawned machine is created by calling its factory and started, and the reference is saved to the context. A spawned machine is created without options, so give it what it needs with `use` rather than symbols, as below. The compiler warns when a machine spawns or [invokes](docs/language/#invoke) a machine in the same file that uses symbols, and lists the options it would need. Spawned machines are stopped when their parent is, and spawning into a reference that already holds a machine stops that machine first. To keep more than one, see [lists of machines](docs/language/#lists-of-machines).
+The spawned machine is created by calling its factory and started, and the reference is saved to the context. A spawned machine is given what it needs where it is spawned: its [inputs](docs/language/#inputs), and its [symbols](docs/language/#symbols-for-a-spawned-machine). Spawned machines are stopped when their parent is, and spawning into a reference that already holds a machine stops that machine first. To keep more than one, see [lists of machines](docs/language/#lists-of-machines).
 
 ### Inputs
 
@@ -733,6 +734,42 @@ const todo = createTodoItem({
 ```
 
 The compiler warns about a __spawn__ of a machine in the same file that leaves out one of its inputs or gives one it doesn't declare, and about an [invoke](docs/language/#invoke) of a machine with inputs, since an invoke can't give any. A machine that declares no inputs isn't checked. In TypeScript, the inputs are a type, `TodoItemInput`, and `createTodoItem` has to be given a context that holds them.
+
+### Symbols for a spawned machine
+
+A machine's [symbols](docs/language/#symbols) are functions it is given when it's created. A machine that another machine spawns is given them in the spawn's block too, on lines that start with the symbol:
+
+```lucy
+use './util.js' { log }
+
+machine todoItem {
+  input title
+
+  state idle {
+    delete => guard(:canDelete) => action(:log) => deleted
+  }
+  final state deleted {}
+}
+
+machine app {
+  state idle {
+    new => assign(todo, spawn(todoItem) {
+      title = event.data
+      :canDelete = :canDeleteTodo
+      :log = log
+    })
+  }
+}
+```
+
+On the right is a function the app has: one from `use`, like `log`, or one of its own symbols, like `:canDeleteTodo`. Here `:canDeleteTodo` is a symbol of the app only so that it can hand it on, and whoever creates the app passes it in as a guard, because a guard is what the todo uses it as.
+
+The two kinds of line are different things:
+
+* `title = event.data` is data. The value is worked out when the machine is spawned, and it goes into the new machine's context.
+* `:log = log` is code. The function is handed over as it is, without being called, and is never part of the context. The todo calls it later, with its own context and events.
+
+The compiler warns about a __spawn__ of a machine in the same file that leaves out a symbol the machine uses, or gives one it doesn't use. Symbols can only be given to a machine in the same file: for a function from `use` or a symbol in `services`, the compiler can't see what the machine uses them for, and warns. An [invoke](docs/language/#invoke) of a machine can't give it any symbols.
 
 ### Sending messages to actors
 
