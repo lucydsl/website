@@ -1,5 +1,6 @@
 import { defineConfig } from 'astro/config';
 import { satteri } from '@astrojs/markdown-satteri';
+import lucy from '@lucy/astro';
 import { dropDataLanguage, tocAndAnchors } from './src/markdown/toc-and-anchors.ts';
 import './src/prism.ts';
 
@@ -8,6 +9,8 @@ export default defineConfig({
   trailingSlash: 'always',
   // Keep the whitespace between tags as written, like the Eleventy site.
   compressHTML: false,
+  // Machines with views as components (the demos), hydrated in the browser.
+  integrations: [lucy({ hydrate: true })],
   markdown: {
     syntaxHighlight: 'prism',
     processor: satteri({

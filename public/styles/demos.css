@@ -1,0 +1,57 @@
+/*
+ * Demos: each machine's view, live, above its source.
+ */
+
+.demo {
+  margin: var(--space-8) var(--space-0);
+}
+
+.demo__file {
+  margin: var(--space-8) var(--space-0) var(--space-2);
+  font-family: var(--font-lucy-code);
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+/* The clock */
+.clock {
+  display: flex;
+  justify-content: center;
+}
+
+.clock svg {
+  width: min(100%, 24rem);
+  height: auto;
+}
+
+.clock line {
+  stroke: currentColor;
+  stroke-linecap: round;
+}
+
+.clock__face {
+  fill: var(--surface-raised);
+  stroke: var(--border);
+}
+
+.clock__ticks {
+  fill: none;
+  stroke: currentColor;
+}
+
+.clock .subsecond {
+  color: var(--color-lucy-dusk);
+}
+
+.clock .clock__ticks.subsecond {
+  color: var(--border-strong);
+}
+
+.clock .hour,
+.clock .minute {
+  color: var(--color-lucy-fog);
+}
+
+.clock .second {
+  color: var(--color-dracula-pink);
+}

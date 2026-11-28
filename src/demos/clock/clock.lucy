@@ -1,0 +1,24 @@
+use './frames.js' { animationFrames, hourTurn, minuteTurn, secondTurn, subsecondTurn }
+
+machine clock {
+  initial state running {
+    @entry => assign(frames, spawn(animationFrames))
+    frame => assign(subsecond, subsecondTurn) => assign(second, secondTurn) => assign(minute, minuteTurn) => assign(hour, hourTurn)
+  }
+
+  view {
+    <div class="clock">
+      <svg viewBox="0 0 200 200">
+        <g transform="translate(100, 100)">
+          <circle class="clock__face" r="99" />
+          <circle class="clock__ticks subsecond" r="94" pathLength="60" stroke-width="2" stroke-dasharray="0.1 0.9" stroke-dashoffset="0.05" />
+          <circle class="clock__ticks hour" r="92.5" pathLength="12" stroke-width="5" stroke-dasharray="0.04 0.96" stroke-dashoffset="0.02" />
+          <line class="subsecond" y2="-85" stroke-width="5" transform={subsecond} />
+          <line class="hour" y2="-50" stroke-width="4" transform={hour} />
+          <line class="minute" y2="-70" stroke-width="3" transform={minute} />
+          <line class="second" y2="-80" stroke-width="2" transform={second} />
+        </g>
+      </svg>
+    </div>
+  }
+}

@@ -1,0 +1,61 @@
+---
+import { Prism as Code } from '@astrojs/prism';
+import Page from '../layouts/Page.astro';
+import '../prism.ts';
+// Each demo is a machine with a view, used as a component: rendered to HTML
+// when the site is built and taken over in the browser (@lucy/astro).
+import { createClock } from '../demos/clock/clock.lucy';
+import clockLucy from '../demos/clock/clock.lucy?raw';
+import framesJs from '../demos/clock/frames.js?raw';
+
+// Astro types a component's props from its first parameter, which for a
+// Lucy factory is its options (context, hydrate) rather than the props
+// @lucy/astro turns into its context. The clock takes no props.
+const Clock = createClock as unknown as (props: object) => unknown;
+
+const frontmatter = {
+  title: 'Demos',
+  lede: 'Machines with views, running on this page. Each one is rendered to HTML when the site is built, and taken over in the browser.',
+};
+---
+<Page frontmatter={frontmatter} styles={['demos']}>
+  <h2 id="clock">Clock</h2>
+  <p>
+    A port of <a href="https://github.com/solidjs/solid-site/blob/80322393a146c9658842593d7ae61ec36fd76944/public/examples/clock.json">Solid’s clock example</a>.
+    The machine spawns an actor that sends it a <code>frame</code> event on every animation frame,
+    and each <code>frame</code> assigns the four hands’ rotations.
+  </p>
+
+  <figure class="demo">
+    <Clock client:load />
+  </figure>
+
+  <p>
+    Each hand’s <code>transform</code> is bound to a key, so the compiler puts a <code>setAttribute</code>
+    right after that key’s assign. A frame makes four assigns and changes four attributes, with nothing
+    to compare. The rest of the clock is markup that never changes; in the browser it’s the HTML the server
+    sent, which the machine finds rather than makes.
+  </p>
+
+  <p class="demo__file">clock.lucy</p>
+  <Code lang="lucy" code={clockLucy.trimEnd()} />
+
+  <p class="demo__file">frames.js</p>
+  <Code lang="js" code={framesJs.trimEnd()} />
+
+  <h3>How it differs from Solid’s</h3>
+  <ul>
+    <li>
+      Solid’s clock is four components: the clock, its face, a hand and a set of lines. Lucy has no
+      components, so it’s one machine with one view.
+    </li>
+    <li>
+      Solid draws the 72 tick marks with <code>&lt;For&gt;</code>. Lucy’s views have no loops, so each ring
+      of ticks is a single circle with a dashed stroke.
+    </li>
+    <li>
+      Solid computes the hands’ rotations from the time, as derived values. Lucy’s views only show keys of
+      the context, so the rotations are assigned, by functions in <code>frames.js</code>.
+    </li>
+  </ul>
+</Page>
