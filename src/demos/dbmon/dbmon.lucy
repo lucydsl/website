@@ -1,0 +1,75 @@
+use './env.js' { frames, moreRows, rowName, moreQueries, shouldUpdate, sampleQuery, elapsedText, elapsedClass, queryText, queryCount, countClass, framesPerSecond, setMutations, defaultMutations }
+
+// One of a database's five slowest queries: a cell of its row.
+machine query {
+  initial state starting {
+    => assign(ticker, spawn(frames)) => live
+  }
+
+  state live {
+    frame => guard(shouldUpdate) => assign(sample, sampleQuery) => assign(elapsed, elapsedText) => assign(className, elapsedClass) => assign(text, queryText)
+  }
+
+  view {
+    <td class={className}>
+      {elapsed}
+      <div class="popover"><div class="popover__content">{text}</div></div>
+    </td>
+  }
+}
+
+// A database: its name, how many queries it's running, and its queries.
+machine database {
+  input name
+
+  initial state starting {
+    => assign(ticker, spawn(frames)) => filling
+  }
+
+  state filling {
+    => guard(moreQueries) => append(queries, spawn(query)) => filling
+    => live
+  }
+
+  state live {
+    frame => guard(shouldUpdate) => assign(count, queryCount) => assign(countClass, countClass)
+  }
+
+  view {
+    <tr>
+      <td class="dbname">{name}</td>
+      <td class="query-count"><span class={countClass}>{count}</span></td>
+      {queries}
+    </tr>
+  }
+}
+
+machine dbmon {
+  initial state starting {
+    => assign(ticker, spawn(frames)) => assign(mutations, defaultMutations) => filling
+  }
+
+  state filling {
+    => guard(moreRows) => append(databases, spawn(database) {
+      name = rowName
+    }) => filling
+    => running
+  }
+
+  state running {
+    frame => assign(fps, framesPerSecond)
+    mutate => assign(mutations, setMutations)
+  }
+
+  view {
+    <div class="dbmon">
+      <div class="dbmon__controls">
+        <label>Mutations <input type="range" min="0" max="100" value={mutations} on:input={mutate}> {mutations}%</label>
+        <span class="dbmon__fps">{fps} fps</span>
+      </div>
+      <table class="dbmon__table">
+        <tbody>{databases}</tbody>
+      </table>
+    </div>
+  }
+}

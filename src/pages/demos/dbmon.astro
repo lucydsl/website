@@ -1,0 +1,63 @@
+---
+import { Prism as Code } from '@astrojs/prism';
+import Page from '../../layouts/Page.astro';
+import '../../prism.ts';
+// The demo is a machine with a view, used as a component: rendered to HTML
+// when the site is built and taken over in the browser (@lucy/astro).
+import { Dbmon } from '../../demos/dbmon/dbmon.lucy';
+import dbmonLucy from '../../demos/dbmon/dbmon.lucy?raw';
+import envJs from '../../demos/dbmon/env.js?raw';
+
+const frontmatter = {
+  title: 'DBMon',
+  lede: 'The classic rendering benchmark: a table of databases and their slowest queries, changing as fast as the browser can draw.',
+};
+---
+<Page frontmatter={frontmatter} styles={['demos']}>
+  <p>
+    <a href="https://github.com/mathieuancelin/js-repaint-perfs">DBMon</a> shows a pseudo-database
+    monitor: a hundred databases, each with how many queries it’s running and its five slowest.
+    On every animation frame, some share of them change: the slider sets how many.
+    Hover a query to see it.
+  </p>
+
+  <figure class="demo demo--wide">
+    <Dbmon client:load />
+  </figure>
+
+  <p>
+    There are 601 machines: the page, a hundred databases and five hundred queries. Each one is
+    sent a <code>frame</code> event, and a guard decides whether it takes a new sample. A sample
+    is a few assigns, and each assign changes the one text node or attribute that shows its key.
+    Nothing is compared, and nothing outside the changed cells is touched.
+  </p>
+
+  <h2 id="source">The source</h2>
+
+  <p class="demo__file">dbmon.lucy</p>
+  <Code lang="lucy" code={dbmonLucy.trimEnd()} />
+
+  <p>
+    The lists are filled by a state that goes back to itself: while the guard says there are more
+    to make, its immediate transition appends one and enters the state again. Lucy’s views have
+    no loops, and this keeps the counting in the machine.
+  </p>
+
+  <p class="demo__file">env.js</p>
+  <Code lang="js" code={envJs.trimEnd()} />
+
+  <h2 id="differences">How it differs from the original</h2>
+  <ul>
+    <li>
+      The original generates every database’s data in one place and renders the whole table
+      from it. Here each database and each query is a machine that samples itself, so an update
+      is local to the machine that changed.
+    </li>
+    <li>
+      The original takes each database’s five slowest from a dozen queries. Here each of the five
+      cells samples its own query.
+    </li>
+  </ul>
+
+  <p><a href="demos/">All demos</a></p>
+</Page>

@@ -1,0 +1,57 @@
+use './loop.js' { ticks, startLoop, stopLoop, moreBoxes, nextCount, boxStyle, boxContent, timingText }
+
+// A circle: each tick moves it round a little circle of its own, makes it
+// bluer, and counts.
+machine box {
+  initial state starting {
+    => assign(ticker, spawn(ticks)) => assign(style, boxStyle) => live
+  }
+
+  state live {
+    tick => assign(count, nextCount) => assign(style, boxStyle) => assign(content, boxContent)
+  }
+
+  view {
+    <div class="box-view"><div class="box" style={style}>{content}</div></div>
+  }
+}
+
+machine circles {
+  initial state starting {
+    => assign(ticker, spawn(ticks)) => filling
+  }
+
+  state filling {
+    => guard(moreBoxes) => append(boxes, spawn(box)) => filling
+    => stopped
+  }
+
+  state stopped {
+    start => running
+
+    view(control) {
+      <button type="button" on:click={start}>Start</button>
+    }
+  }
+
+  state running {
+    @entry => action(startLoop)
+    @exit => action(stopLoop)
+    tick => assign(timing, timingText)
+    stop => stopped
+
+    view(control) {
+      <button type="button" on:click={stop}>Stop</button>
+    }
+  }
+
+  view {
+    <div class="circles">
+      <div class="circles__controls">
+        {part(control)}
+        <span class="circles__timing">{timing}</span>
+      </div>
+      <div class="circles__grid">{boxes}</div>
+    </div>
+  }
+}

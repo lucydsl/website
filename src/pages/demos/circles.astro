@@ -1,0 +1,59 @@
+---
+import { Prism as Code } from '@astrojs/prism';
+import Page from '../../layouts/Page.astro';
+import '../../prism.ts';
+// The demo is a machine with a view, used as a component: rendered to HTML
+// when the site is built and taken over in the browser (@lucy/astro).
+import { Circles } from '../../demos/circles/circles.lucy';
+import circlesLucy from '../../demos/circles/circles.lucy?raw';
+import loopJs from '../../demos/circles/loop.js?raw';
+
+const frontmatter = {
+  title: 'Circles',
+  lede: 'Three hundred boxes, each moved round a circle, coloured and counted on every loop, as fast as setTimeout allows.',
+};
+---
+<Page frontmatter={frontmatter} styles={['demos']}>
+  <p>
+    Jeremy Ashkenas’s animating circles compared Backbone and Ember, and was copied between
+    JSFiddles for the better part of a decade. This follows
+    <a href="https://github.com/ryansolid/circles-benchmark">Ryan Carniato’s collection</a> of it:
+    three hundred boxes, and a loop that runs on <code>setTimeout(0)</code>. Every loop, every
+    box counts up, moves to the next point on its circle and gets bluer. The time per loop is the
+    score.
+  </p>
+
+  <figure class="demo demo--wide">
+    <Circles client:load />
+  </figure>
+
+  <p>
+    Each box is a machine. A <code>tick</code> assigns its count, then its style and its text, and
+    the compiler puts the <code>setAttribute</code> and the text change right after each assign.
+    The page is a machine too: stopped or running, with its own button for each, shown as a part
+    of its view.
+  </p>
+
+  <h2 id="source">The source</h2>
+
+  <p class="demo__file">circles.lucy</p>
+  <Code lang="lucy" code={circlesLucy.trimEnd()} />
+
+  <p class="demo__file">loop.js</p>
+  <Code lang="js" code={loopJs.trimEnd()} />
+
+  <h2 id="differences">How it differs from the original</h2>
+  <ul>
+    <li>
+      The original’s loop updates its boxes in a microtask, from one array. Here the loop sends each
+      box machine a <code>tick</code>, and each box updates itself.
+    </li>
+    <li>
+      The original sets <code>top</code>, <code>left</code> and <code>background</code> one property
+      at a time. Lucy binds attributes to keys, so each box’s whole <code>style</code> attribute is
+      one key, set at once.
+    </li>
+  </ul>
+
+  <p><a href="demos/">All demos</a></p>
+</Page>

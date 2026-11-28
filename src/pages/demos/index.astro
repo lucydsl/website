@@ -1,0 +1,21 @@
+---
+import Page from '../../layouts/Page.astro';
+import { demos } from '../../demos/index.ts';
+
+const frontmatter = {
+  title: 'Demos',
+  lede: 'Machines with views, each running on a page of its own. Each one is rendered to HTML when the site is built, and taken over in the browser.',
+};
+---
+<Page frontmatter={frontmatter} prose={false} styles={['demos']}>
+  <ul class="demo-list">
+    {demos.map((demo) => (
+      <li class="demo-list__item">
+        <a class="demo-list__link" href={`demos/${demo.slug}/`}>
+          <span class="demo-list__title">{demo.title}</span>
+          <span class="demo-list__description">{demo.description}</span>
+        </a>
+      </li>
+    ))}
+  </ul>
+</Page>

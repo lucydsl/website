@@ -1,0 +1,237 @@
+/*
+ * Demos: each machine's view, live, above its source.
+ */
+
+.demo {
+  margin: var(--space-8) var(--space-0);
+}
+
+.demo__file {
+  margin: var(--space-8) var(--space-0) var(--space-2);
+  font-family: var(--font-lucy-code);
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+/* The clock */
+.clock {
+  display: flex;
+  justify-content: center;
+}
+
+.clock svg {
+  width: min(100%, 24rem);
+  height: auto;
+}
+
+.clock line {
+  stroke: currentColor;
+  stroke-linecap: round;
+}
+
+.clock__face {
+  fill: var(--surface-raised);
+  stroke: var(--border);
+}
+
+.clock__ticks {
+  fill: none;
+  stroke: currentColor;
+}
+
+.clock .subsecond {
+  color: var(--color-lucy-dusk);
+}
+
+.clock .clock__ticks.subsecond {
+  color: var(--border-strong);
+}
+
+.clock .hour,
+.clock .minute {
+  color: var(--color-lucy-fog);
+}
+
+.clock .second {
+  color: var(--color-dracula-pink);
+}
+
+/* The index: one entry per demo */
+.demo-list {
+  display: grid;
+  gap: var(--space-4);
+  list-style: none;
+  margin: var(--space-0);
+  padding: var(--space-0);
+}
+
+.demo-list__link {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-5) var(--space-6);
+  border: var(--border-1) solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface-raised);
+  color: var(--text);
+  text-decoration: none;
+}
+
+.demo-list__link:hover,
+.demo-list__link:focus-visible {
+  border-color: var(--surface-active);
+}
+
+.demo-list__title {
+  font-family: var(--font-lucy-display);
+  font-weight: var(--font-bold);
+  font-size: var(--text-3xl);
+  line-height: var(--leading-tight);
+}
+
+.demo-list__description {
+  color: var(--text-muted);
+  max-width: var(--container-prose);
+}
+
+/* A demo that needs the width beside the rail */
+.demo--wide {
+  overflow-x: auto;
+}
+
+/* DBMon */
+.dbmon__controls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
+  font-family: var(--font-lucy-code);
+  font-size: var(--text-sm);
+}
+
+.dbmon__controls input {
+  vertical-align: middle;
+  margin-inline: var(--space-2);
+  accent-color: var(--surface-active);
+}
+
+.dbmon__fps {
+  color: var(--text-muted);
+}
+
+.dbmon__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-lucy-code);
+  font-size: var(--text-xs);
+  font-variant-numeric: tabular-nums;
+}
+
+.dbmon__table td {
+  padding: var(--space-1) var(--space-2);
+  border-top: var(--border-1) solid var(--border);
+}
+
+.dbmon__table tr:nth-child(odd) {
+  background: var(--surface-raised);
+}
+
+.dbmon .count {
+  display: inline-block;
+  min-width: 2.5em;
+  padding: 0 var(--space-1);
+  border-radius: var(--radius-md);
+  text-align: center;
+  color: var(--color-lucy-ink);
+}
+
+.dbmon .count--ok { background: var(--color-dracula-green); }
+.dbmon .count--warn { background: var(--color-dracula-orange); }
+.dbmon .count--high { background: var(--color-dracula-red); }
+
+.dbmon .query {
+  position: relative;
+  text-align: end;
+}
+
+.dbmon .query--short { color: var(--color-dracula-green); }
+.dbmon .query--warn { color: var(--color-dracula-orange); }
+.dbmon .query--long { color: var(--color-dracula-red); }
+
+.dbmon .popover {
+  display: none;
+  position: absolute;
+  inset-inline-end: 100%;
+  top: 0;
+  z-index: 1;
+  width: max-content;
+  max-width: 20rem;
+  padding: var(--space-1) var(--space-2);
+  border: var(--border-1) solid var(--border-strong);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--text);
+  text-align: start;
+}
+
+.dbmon .query:hover .popover {
+  display: block;
+}
+
+/* Circles */
+.circles__controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
+  font-family: var(--font-lucy-code);
+  font-size: var(--text-sm);
+}
+
+.circles__controls button {
+  padding: var(--space-1) var(--space-4);
+  border: var(--border-1) solid var(--surface-active);
+  border-radius: var(--radius-md);
+  background: var(--surface-active);
+  color: var(--text-on-active);
+  font: inherit;
+  cursor: pointer;
+}
+
+.circles__timing {
+  color: var(--text-muted);
+}
+
+/* Room for the boxes to swing 10px out, as the original's margin gives. */
+.circles__grid {
+  padding: 10px;
+}
+
+.circles__grid::after {
+  content: '';
+  display: block;
+  clear: both;
+}
+
+.circles .box-view {
+  width: 20px;
+  height: 20px;
+  float: left;
+  position: relative;
+  margin: 8px;
+}
+
+.circles .box {
+  /* As the original: 10px tall, and 5px of padding above and below. The
+     site's border-box would make it 10px in all. */
+  box-sizing: content-box;
+  position: absolute;
+  width: 20px;
+  height: 10px;
+  padding: 5px 0;
+  border-radius: 100px;
+  color: #fff;
+  font: 10px/10px Arial, sans-serif;
+  text-align: center;
+}
