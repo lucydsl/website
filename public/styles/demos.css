@@ -55,3 +55,40 @@
 .clock .second {
   color: var(--color-dracula-pink);
 }
+
+/* The index: one entry per demo */
+.demo-list {
+  display: grid;
+  gap: var(--space-4);
+  list-style: none;
+  margin: var(--space-0);
+  padding: var(--space-0);
+}
+
+.demo-list__link {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-5) var(--space-6);
+  border: var(--border-1) solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface-raised);
+  color: var(--text);
+  text-decoration: none;
+}
+
+.demo-list__link:hover,
+.demo-list__link:focus-visible {
+  border-color: var(--surface-active);
+}
+
+.demo-list__title {
+  font-family: var(--font-lucy-display);
+  font-weight: var(--font-bold);
+  font-size: var(--text-3xl);
+  line-height: var(--leading-tight);
+}
+
+.demo-list__description {
+  color: var(--text-muted);
+  max-width: var(--container-prose);
+}

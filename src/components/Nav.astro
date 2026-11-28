@@ -7,7 +7,7 @@ const { pathname } = Astro.url;
 const states = [
   { name: 'install', href: 'install/', active: pathname === '/install/' },
   { name: 'docs', href: 'docs/', active: isDocs(pathname) },
-  { name: 'demos', href: 'demos/', active: pathname === '/demos/' },
+  { name: 'demos', href: 'demos/', active: pathname.startsWith('/demos/') },
   { name: 'github', href: 'https://github.com/lucydsl/liblucy', active: false },
 ];
 ---
