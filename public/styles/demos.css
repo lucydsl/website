@@ -177,3 +177,53 @@
 .dbmon .query:hover .popover {
   display: block;
 }
+
+/* Circles */
+.circles__controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
+  font-family: var(--font-lucy-code);
+  font-size: var(--text-sm);
+}
+
+.circles__controls button {
+  padding: var(--space-1) var(--space-4);
+  border: var(--border-1) solid var(--surface-active);
+  border-radius: var(--radius-md);
+  background: var(--surface-active);
+  color: var(--text-on-active);
+  font: inherit;
+  cursor: pointer;
+}
+
+.circles__timing {
+  color: var(--text-muted);
+}
+
+.circles__grid::after {
+  content: '';
+  display: block;
+  clear: both;
+}
+
+.circles .box-view {
+  width: 20px;
+  height: 20px;
+  float: left;
+  position: relative;
+  margin: 8px;
+}
+
+.circles .box {
+  position: absolute;
+  width: 20px;
+  height: 10px;
+  padding: 5px 0;
+  border-radius: 100px;
+  color: #fff;
+  font: 10px/10px Arial, sans-serif;
+  text-align: center;
+}

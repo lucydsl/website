@@ -17,4 +17,9 @@ export const demos: Demo[] = [
     title: 'DBMon',
     description: 'The classic rendering benchmark: a hundred databases, each with five queries, changing every frame. Every row and every cell is a machine.',
   },
+  {
+    slug: 'circles',
+    title: 'Circles',
+    description: 'Jeremy Ashkenas’s animating circles: three hundred boxes, each moved, coloured and counted on every loop. Start it and watch the time per loop.',
+  },
 ];
