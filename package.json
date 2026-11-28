@@ -13,7 +13,7 @@
     "@astrojs/markdown-satteri": "^0.4.8",
     "@astrojs/prism": "^4.1.2",
     "@lucy/astro": "file:../../../lucy-astro-prototype/integration",
-    "@lucy/prism": "^1.8.0",
+    "@lucy/prism": "file:../lucy-prism-views",
     "astro": "^7.4.10",
     "prismjs": "1.25.0",
     "uslug": "^1.0.4"
