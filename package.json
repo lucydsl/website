@@ -12,7 +12,7 @@
   "dependencies": {
     "@astrojs/markdown-satteri": "^0.4.8",
     "@astrojs/prism": "^4.1.2",
-    "@lucy/astro": "file:../../../lucy-astro-prototype/integration",
+    "@lucy/astro": "file:../astro",
     "@lucy/prism": "file:../lucy-prism-views",
     "astro": "^7.4.10",
     "prismjs": "1.25.0",

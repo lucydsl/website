@@ -18,7 +18,7 @@ export default defineConfig({
   // node_modules. Remove once they're published.
   vite: {
     server: {
-      fs: { allow: [searchForWorkspaceRoot(process.cwd()), '../../../lucy-astro-prototype/integration'] },
+      fs: { allow: [searchForWorkspaceRoot(process.cwd()), '../astro'] },
     },
     ssr: { external: ['@lucy/prism'] },
   },
