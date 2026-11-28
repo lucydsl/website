@@ -1,4 +1,5 @@
 import { defineConfig } from 'astro/config';
+import { searchForWorkspaceRoot } from 'vite';
 import { satteri } from '@astrojs/markdown-satteri';
 import lucy from '@lucy/astro';
 import { dropDataLanguage, tocAndAnchors } from './src/markdown/toc-and-anchors.ts';
@@ -11,6 +12,13 @@ export default defineConfig({
   compressHTML: false,
   // Machines with views as components (the demos), hydrated in the browser.
   integrations: [lucy({ hydrate: true })],
+  // Temporary, while @lucy/astro is a local file: link outside the site:
+  // let the dev server serve its client entry. Remove once it's published.
+  vite: {
+    server: {
+      fs: { allow: [searchForWorkspaceRoot(process.cwd()), '../../../lucy-astro-prototype/integration'] },
+    },
+  },
   markdown: {
     syntaxHighlight: 'prism',
     processor: satteri({
