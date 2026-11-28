@@ -203,6 +203,11 @@
   color: var(--text-muted);
 }
 
+/* Room for the boxes to swing 10px out, as the original's margin gives. */
+.circles__grid {
+  padding: 10px;
+}
+
 .circles__grid::after {
   content: '';
   display: block;
@@ -218,6 +223,9 @@
 }
 
 .circles .box {
+  /* As the original: 10px tall, and 5px of padding above and below. The
+     site's border-box would make it 10px in all. */
+  box-sizing: content-box;
   position: absolute;
   width: 20px;
   height: 10px;
