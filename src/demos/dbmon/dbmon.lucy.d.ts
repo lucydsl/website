@@ -63,3 +63,11 @@ export interface DbmonMachine<TContext extends Record<DbmonContextKey, any>, TEv
 }
 
 export function createDbmon<TContext extends Record<DbmonContextKey, any> = Record<DbmonContextKey, any>, TEvent extends { type: DbmonEventName } = { type: DbmonEventName }>(options: CreateDbmonOptions<TContext, TEvent>): DbmonMachine<TContext, TEvent>;
+
+// Each machine with a view as a component: its props are its context.
+export type QueryProps = Partial<Record<QueryContextKey, unknown>>;
+export declare const Query: (props: QueryProps) => unknown;
+export type DatabaseProps = Partial<Record<DatabaseContextKey, unknown>> & DatabaseInput;
+export declare const Database: (props: DatabaseProps) => unknown;
+export type DbmonProps = Partial<Record<DbmonContextKey, unknown>>;
+export declare const Dbmon: (props: DbmonProps) => unknown;

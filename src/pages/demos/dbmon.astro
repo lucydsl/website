@@ -4,7 +4,7 @@ import Page from '../../layouts/Page.astro';
 import '../../prism.ts';
 // The demo is a machine with a view, used as a component: rendered to HTML
 // when the site is built and taken over in the browser (@lucy/astro).
-import { createDbmon as Dbmon } from '../../demos/dbmon/dbmon.lucy';
+import { Dbmon } from '../../demos/dbmon/dbmon.lucy';
 import dbmonLucy from '../../demos/dbmon/dbmon.lucy?raw';
 import envJs from '../../demos/dbmon/env.js?raw';
 
@@ -22,10 +22,6 @@ const frontmatter = {
   </p>
 
   <figure class="demo demo--wide">
-    {/* Astro types a component's props from its first parameter, which for
-        a Lucy factory is its options (context and hydrate), not the props
-        @lucy/astro makes its context. */}
-    {/* @ts-expect-error */}
     <Dbmon client:load />
   </figure>
 

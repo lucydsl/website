@@ -4,7 +4,7 @@ import Page from '../../layouts/Page.astro';
 import '../../prism.ts';
 // The demo is a machine with a view, used as a component: rendered to HTML
 // when the site is built and taken over in the browser (@lucy/astro).
-import { createCircles as Circles } from '../../demos/circles/circles.lucy';
+import { Circles } from '../../demos/circles/circles.lucy';
 import circlesLucy from '../../demos/circles/circles.lucy?raw';
 import loopJs from '../../demos/circles/loop.js?raw';
 
@@ -24,10 +24,6 @@ const frontmatter = {
   </p>
 
   <figure class="demo demo--wide">
-    {/* Astro types a component's props from its first parameter, which for
-        a Lucy factory is its options (context and hydrate), not the props
-        @lucy/astro makes its context. */}
-    {/* @ts-expect-error */}
     <Circles client:load />
   </figure>
 

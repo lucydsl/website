@@ -18,3 +18,7 @@ export interface ClockMachine<TContext extends Record<ClockContextKey, any>, TEv
 }
 
 export function createClock<TContext extends Record<ClockContextKey, any> = Record<ClockContextKey, any>, TEvent extends { type: ClockEventName } = { type: ClockEventName }>(options: CreateClockOptions<TContext, TEvent>): ClockMachine<TContext, TEvent>;
+
+// Each machine with a view as a component: its props are its context.
+export type ClockProps = Partial<Record<ClockContextKey, unknown>>;
+export declare const Clock: (props: ClockProps) => unknown;

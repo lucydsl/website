@@ -39,3 +39,9 @@ export interface CirclesMachine<TContext extends Record<CirclesContextKey, any>,
 }
 
 export function createCircles<TContext extends Record<CirclesContextKey, any> = Record<CirclesContextKey, any>, TEvent extends { type: CirclesEventName } = { type: CirclesEventName }>(options: CreateCirclesOptions<TContext, TEvent>): CirclesMachine<TContext, TEvent>;
+
+// Each machine with a view as a component: its props are its context.
+export type BoxProps = Partial<Record<BoxContextKey, unknown>>;
+export declare const Box: (props: BoxProps) => unknown;
+export type CirclesProps = Partial<Record<CirclesContextKey, unknown>>;
+export declare const Circles: (props: CirclesProps) => unknown;
